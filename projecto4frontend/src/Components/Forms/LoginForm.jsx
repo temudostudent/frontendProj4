@@ -1,4 +1,5 @@
 import React from "react";
+import logo from '../Assets/agileflow-high-resolution-logo-transparent.png'
 import { useState } from 'react';
 import '../../App.css'
 import { useNavigate } from 'react-router-dom'
@@ -26,7 +27,10 @@ function LoginForm() {
         <div className="form-container login-container">
             {/*Fixa o formulário na mesma página*/}
             <form  action="#" onSubmit={handleSubmit}>
-                <h1>Login</h1>
+                    <div className='logo-top' style={{ textAlign: 'center' }}>
+                        <img src={logo} alt="Logo da empresa" style={{ width: '70%', height: 'auto' }} />
+                    </div> 
+                    <br/>
                     <input 
                         type="text" 
                         defaultValue={inputs.username || ''}   

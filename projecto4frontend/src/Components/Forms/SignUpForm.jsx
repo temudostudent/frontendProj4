@@ -9,6 +9,7 @@ function SignUpForm() {
         <div className="form-container sign-up-container">
             <form  action="#">
                 <h1>Create Account</h1>
+                <br />
                     <input type="text" placeholder="Username" />
 			        <input type="text" placeholder="First Name" />
 			        <input type="text" placeholder="Last Name" />

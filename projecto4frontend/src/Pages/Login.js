@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import logo from '../Components/Assets/agileflow-favicon-color.png'
+import logo from '../Components/Assets/agileflow-favicon-white.png'
 import LoginForm from '../Components/Forms/LoginForm'
 import SignupForm from "../Components/Forms/SignUpForm"
 import Footer from "../Components/CommonElements/Footer"

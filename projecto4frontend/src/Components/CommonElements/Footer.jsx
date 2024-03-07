@@ -1,5 +1,6 @@
 import React from "react";
 import '../../App.css'
+import './CommonElements.css';
 
 function Footer() {
 
@@ -7,6 +8,7 @@ function Footer() {
         <footer className="footer">
             <div className="footer-container">
                 <p>Created by César Temudo</p>
+                <p>© AoR 2024</p>
             </div>
         </footer>
     )
