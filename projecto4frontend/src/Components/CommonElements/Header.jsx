@@ -1,10 +1,12 @@
 import React from "react";
 import logo from '../Assets/agileflow-high-resolution-logo-white-transparent.png'
-import '../../App.css'
 import './CommonElements.css'
 import Sidebar from './Sidebar'
+import { userStore } from '../../Stores/UserStore'
 
 function Header({ onLogout}) {
+
+    const token = userStore((state) => state.token)
 
     return(
 

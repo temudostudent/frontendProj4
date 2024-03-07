@@ -11,6 +11,10 @@ function Login() {
 
     const containerRef = useRef(null);
 
+    const handleSignUpSuccess = () => {
+        containerRef.current.classList.remove('right-panel-active');
+    }
+
     const handleLoginClick = () => {
         containerRef.current.classList.remove('right-panel-active');
     }
@@ -21,7 +25,7 @@ function Login() {
 
     return (
         <div className="container" ref={containerRef}>
-            <SignupForm />
+            <SignupForm  onSignUpSuccess={handleSignUpSuccess}/>
             <LoginForm />
             <div className="overlay-container">
                 <div className="overlay">
