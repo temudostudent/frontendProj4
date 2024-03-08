@@ -9,15 +9,28 @@
 
 }
 
-header{
-    background-color: var(--orange-color);
-    font-size: 14px;
-    top: 0;
-    position: fixed;
-    left: 0;
-    right: 0;
-    padding: 20px;
-    z-index: 999;
+.site-header { 
+    display: flex;
+    border-bottom: 1px solid #ccc;
+    padding: .5em 4em;
+    align-items: center;
+}
+
+.site-header::after {
+content: "";
+display: table;
+clear: both;
+}
+
+.site-identity {
+    float: left;
+  }
+
+.site-identity img {
+
+    margin: 0 10px 0 0;
+    max-width: 20em;
+    height: auto;
 }
 
 .header-container{
@@ -27,76 +40,52 @@ header{
     padding: 20px;
 }
 
-/* Position and sizing of burger button */ 
-.bm-burger-button { 
-    position: relative; 
-    width: 36px; 
-    height: 30px; 
-    left: 0; 
-    top: 0; 
-} 
-    /* Color/shape of burger icon bars */ 
-.bm-burger-bars { 
-    background: #373a47; 
-} 
-    /* Color/shape of burger icon bars on hover*/ 
-.bm-burger-bars-hover { 
-    background: #a90000; 
-} 
-    /* Position and sizing of clickable cross button */ 
-.bm-cross-button { 
-    height: 24px; 
-    width: 24px; 
-} 
-    /* Color/shape of close button cross */ 
-.bm-cross { 
-    background: #bdc3c7; 
-} 
-    /* 
-    Sidebar wrapper styles 
-    Note: Beware of modifying this element as it can break the animations - you 
-    should not need to touch it in most cases 
-    */ 
-.bm-menu-wrap { 
-    position: fixed; 
-    height: 100%; 
-}
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
 
-    /* General sidebar styles */ 
-.bm-menu { 
-    background: #373a47; 
-    padding: 2.5em 1.5em 0; 
-    font-size: 1.15em; 
-} 
-    /* Morph shape necessary with bubble or elastic */ 
-.bm-morph-shape { 
-    fill: #373a47; 
-} 
-    /* Wrapper for item list */ 
-.bm-item-list { 
-    color: #b8b7ad; 
-    padding: 0.8em; 
-} 
-    /* Individual item */ 
-.bm-item { 
-    display: inline-block; 
-} 
-    /* Styling of overlay */ 
-.bm-overlay { 
-    background: rgba(0, 0, 0, 0.3); 
-} 
-    /* Individual item */ 
-.bm-item { 
-    display: inline-block; 
-    color: #d1d1d1; 
-    margin-bottom: 10px; 
-    text-align: left; 
-    text-decoration: none; 
-    transition: color 0.2s; 
-} 
-.bm-item:hover { 
-    color: #ffffff; 
-}
+.menu {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+    max-width: 800px;
+    margin: 20px auto;
+    border-bottom: 1px solid #eee;
+  
+    @media (max-width: 650px) {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .item {
+      padding: 18px 28px;
+      cursor: pointer;
+      transition: color 0.3s ease-out;
+      text-decoration: none;
+      color: #111;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 12px;
+      margin: 5px 0;
+  
+      &.active {
+        color: #fff;
+      }
+    }
+  
+    .indicator {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      border-radius: 30px;
+    }
+  }
+  
 
 footer {
     background-color: var(--dark-color);

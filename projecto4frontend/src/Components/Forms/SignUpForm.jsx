@@ -36,9 +36,10 @@ function SignUpForm({ onSignUpSuccess }) {
                     onSignUpSuccess();
                     setInputs({});
                 }else {
+                    const errorData = await response.text();
+
                     switch (response.status) {
                         case 422:
-                            const errorData = await response.text();
                             switch (errorData) {
                                 case "There's an empty field, fill all values":
                                     toast.error("Please fill all fields");

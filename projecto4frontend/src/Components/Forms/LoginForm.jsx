@@ -60,7 +60,7 @@ function LoginForm() {
                     <input 
                         type="text"
                         name="username"
-                        defaultValue={inputs.username || ''}   
+                        value={inputs.username || ''}   
                         placeholder="Username" 
                         onChange={handleChange}
                         required
@@ -69,7 +69,7 @@ function LoginForm() {
                     <input 
                         type="password" 
                         name="password"
-                        defaultValue={inputs.password || ''} 
+                        value={inputs.password || ''} 
                         placeholder="Password" 
                         onChange={handleChange}
                         required

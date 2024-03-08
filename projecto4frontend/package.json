@@ -4,7 +4,9 @@
   "jest": {
     "testEnvironment": "node",
     "transform": {
-      "^.+\\.jsx?$": "babel-jest"
+      "^.+\\.jsx?$": "babel-jest",
+      "^.+\\.(css|scss)$": "jest-css-modules-transform",
+      "^.+\\.(jpg|jpeg|png|gif|webp|svg)$": "jest-transform-stub"
     },
     "moduleFileExtensions": [
       "js",
@@ -15,10 +17,18 @@
     "moduleNameMapper": {
       "\\.(css|less|scss|sass)$": "identity-obj-proxy",
       "\\.(png|jpg|jpeg|gif|svg)$": "<rootDir>/mocks/fileMock.js"
-    }
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jest-)?css-modules-transform)"
+    ]
   },
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.0",
+    "@gsap/react": "^2.1.0",
+    "@mui/icons-material": "^5.15.12",
+    "@mui/material": "^5.15.12",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -63,6 +73,8 @@
     "@babel/preset-env": "^7.24.0",
     "@babel/preset-react": "^7.23.3",
     "babel-jest": "^29.7.0",
+    "jest-css-modules-transform": "^4.4.2",
+    "jest-transform-stub": "^2.0.0",
     "msw": "^2.2.3",
     "react-router-dom": "^6.22.2"
   }

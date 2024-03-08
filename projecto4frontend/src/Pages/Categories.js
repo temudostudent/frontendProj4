@@ -1,17 +1,19 @@
 import React from 'react'
 import Header from '../Components/CommonElements/Header'
 import Footer from '../Components/CommonElements/Footer'
-import Main from '../Components/MainScrum/Main'
+import Table from '../Components/CommonElements/Table'
 import '../App.css';
 
-function Home() {
+function Categories() {
     return (
-        <div className='Home'>
+        <div className='Categories'>
             <Header />
-            
+            <div className='categories-table-container'>
+                <Table />
+            </div>
             <Footer />
         </div>
     )
 }
 
-export default Home
+export default Categories
