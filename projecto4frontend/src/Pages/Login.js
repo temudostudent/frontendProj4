@@ -1,11 +1,11 @@
-import React, { useRef } from "react";
+import React, { useRef } from "react"
 import logo from '../Components/Assets/agileflow-favicon-white.png'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import LoginForm from '../Components/Forms/LoginForm'
 import SignupForm from "../Components/Forms/SignUpForm"
 import Footer from "../Components/CommonElements/Footer"
 import '../App.css'
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 function Login() {
 
@@ -25,6 +25,7 @@ function Login() {
 
     return (
         <div className="container" ref={containerRef}>
+            <ToastContainer position="top-center" />
             <SignupForm  onSignUpSuccess={handleSignUpSuccess}/>
             <LoginForm />
             <div className="overlay-container">

@@ -1,25 +1,27 @@
 import React, { useState } from "react"
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function SignUpForm({ onSignUpSuccess }) {
 
     const [inputs, setInputs] = useState({});
-    const [errors, setErrors] = useState({});
 
+    //Inputs
     const handleChange = (event) => {
         const name = event.target.name;
         const value = event.target.value;
 
         setInputs(values => ({...values, [name]: value}))
-        setErrors(errors => ({...errors, [name]: ''}))
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         console.log(inputs);
 
-        fetch ('http://localhost:8080/project_backend/rest/users/register',
+        try{
+
+        const response = await fetch ('http://localhost:8080/project_backend/rest/users/register',
             {
                 method: 'POST',
                 headers: {
@@ -27,36 +29,44 @@ function SignUpForm({ onSignUpSuccess }) {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(inputs)
-            })
-            .then(function (response) {
+            });
                 if (response.ok) {
-                    alert("Thanks for being awesome! Account registered successfully!");
+                    toast.success("Thanks for being awesome! Account registered successfully!");
 
                     onSignUpSuccess();
                     setInputs({});
                 }else {
-                    if (response.status === 422) {
-                        response.json().then(function (data) {
-                            const newErrors = {};
-
-                            if (data.message) {
-                                newErrors.message = data.message;
+                    switch (response.status) {
+                        case 422:
+                            const errorData = await response.text();
+                            switch (errorData) {
+                                case "There's an empty field, fill all values":
+                                    toast.error("Please fill all fields");
+                                    break;
+                                case "Invalid email":
+                                    toast.error("The email you used is not valid");
+                                    break;
+                                case "Invalid phone number":
+                                    toast.error("The phone number is not valid");
+                                    break;
+                                default:
+                                    console.error('Unknown error message:', errorData);
+                                    toast.error("Something went wrong");
                             }
-
-                            if (data.errors) {
-                                for (const key in data.errors) {
-                                    newErrors[key] = data.errors[key][0];
-                                }
-                            }
-                            setErrors(newErrors);
-                        });
-                    } else {
-                        console.error('Unknown response status:', response.status);
-                        alert("Something went wrong");
+                            break;
+                        case 409: 
+                            toast.error("Username already in use");
+                            break;
+                        default:
+                            console.log('Unknown error message:', errorData);
+                            toast.error("Something went wrong");
                     }
                 }
-            });
-    };
+            } catch (error) {
+                console.error('Error:', error);
+                toast.error("Something went wrong");
+            }
+        };
 
     return (
 
@@ -65,18 +75,15 @@ function SignUpForm({ onSignUpSuccess }) {
                 <h1>Create Account</h1>
                 <br />
                     <input type="text" name="username" value={inputs.username || ''} placeholder="Username" onChange={handleChange} required/>
-                    {errors.username && <p>{errors.username}</p>}
 			        <input type="text" name="firstName" value={inputs.firstName || ''} placeholder="First Name" onChange={handleChange} required/>
 			        <input type="text" name="lastName" value={inputs.lastName || ''} placeholder="Last Name" onChange={handleChange} required/>
 			        <input type="email" name="email" value={inputs.email || ''} placeholder="Email" onChange={handleChange} required/>
-                    {errors.email && <p>{errors.email}</p>}
                     <input type="text" name="phone" value={inputs.phone || ''} placeholder="Contact" onChange={handleChange} required/>
-                    {errors.phone && <p>{errors.phone}</p>}
                     <input type="password" name="password" value={inputs.password || ''} placeholder="Password" onChange={handleChange} required/>
-                    {errors.password && <p>{errors.password}</p>}
                     <button type="submit">Sign Up</button>
             </form>
         </div>
+        
     )
 }
 

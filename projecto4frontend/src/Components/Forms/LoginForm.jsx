@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "react"
 import logo from '../Assets/agileflow-high-resolution-logo-transparent.png'
 import { useNavigate } from 'react-router-dom'
 import { userStore } from '../../Stores/UserStore'
@@ -16,12 +16,14 @@ function LoginForm() {
         setInputs(values => ({ ...values, [name]: value}))
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         console.log(inputs);
 
-        fetch ('http://localhost:8080/project_backend/rest/users/login',
+        try{
+
+        const response = await fetch ('http://localhost:8080/project_backend/rest/users/login',
             {
                 method: 'POST',
                 headers: 
@@ -30,23 +32,20 @@ function LoginForm() {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(inputs)
-            }
-        ).then(function (response) {
+            });
             if (response.ok) {
-                return response.text();
+                const data = await response.text();
+                updateToken(data);
+                navigate('/home', {replace: true});
             } else if (response.status === 401) {
                 alert("Invalid credentials, please try again");
-            } else if (!response.ok) {
-                alert("Something went wrong")
+            } else {
+                throw new Error("Something went wrong");
             }
-        }).then(function (data) {
-            updateToken(data);
-
-            navigate('/home', {replace: true});
-        }).catch(function (error) {
+        } catch (error) {
             console.error('There was a problem with the fetch operation:', error);
-            alert('Something went wrong :(');
-        });
+            alert("An error occurred, please try again later.");
+        };
     }
     
     
@@ -66,6 +65,7 @@ function LoginForm() {
                         onChange={handleChange}
                         required
                     />
+                    
                     <input 
                         type="password" 
                         name="password"
