@@ -29,7 +29,7 @@ const Header = ({ onLogout }) => {
                 <a>Username</a>
             </div>
             {showAccountDrop && (
-            <div className="accountDrop"  onMouseEnter={() => setShowAccountDrop(true)} onMouseLeave={() => setShowAccountDrop(false)}>
+            <div className="accountDrop" onMouseLeave={() => setShowAccountDrop(false)}>
                 <a className="view-profile" href="/profile">My Profile</a>
                 <a onClick={onLogout}>Logout</a>
 

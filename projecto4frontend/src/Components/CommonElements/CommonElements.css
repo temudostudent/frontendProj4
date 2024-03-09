@@ -101,8 +101,8 @@ Account Drop
 
 .accountDrop{
   position: absolute;
-  top: calc(100% - 188px);
-  right: 8%;
+  top: 16.1%;
+  right: 1.5%;
   background-color: white;
   border: 1px solid #ccc;
   padding: 10px;

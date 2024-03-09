@@ -4,8 +4,6 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import LoginForm from '../Components/Forms/LoginForm'
 import SignupForm from "../Components/Forms/SignUpForm"
-import Footer from "../Components/CommonElements/Footer"
-import '../App.css'
 
 function Login() {
 
@@ -46,7 +44,6 @@ function Login() {
                 </div>
 
             </div>
-            <Footer />
         </div>
     );
 }

@@ -22,31 +22,42 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 
-function createData(id, name, calories, fat, carbs, protein) {
+function createData(id, title, number_tasks) {
   return {
     id,
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
+    title,
+    number_tasks,
   };
 }
 
 const rows = [
-  createData(1, 'Cupcake', 305, 3.7, 67, 4.3),
-  createData(2, 'Donut', 452, 25.0, 51, 4.9),
-  createData(3, 'Eclair', 262, 16.0, 24, 6.0),
-  createData(4, 'Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData(5, 'Gingerbread', 356, 16.0, 49, 3.9),
-  createData(6, 'Honeycomb', 408, 3.2, 87, 6.5),
-  createData(7, 'Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData(8, 'Jelly Bean', 375, 0.0, 94, 0.0),
-  createData(9, 'KitKat', 518, 26.0, 65, 7.0),
-  createData(10, 'Lollipop', 392, 0.2, 98, 0.0),
-  createData(11, 'Marshmallow', 318, 0, 81, 2.0),
-  createData(12, 'Nougat', 360, 19.0, 9, 37.0),
-  createData(13, 'Oreo', 437, 18.0, 63, 4.0),
+  createData(1, 'Cupcake', 305),
+  createData(2, 'Donut', 452),
+  createData(3, 'Eclair', 262),
+  createData(4, 'Cupcake', 305),
+  createData(5, 'Donut', 452),
+  createData(6, 'Eclair', 262),
+  createData(7, 'Cupcake', 305),
+  createData(8, 'Donut', 452),
+  createData(9, 'Eclair', 262),
+  createData(10, 'Cupcake', 305),
+  createData(11, 'Donut', 452),
+  createData(12, 'Eclair', 262),
+  createData(13, 'Cupcake', 305),
+  createData(14, 'Donut', 452),
+  createData(15, 'Eclair', 262),
+  createData(16, 'Cupcake', 305),
+  createData(17, 'Donut', 452),
+  createData(18, 'Eclair', 262),
+  createData(19, 'Cupcake', 305),
+  createData(20, 'Donut', 452),
+  createData(21, 'Eclair', 262),
+  createData(22, 'Cupcake', 305),
+  createData(23, 'Donut', 452),
+  createData(24, 'Eclair', 262),
+  createData(25, 'Cupcake', 305),
+  createData(26, 'Donut', 452),
+  createData(27, 'Eclair', 262)
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -83,35 +94,17 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: 'name',
+    id: 'title',
     numeric: false,
     disablePadding: true,
-    label: 'Dessert (100g serving)',
+    label: 'Title',
   },
   {
-    id: 'calories',
+    id: 'number_tasks',
     numeric: true,
     disablePadding: false,
-    label: 'Calories',
-  },
-  {
-    id: 'fat',
-    numeric: true,
-    disablePadding: false,
-    label: 'Fat (g)',
-  },
-  {
-    id: 'carbs',
-    numeric: true,
-    disablePadding: false,
-    label: 'Carbs (g)',
-  },
-  {
-    id: 'protein',
-    numeric: true,
-    disablePadding: false,
-    label: 'Protein (g)',
-  },
+    label: '# Tasks',
+  }
 ];
 
 function EnhancedTableHead(props) {
@@ -200,7 +193,7 @@ function EnhancedTableToolbar(props) {
           id="tableTitle"
           component="div"
         >
-          Nutrition
+          Categories
         </Typography>
       )}
 
@@ -227,10 +220,9 @@ EnhancedTableToolbar.propTypes = {
 
 export default function EnhancedTable() {
   const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('calories');
+  const [orderBy, setOrderBy] = React.useState('number_tasks');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleRequestSort = (event, property) => {
@@ -276,10 +268,6 @@ export default function EnhancedTable() {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
-
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -296,14 +284,14 @@ export default function EnhancedTable() {
   );
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '80%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
-            size={dense ? 'small' : 'medium'}
+            className="categories-table"
           >
             <EnhancedTableHead
               numSelected={selected.length}
@@ -344,29 +332,22 @@ export default function EnhancedTable() {
                       scope="row"
                       padding="none"
                     >
-                      {row.name}
+                      {row.title}
                     </TableCell>
-                    <TableCell align="right">{row.calories}</TableCell>
-                    <TableCell align="right">{row.fat}</TableCell>
-                    <TableCell align="right">{row.carbs}</TableCell>
-                    <TableCell align="right">{row.protein}</TableCell>
+                    <TableCell align="right">{row.number_tasks}</TableCell>
                   </TableRow>
                 );
               })}
               {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
+                <TableRow>
+                  <TableCell colSpan={3} />
                 </TableRow>
               )}
             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[5, 10, 20]}
           component="div"
           count={rows.length}
           rowsPerPage={rowsPerPage}
@@ -375,10 +356,6 @@ export default function EnhancedTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      />
     </Box>
   );
 }

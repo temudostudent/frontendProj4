@@ -1,24 +1,36 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 import Home from './Pages/Home'
 import Categories from './Pages/Categories'
 import Profile from './Pages/Profile'
+import Header from './Components/CommonElements/Header'
+import Footer from './Components/CommonElements/Footer'
 import reportWebVitals from './reportWebVitals'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { Route, Routes } from "react-router-dom"
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
+
+function Routing() {
+  const MemoizedHeader = useMemo(() => <Header />, []);
+
+  return (
     <Router>
       <Routes>
+        <Route path="/home" element={ <> {MemoizedHeader} <Home /> </> } />
+        <Route path="/categories" element={ <> {MemoizedHeader} <Categories /> </> } />
+        <Route path="/profile" element={ <> {MemoizedHeader} <Profile /> </> } />
         <Route index element={<App />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/categories" element={<Categories />} />
-        <Route path="/profile" element={<Profile />} />
       </Routes>
     </Router>
+  );
+}
+
+root.render(
+  <React.StrictMode>
+    <Routing />
+    <Footer />
   </React.StrictMode>
 );
 

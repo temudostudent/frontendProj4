@@ -6,13 +6,8 @@
 
 #root{
   	background: #f6f5f7;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
 	font-family: "Poppins", sans-serif;
-	height: 100vh;
-	margin: -20px 0 50px;
+	height: 97vh;
 
 	--light-color: #F6F4EB;
 	--pastel-color: #D7D4B9;
@@ -208,8 +203,21 @@ input {
 	transform: translateX(0);
 }
 
+.App{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: inherit;
+}
+
 .container.right-panel-active .overlay-right {
 	transform: translateX(20%);
 }
 
+.categories-table-container{
+	height: 78vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
 

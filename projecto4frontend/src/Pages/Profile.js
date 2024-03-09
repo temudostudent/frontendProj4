@@ -1,15 +1,10 @@
-import React from 'react'
-import Header from '../Components/CommonElements/Header'
-import Footer from '../Components/CommonElements/Footer'
-import '../App.css';
+import React, { useState } from 'react'
+import EditProfileForm from '../Components/Forms/EditProfileForm'
 
 function Profile() {
     return (
-        <div className='profile'>
-            <Header />
-           
-    
-            <Footer />
+        <div className='editForm-container'>
+            <EditProfileForm />
         </div>
     )
 }
