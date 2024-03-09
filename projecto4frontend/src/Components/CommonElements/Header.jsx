@@ -7,11 +7,12 @@ import { userStore } from '../../Stores/UserStore'
 
 const Header = ({ onLogout }) => {
     const token = userStore((state) => state.token);
+    const [showAccountDrop, setShowAccountDrop] = useState(false);
     
     const items = [
-        { name: "Board", color: "#c8ae7e", href: "#" },
+        { name: "Board", color: "#c8ae7e", href: "/home" },
         { name: "Tasks", color: "#59a4b1", href: "#" },
-        { name: "Categories", color: "#2D9596", href: "#" },
+        { name: "Categories", color: "#2D9596", href: "/categories" },
         { name: "Users", color: "#4d7d99", href: "#" },
     ];
 
@@ -21,10 +22,19 @@ const Header = ({ onLogout }) => {
                 <img src={logo} alt="Logo da empresa" />
             </div>  
                 <Menu items={items} />
-            <div className="profile-container">
-                <a href='#'>Username</a>
-                <a onClick={onLogout}>Logout</a>
+            <div className="profile-container" onMouseEnter={() => setShowAccountDrop(true)}>
+                <span>
+                    <img />
+                </span>
+                <a>Username</a>
             </div>
+            {showAccountDrop && (
+            <div className="accountDrop"  onMouseEnter={() => setShowAccountDrop(true)} onMouseLeave={() => setShowAccountDrop(false)}>
+                <a className="view-profile" href="/profile">My Profile</a>
+                <a onClick={onLogout}>Logout</a>
+
+            </div>
+            )}
         </header>
     );
 };

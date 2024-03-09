@@ -9,6 +9,10 @@
 
 }
 
+/*---------
+Header
+----------*/
+
 .site-header { 
     display: flex;
     border-bottom: 1px solid #ccc;
@@ -24,6 +28,7 @@ clear: both;
 
 .site-identity {
     float: left;
+    padding-top: 1.5em;
   }
 
 .site-identity img {
@@ -42,50 +47,76 @@ clear: both;
 
 .profile-container {
     display: flex;
-    flex-direction: column;
     align-items: flex-end;
+    cursor: pointer;
   }
+
+/*--------
+Menu
+ --------*/
 
 .menu {
     display: flex;
     justify-content: space-between;
     position: relative;
     z-index: 1;
-    padding: 20px;
+    padding: 0.5em 22em 0 1.5em;
     max-width: 800px;
     margin: 20px auto;
     border-bottom: 1px solid #eee;
   
-    @media (max-width: 650px) {
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    .item {
-      padding: 18px 28px;
-      cursor: pointer;
-      transition: color 0.3s ease-out;
-      text-decoration: none;
-      color: #111;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      font-size: 12px;
-      margin: 5px 0;
-  
-      &.active {
-        color: #fff;
-      }
-    }
-  
-    .indicator {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: -1;
-      border-radius: 30px;
+  @media (max-width: 650px) {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .item {
+    padding: 18px 28px;
+    cursor: pointer;
+    transition: color 0.3s ease-out;
+    text-decoration: none;
+    color: #111;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 12px;
+    margin: 5px 0;
+
+    &.active {
+      color: #fff;
     }
   }
+
+  .indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    border-radius: 30px;
+  }
+}
+
+/*---------
+Account Drop
+ ----------*/
+
+.accountDrop{
+  position: absolute;
+  top: calc(100% - 188px);
+  right: 8%;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+  width: 10em;
+}
   
+
+/*-----
+Footer
+-----*/
 
 footer {
     background-color: var(--dark-color);
