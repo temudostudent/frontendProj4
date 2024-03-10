@@ -45,11 +45,33 @@ clear: both;
     padding: 20px;
 }
 
+/*--------
+Profile username and Photo
+ --------*/
+
 .profile-container {
     display: flex;
     align-items: flex-end;
+    justify-content: space-between;
     cursor: pointer;
+    width: 8%
   }
+
+.photo-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  width: 5em;
+  height: 5em;
+}
+
+.photo-container img{
+  width: 100%;
+  height: auto; 
+  border-radius: 50%;
+  object-fit: cover;
+}
 
 /*--------
 Menu
@@ -101,16 +123,28 @@ Account Drop
 
 .accountDrop{
   position: absolute;
-  top: 16.1%;
+  top: 18.8%;
   right: 1.5%;
   background-color: white;
   border: 1px solid #ccc;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
   padding: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  z-index: 1;
+  z-index: 2;
   width: 10em;
+}
+
+.accountDrop a{
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.accountDrop a:hover{
+  background-color: var(--light-color);
 }
   
 

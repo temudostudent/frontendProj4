@@ -5,7 +5,8 @@ export const userStore = create (
     persist (
         (set) => ({
             token:'', //state variable
-            updateToken : (token) => set({token})
+            updateToken : (token) => set({token}),
+            resetUserStore: () => set({ token: '' })
         }),
         {
             name: 'mystore',

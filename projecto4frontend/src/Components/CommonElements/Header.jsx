@@ -1,13 +1,56 @@
 import React, { useRef, useState, useEffect, createRef } from "react";
-import PropTypes from "prop-types";
 import gsap from "gsap";
 import logo from '../Assets/agileflow-high-resolution-logo-transparent.png'
+import defaultPhoto from "../Assets/profile_pic_default.png"
 import './CommonElements.css'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import { userStore } from '../../Stores/UserStore'
+import { useNavigate } from 'react-router-dom'
+import AuthService from "../Service/AuthService"
 
-const Header = ({ onLogout }) => {
+const Header = () => {
     const token = userStore((state) => state.token);
+    const navigate = useNavigate();
     const [showAccountDrop, setShowAccountDrop] = useState(false);
+    const [headerUsername, setHeaderUsername] = useState('');
+    const [headerPhoto, setHeaderPhoto] = useState(defaultPhoto);
+   
+
+    useEffect(() => {
+
+        async function fetchUsername() {
+            try {
+                const username = await AuthService.getUsername(token);
+                setHeaderUsername(username);
+            }catch (error) {
+                console.error('Error fetching username:', error);
+            }
+        }
+        fetchUsername();
+
+        async function fetchPhoto() {
+            try {
+                const photoUrl = await AuthService.getPhoto(token);
+                if (photoUrl !== '') {
+                    setHeaderPhoto(photoUrl);
+                }
+            }catch (error) {
+                console.error('Error fetching username:', error);
+            }
+        }
+        fetchPhoto();
+    }, [token])
+
+    const handleLogout = async () => {
+        try {
+            await AuthService.logout(token);
+            userStore.getState().resetUserStore();
+            navigate('/');
+        }catch (error) {
+            console.log(error);
+        }
+    }
     
     const items = [
         { name: "Board", color: "#c8ae7e", href: "/home" },
@@ -18,20 +61,21 @@ const Header = ({ onLogout }) => {
 
     return (
         <header className="site-header">
-            <div class="site-identity">
+            <ToastContainer position="top-center" />
+            <div className="site-identity">
                 <img src={logo} alt="Logo da empresa" />
             </div>  
                 <Menu items={items} />
             <div className="profile-container" onMouseEnter={() => setShowAccountDrop(true)}>
-                <span>
-                    <img />
+                <a>{headerUsername}</a> {/*Mostra username*/}
+                <span className="photo-container">
+                    <img src={headerPhoto} /> {/*Mostra foto de perfil*/}
                 </span>
-                <a>Username</a>
             </div>
             {showAccountDrop && (
             <div className="accountDrop" onMouseLeave={() => setShowAccountDrop(false)}>
-                <a className="view-profile" href="/profile">My Profile</a>
-                <a onClick={onLogout}>Logout</a>
+                <a href="/profile">My Profile</a>
+                <a onClick={handleLogout}>Logout</a>
 
             </div>
             )}
@@ -94,10 +138,6 @@ const Menu = ({ items }) => {
             <div ref={$indicator2} className="indicator" />
         </div>
     );
-};
-
-Header.propTypes = {
-    onLogout: PropTypes.func.isRequired,
 };
 
 export default Header;

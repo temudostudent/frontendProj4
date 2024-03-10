@@ -1,23 +1,28 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-const EditProfileForm = () => {
+const EditProfileForm = ({userData}) => {
     const [inputs, setInputs] = useState({});
 
+    useEffect(() => {
+      if (userData) {
+        setInputs(userData);
+      }
+    }, [userData]);
+  
     const handleChange = (event) => {
         const name = event.target.name;
         const value = event.target.value;
 
         setInputs(values => ({ ...values, [name]: value}))
     }
-  
+
     return (
       <form>
         <label htmlFor="firstName">First Name:</label>
         <input
           type="text"
           name="firstName"
-          value={inputs.firstName || ''}   
-          placeholder="" 
+          placeholder={userData.firstName || ''} 
           onChange={handleChange}
         />
         <br />
@@ -25,9 +30,8 @@ const EditProfileForm = () => {
         <label htmlFor="lastName">Last Name:</label>
         <input
           type="text"
-          name="lastName"
-          value={inputs.lastName || ''}   
-          placeholder=""
+          name="lastName"  
+          placeholder={userData.lastName || ''}
           onChange={handleChange}
         />
         <br />
@@ -35,9 +39,8 @@ const EditProfileForm = () => {
         <label htmlFor="email">Email:</label>
         <input
           type="email"
-          name="email"
-          value={inputs.email || ''}   
-          placeholder=""
+          name="email"   
+          placeholder={userData.email || ''}
           onChange={handleChange}
         />
         <br />
@@ -45,9 +48,8 @@ const EditProfileForm = () => {
         <label htmlFor="photoUrl">Photo URL:</label>
         <input
           type="url"
-          name="photoUrl"
-          value={inputs.photoUrl || ''}   
-          placeholder=""
+          name="photoUrl" 
+          placeholder={userData.photoUrl || ''}  
           onChange={handleChange}
         />
         <br />
