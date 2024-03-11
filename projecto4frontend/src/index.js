@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import ReactDOM from 'react-dom/client'
+import './App.css'
 import App from './App'
 import Home from './Pages/Home'
 import Categories from './Pages/Categories'
@@ -20,7 +21,7 @@ function Routing() {
       <Routes>
         <Route path="/home" element={ <> {MemoizedHeader} <Home /> </> } />
         <Route path="/categories" element={ <> {MemoizedHeader} <Categories /> </> } />
-        <Route path="/profile" element={ <> {MemoizedHeader} <Profile /> </> } />
+        <Route path="/profile" element={ <Profile />} />
         <Route index element={<App />} />
       </Routes>
     </Router>

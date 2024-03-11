@@ -1,5 +1,4 @@
 import React from "react";
-import '../../App.css'
 import './CommonElements.css';
 
 const Footer = (props) => {

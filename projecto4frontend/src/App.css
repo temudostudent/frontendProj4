@@ -25,6 +25,7 @@ h1 {
 
 h2 {
 	text-align: center;
+	font-family: "Poppins", sans-serif;
 }
 
 span {
@@ -64,6 +65,10 @@ button:focus {
 button.ghost {
 	background-color: transparent;
 	border-color: #FFFFFF;
+}
+
+button:hover {
+	background-color: #5780aa;
 }
 
 form {
@@ -219,5 +224,102 @@ input {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+/*----------------
+Profile Edit
+-----------------*/
+
+.edit-profile-body{
+	
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 78%;
+}
+
+.edit-profile-container{
+	width: 40%;
+}
+
+.edit-profile-container form{
+	padding: 25px;
+	border-radius: 5px;
+}
+
+.edit-profile-body form input{
+	width: 70%;
+}
+
+.editProfile-buttons-container{
+	display: flex;
+	flex-direction: column;
+}
+
+.editProfile-buttons-container button{
+	cursor: pointer;
+}
+
+/*--------------------
+Modal
+--------------------*/
+
+.react-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 20px;
+    width: 30%; /* Adjust width as needed */
+}
+
+.react-modal h2 {
+    margin-bottom: 20px;
+}
+
+.react-modal form {
+    margin-bottom: 20px;
+}
+
+.react-modal input {
+    width: calc(100% - 20px); /* Adjust width as needed */
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.react-modal button {
+    border-radius: 20px;
+	border: 1px solid var(--blue2-color);
+	background-color: #749BC2;
+	color: #FFFFFF;
+	font-size: 12px;
+	font-weight: bold;
+	font-family: "Poppins", sans-serif;
+	padding: 12px 45px;
+	margin: 15px 0;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	transition: transform 80ms ease-in;
+	cursor: pointer;
+}
+
+.react-modal button:active {
+	transform: scale(0.95);
+}
+
+.react-modal button:focus {
+	outline: none;
+}
+
+.react-modal button.ghost {
+	background-color: transparent;
+	border-color: #FFFFFF;
+}
+
+.react-modal button:hover {
+	background-color: #5780aa;
 }
 

@@ -64,12 +64,12 @@ Profile username and Photo
   overflow: hidden;
   width: 5em;
   height: 5em;
+  border-radius: 50%;
 }
 
 .photo-container img{
   width: 100%;
   height: auto; 
-  border-radius: 50%;
   object-fit: cover;
 }
 

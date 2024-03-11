@@ -9,11 +9,12 @@ import { userStore } from '../../Stores/UserStore'
 import { useNavigate } from 'react-router-dom'
 import AuthService from "../Service/AuthService"
 
-const Header = () => {
+const Header = ({headerPhotoAlt}) => {
     const token = userStore((state) => state.token);
     const navigate = useNavigate();
     const [showAccountDrop, setShowAccountDrop] = useState(false);
     const [headerUsername, setHeaderUsername] = useState('');
+    const [userData, setUserData] = useState(null);
     const [headerPhoto, setHeaderPhoto] = useState(defaultPhoto);
    
 
@@ -40,7 +41,20 @@ const Header = () => {
             }
         }
         fetchPhoto();
-    }, [token])
+
+        async function fetchUserData() {
+            try {
+                const userData = await AuthService.getUserData(token, headerUsername);
+                setUserData(userData);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+          }
+        
+          fetchUserData();
+
+
+    }, [token, userData])
 
     const handleLogout = async () => {
         try {

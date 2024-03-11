@@ -17,8 +17,6 @@ function SignUpForm({ onSignUpSuccess }) {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        console.log(inputs);
-
         try{
 
         const response = await fetch ('http://localhost:8080/project_backend/rest/users/register',

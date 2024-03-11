@@ -1,6 +1,5 @@
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const API_BASE_URL = 'http://localhost:8080/project_backend/rest/users';
 
@@ -89,6 +88,7 @@ const AuthService = {
         }
 
     },
+
 };
 
 export default AuthService;
