@@ -183,6 +183,12 @@ Table
   }
 }
 
+.table-buttons-container{
+  display: flex;
+  
+
+}
+
 
 
 /*-----

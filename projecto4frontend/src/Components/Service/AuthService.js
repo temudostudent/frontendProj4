@@ -49,7 +49,7 @@ USER
                 toast.warning("Invalid username on path")
               }
         } catch (error) {
-            console.error('Error getting username:', error);
+            console.error('Error:', error);
         }
     },
 
@@ -123,7 +123,7 @@ CATEGORIES
 
     editCategory: async (token, oldName, newName) => {
         try {
-            const response = await axios.put(`${API_BASE_URL}/editCategory/${oldName}`, {
+            const response = await axios.put(`${API_BASE_URL}/editCategory/${oldName}`, null, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': '*/*',
@@ -134,13 +134,14 @@ CATEGORIES
             if (response.status === 200) {
        
                 toast.success("Task edited successfully")
+                return response;
       
               } else if (response.status === 401) {
                 toast.warning("Invalid credentials")
               } else if (response.status === 404) {
                 toast.warning("Impossible to edit task. Verify all fields")
-              }else if (response.status === 409) {
-                toast.warning("Category already exists")
+              }else if (response.status === 403) {
+                toast.warning("You don't have permission to edit a category")
               } else {
                 toast.warning("Category not created. Something went wrong")
               }

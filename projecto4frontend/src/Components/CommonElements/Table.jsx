@@ -19,6 +19,7 @@ import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 
@@ -127,12 +128,13 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected, onDeleteSelectedCategories, setSelected } = props;
+  const { numSelected, onDeleteSelectedCategories, setSelected, onEditSelect} = props;
 
   const handleDelete = () => {
     onDeleteSelectedCategories();
     setSelected([]);
   };
+
 
   return (
     <Toolbar
@@ -165,12 +167,24 @@ function EnhancedTableToolbar(props) {
         </Typography>
       )}
 
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton onClick={handleDelete}>
-            <DeleteIcon />
-          </IconButton>
+      {numSelected === 1 ? (
+        <Tooltip title="Edit or Delete">
+          <div className='table-buttons-container'>
+            <IconButton onClick={onEditSelect}>
+              <EditIcon />
+            </IconButton>
+            <IconButton onClick={handleDelete}>
+              <DeleteIcon />
+            </IconButton>
+          </div>
         </Tooltip>
+      ) : numSelected > 1 ? (
+        <Tooltip title="Delete">
+            <IconButton onClick={handleDelete}>
+              <DeleteIcon />
+            </IconButton>
+        </Tooltip>
+
       ) : (
         <Tooltip title="Filter list">
           <IconButton>
@@ -193,7 +207,7 @@ export default function EnhancedTable(props) {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const { data, onCategorySelectionChange, onDeleteSelectedCategories, onAddCategoryChange } = props;
+  const { data, onCategorySelectionChange, onDeleteSelectedCategories, onAddCategoryChange, onEditSelect } = props;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -227,6 +241,7 @@ export default function EnhancedTable(props) {
       );
     }
     setSelected(newSelected);
+
     onCategorySelectionChange(newSelected);
   };
 
@@ -260,6 +275,7 @@ export default function EnhancedTable(props) {
       <EnhancedTableToolbar 
         numSelected={selected.length} 
         onDeleteSelectedCategories={onDeleteSelectedCategories}
+        onEditSelect={onEditSelect}
         setSelected={setSelected}
       />
       <TableContainer>
