@@ -6,7 +6,13 @@ export const userStore = create (
         (set) => ({
             token:'', //state variable
             updateToken : (token) => set({token}),
-            resetUserStore: () => set({ token: '' })
+            resetUserStore: () => set({ token: '' , categoriesStored: ''}),
+            
+            categoriesStored:'',
+            updateCategStore : (categoriesStored) => set({categoriesStored}),
+
+            forceUpdateCategories: false,
+            updateForceUpdateCategories: (forceUpdateCategories) => set({forceUpdateCategories}),
         }),
         {
             name: 'mystore',

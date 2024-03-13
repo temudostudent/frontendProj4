@@ -78,7 +78,7 @@ const Header = ({headerPhotoAlt}) => {
             <ToastContainer position="top-center" />
             <div className="site-identity">
                 <img src={logo} alt="Logo da empresa" />
-            </div>  
+            </div> 
                 <Menu items={items} />
             <div className="profile-container" onMouseEnter={() => setShowAccountDrop(true)}>
                 <a>{headerUsername}</a> {/*Mostra username*/}
@@ -103,6 +103,7 @@ const Menu = ({ items }) => {
     const $indicator2 = useRef();
     const $items = useRef(items.map(createRef));
     const [active, setActive] = useState(0);
+    const [showDropdown, setShowDropdown] = useState(false);
 
     const animate = () => {
         const menuOffset = $root.current.getBoundingClientRect();
@@ -135,18 +136,16 @@ const Menu = ({ items }) => {
     return (
         <div ref={$root} className="menu">
             {items.map((item, index) => (
-                <a
-                    key={item.name}
-                    ref={$items.current[index]}
-                    className={`item ${active === index ? "active" : ""}`}
-                    onMouseEnter={() => {
-                        setActive(index);
-                    }}
-                    href={item.href}
-                    aria-label={item.name} // Add accessibility label
-                >
-                    {item.name}
-                </a>
+                <div key={item.name} className="menu-item" onMouseEnter={() => setActive(index)}>
+                    <a
+                        ref={$items.current[index]}
+                        className={`item ${active === index ? "active" : ""}`}
+                        href={item.href}
+                        aria-label={item.name} // Add accessibility label
+                    >
+                        {item.name}
+                    </a>
+                </div>
             ))}
             <div ref={$indicator1} className="indicator" />
             <div ref={$indicator2} className="indicator" />

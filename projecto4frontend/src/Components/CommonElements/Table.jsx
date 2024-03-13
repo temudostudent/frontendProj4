@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -22,43 +22,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 
-function createData(id, title, number_tasks) {
-  return {
-    id,
-    title,
-    number_tasks,
-  };
-}
-
-const rows = [
-  createData(1, 'Cupcake', 305),
-  createData(2, 'Donut', 452),
-  createData(3, 'Eclair', 262),
-  createData(4, 'Cupcake', 305),
-  createData(5, 'Donut', 452),
-  createData(6, 'Eclair', 262),
-  createData(7, 'Cupcake', 305),
-  createData(8, 'Donut', 452),
-  createData(9, 'Eclair', 262),
-  createData(10, 'Cupcake', 305),
-  createData(11, 'Donut', 452),
-  createData(12, 'Eclair', 262),
-  createData(13, 'Cupcake', 305),
-  createData(14, 'Donut', 452),
-  createData(15, 'Eclair', 262),
-  createData(16, 'Cupcake', 305),
-  createData(17, 'Donut', 452),
-  createData(18, 'Eclair', 262),
-  createData(19, 'Cupcake', 305),
-  createData(20, 'Donut', 452),
-  createData(21, 'Eclair', 262),
-  createData(22, 'Cupcake', 305),
-  createData(23, 'Donut', 452),
-  createData(24, 'Eclair', 262),
-  createData(25, 'Cupcake', 305),
-  createData(26, 'Donut', 452),
-  createData(27, 'Eclair', 262)
-];
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -94,7 +57,7 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: 'title',
+    id: 'name',
     numeric: false,
     disablePadding: true,
     label: 'Title',
@@ -164,7 +127,12 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected } = props;
+  const { numSelected, onDeleteSelectedCategories, setSelected } = props;
+
+  const handleDelete = () => {
+    onDeleteSelectedCategories();
+    setSelected([]);
+  };
 
   return (
     <Toolbar
@@ -199,7 +167,7 @@ function EnhancedTableToolbar(props) {
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton onClick={handleDelete}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
@@ -216,14 +184,16 @@ function EnhancedTableToolbar(props) {
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
+  setSelected: PropTypes.func.isRequired,
 };
 
-export default function EnhancedTable() {
+export default function EnhancedTable(props) {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('number_tasks');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const { data, onCategorySelectionChange, onDeleteSelectedCategories, onAddCategoryChange } = props;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -233,7 +203,7 @@ export default function EnhancedTable() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
+      const newSelected = data.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
@@ -257,6 +227,7 @@ export default function EnhancedTable() {
       );
     }
     setSelected(newSelected);
+    onCategorySelectionChange(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -272,90 +243,99 @@ export default function EnhancedTable() {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
   const visibleRows = React.useMemo(
     () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
+      stableSort(data, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage,
       ),
-    [order, orderBy, page, rowsPerPage],
+    [data, order, orderBy, page, rowsPerPage],
   );
 
-  return (
+    return( 
     <Box sx={{ width: '80%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby="tableTitle"
-            className="categories-table"
-          >
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row.id);
-                const labelId = `enhanced-table-checkbox-${index}`;
+    <Paper sx={{ width: '100%', mb: 2 }}>
+      <EnhancedTableToolbar 
+        numSelected={selected.length} 
+        onDeleteSelectedCategories={onDeleteSelectedCategories}
+        setSelected={setSelected}
+      />
+      <TableContainer>
+        <Table
+          sx={{ minWidth: 750 }}
+          aria-labelledby="tableTitle"
+          className="categories-table"
+        >
+          <EnhancedTableHead
+            numSelected={selected.length}
+            order={order}
+            orderBy={orderBy}
+            onSelectAllClick={handleSelectAllClick}
+            onRequestSort={handleRequestSort}
+            rowCount={data.length}
+          />
+          <TableBody>
+            {visibleRows.map((row, index) => {
+              const isItemSelected = isSelected(row.id);
+              const labelId = `enhanced-table-checkbox-${index}`;
 
-                return (
-                  <TableRow
-                    hover
-                    onClick={(event) => handleClick(event, row.id)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.id}
-                    selected={isItemSelected}
-                    sx={{ cursor: 'pointer' }}
+              return (
+                <TableRow
+                  hover
+                  onClick={(event) => handleClick(event, row.id)}
+                  role="checkbox"
+                  aria-checked={isItemSelected}
+                  tabIndex={-1}
+                  key={row.id}
+                  selected={isItemSelected}
+                  sx={{ cursor: 'pointer' }}
+                >
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      color="primary"
+                      checked={isItemSelected}
+                      inputProps={{
+                        'aria-labelledby': labelId,
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell
+                    component="th"
+                    id={labelId}
+                    scope="row"
+                    padding="none"
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        inputProps={{
-                          'aria-labelledby': labelId,
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
-                    >
-                      {row.title}
-                    </TableCell>
-                    <TableCell align="right">{row.number_tasks}</TableCell>
-                  </TableRow>
-                );
-              })}
-              {emptyRows > 0 && (
-                <TableRow>
-                  <TableCell colSpan={3} />
+                    {row.name}
+                  </TableCell>
+                  <TableCell align="right">{row.number_tasks}</TableCell>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              );
+            })}
+            {emptyRows > 0 && (
+              <TableRow>
+                <TableCell colSpan={3} />
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <div className='bottom-table-container'>
+        <div className='add-category-button-container'>
+          <button onClick={onAddCategoryChange}>+ Category</button>
+        </div>
         <TablePagination
           rowsPerPageOptions={[5, 10, 20]}
           component="div"
-          count={rows.length}
+          count={data.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      </Paper>
-    </Box>
+      </div>
+    </Paper>
+  </Box>
   );
 }

@@ -18,6 +18,8 @@ Header
     border-bottom: 1px solid #ccc;
     padding: .5em 4em;
     align-items: center;
+    width: 100%;
+    z-index: 999;
 }
 
 .site-header::after {
@@ -115,7 +117,20 @@ Menu
     z-index: -1;
     border-radius: 30px;
   }
+
+  .item.active+.indicator {
+    transform: translateX(0);
+  }
+  
+  .indicator:nth-child(1) {
+    background-color: var(--light-color);
+  }
+  
+  .indicator:nth-child(2) {
+    background-color: var(--pastel-color);
+  }
 }
+
 
 /*---------
 Account Drop
@@ -147,6 +162,28 @@ Account Drop
   background-color: var(--light-color);
 }
   
+/*-----
+Table
+-----*/
+
+.bottom-table-container{
+  display: flex;
+  justify-content:space-between ;
+}
+
+.add-category-button-container{
+
+  margin: 0 15px;
+  padding: 2px;
+
+  button{
+    padding: 0;
+    width: 100px;
+    cursor: pointer;
+  }
+}
+
+
 
 /*-----
 Footer

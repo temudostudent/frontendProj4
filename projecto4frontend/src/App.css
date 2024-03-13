@@ -215,6 +215,16 @@ input {
 	height: inherit;
 }
 
+/*----------------
+Categories
+-----------------*/
+
+.categories{
+	display: flex;
+	justify-content: space-evenly;
+
+}
+
 .container.right-panel-active .overlay-right {
 	transform: translateX(20%);
 }
@@ -222,9 +232,19 @@ input {
 .categories-table-container{
 	height: 78vh;
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	overflow-y: auto;
+    max-height: 78vh;
 }
+
+.container-addCategoriesForm {
+	overflow: hidden;
+	max-width: 0;
+	transition: max-width 0.5s ease-in-out;
+  }
+
 
 /*----------------
 Profile Edit
