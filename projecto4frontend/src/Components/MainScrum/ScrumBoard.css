@@ -7,8 +7,9 @@
 --blue3-color: #4682A9;
 --orange-color: #D7693C;
 --dark-color: #282828;
-
-
+--lowpriority-color: #ace942;
+--mediumpriority-color: #f3f04d;
+--highpriority-color: #ff5619;
 }
 
 .scrum_section {
@@ -65,8 +66,30 @@ e matém-se na mesma poisção*/
 
 /*display: flex faz com que todos os elementos filhos deste sejam flexíveis. Quando não há nenhum flex-direction defenido
 o standard é fazer um "flex-direction: row;" que faz com que os filhos tenham um comportamento igual a um "span"*/
+.priority-color{
+  height: 4px;
+  border-radius: 10px;
+  margin: 0 auto;
+}
+
+.low{
+  width: 45%;
+  background-color: var(--lowpriority-color);
+}
+
+.medium{
+  width: 55%;
+  background-color: var(--mediumpriority-color);
+}
+
+.high{
+  width: 65%;
+  background-color: var(--highpriority-color);
+}
+
 .task {
   display: flex;
+  flex-direction: column;
   box-shadow: 0px 0.1px 1px 0.3px rgb(160, 160, 160);
   text-align: left;
   border-radius: 10px;
@@ -76,14 +99,52 @@ o standard é fazer um "flex-direction: row;" que faz com que os filhos tenham u
   border: solid;
   border-width: 1.8px;
   border-color: transparent;
-  margin: 6px 18px;
-  padding: 5px 0px 2px 0px;
+  margin: 6px 0;
+  padding: 4px 8px 0 8px;
+
+  .container-task{
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .buttons-container{
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     justify-content: space-evenly;
+     padding: 0 5px;
+
+     span {
+      position: relative;
+      color: var(--dark-color);
+     }
+
+     span::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 23px;
+      height: 23px; 
+      border-radius: 50%;
+      background-color: var(--blue3-color);
+      transition: opacity 0.3s; 
+      opacity: 0;
+      }
+      
+    span:hover::after {
+      opacity: 0.3;
+    }
+     
+  }
 }
 
 .task:hover {
   cursor: pointer;
   box-shadow: 0px 0px 0.8px 0.3px rgb(160, 160, 160);
-  border-color: #252525;
+  border-color: rgb(86, 86, 86);
 }
 
 /*Esta classe existe principalmente para diferenciar o elemento que está a ser arrastado. No máximo só um elemento
@@ -144,8 +205,10 @@ consoante vão sendo adicionados*/
 .task_list {
   display: flex;
   flex-direction: column;
+  padding-top: 4%;
   height: 81%;;
   overflow: auto;
+  width: 80%;
 }
 
 .task_list::-webkit-scrollbar {

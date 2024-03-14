@@ -1,12 +1,11 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from 'zustand/middleware';
 
-export const userStore = create (
+export const actionStore = create (
     persist (
         (set) => ({
-            token:'', //state variable
-            updateToken : (token) => set({token}),
-            resetUserStore: () => set({ token: '' , categoriesStored: ''}),    
+            showModal : false,
+            updateShowModal : (showModal) => set({showModal}),     
         }),
         {
             name: 'mystore',

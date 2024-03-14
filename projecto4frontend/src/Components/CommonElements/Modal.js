@@ -1,63 +1,53 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react'
+import { actionStore } from '../../Stores/ActionStore'
 
-class Modal extends React.Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-        isOpen: false,
-      };
+const Modal = (props) => {
+
+    const showModal = actionStore((state) => state.showModal);
+    const updateShowModal = actionStore((state) => state.updateShowModal);
+    const { title, inputs, buttonText } = props;
+
+    const closeModal = () => {
+        updateShowModal(false);
     }
-  
-    openModal = () => {
-      this.setState({ isOpen: true });
+
+    const createInput = (input) => {
+        const { type, name, placeholder, options } = input;
+
+        if (type === 'select') {
+            return (
+                <select name={name} required={input.required}>
+                    {options.map((option, index) => (
+                        <option key={index} value={option.value}>{option.label}</option>
+                    ))}
+                </select>
+            );
+        } else {
+            return <input type={type} name={name} placeholder={placeholder} required={input.required} />;
+        }
     }
-  
-    closeModal = () => {
-      this.setState({ isOpen: false });
-    }
-  
-    createInput = (input) => {
-      const { type, name, placeholder, options } = input;
-  
-      if (type === 'select') {
-        return (
-          <select name={name} required={input.required}>
-            {options.map((option, index) => (
-              <option key={index} value={option.value}>{option.label}</option>
-            ))}
-          </select>
-        );
-      } else {
-        return <input type={type} name={name} placeholder={placeholder} required={input.required} />;
-      }
-    }
-  
-    render() {
-      const { title, inputs, buttonText } = this.props;
-  
-      return (
+
+
+    return (
         <>
-          <button onClick={this.openModal}>Open Modal</button>
-          
-          {this.state.isOpen &&
-            <div className="modal">
-              <div className="modal-content">
-                <span className="close" onClick={this.closeModal}>&times;</span>
-                <h2>{title}</h2>
-                <form>
-                  {inputs.map((input, index) => (
-                    <div key={index}>
-                      {this.createInput(input)}
+            {showModal && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <span className="close" onClick={closeModal}>&times;</span>
+                        <h2>{title}</h2>
+                        <form>
+                            {inputs.map((input, index) => (
+                                <div key={index}>
+                                    {createInput(input)}
+                                </div>
+                            ))}
+                        </form>
+                        <button>{buttonText}</button>
                     </div>
-                  ))}
-                </form>
-                <button>{buttonText}</button>
-              </div>
-            </div>
-          }
+                </div>
+            )}
         </>
-      );
-    }
-  }
-  
-  export default Modal;
+    );
+}
+
+export default Modal;

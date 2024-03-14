@@ -2,12 +2,13 @@ import React, { useState , useEffect } from 'react'
 import Table from '../Components/CommonElements/Table'
 import AuthService from '../Components/Service/AuthService'
 import { userStore } from '../Stores/UserStore'
+import { categoryStore } from '../Stores/CategoryStore'
 import { FaArrowLeft } from "react-icons/fa";
 
 const Categories = () => {
 
     const token = userStore((state) => state.token);
-    const updateCategStore = userStore((state) => state.updateCategStore);
+    const updateCategStore = categoryStore((state) => state.updateCategStore);
     const [categoriesData ,setCategoriesData] = useState([]);
     const [numberTasks, setNumberTasks] = useState([]);
     const [selected , setSelected] = useState([]);

@@ -1,15 +1,20 @@
 import React, {useState, useEffect} from 'react'
 import ScrumBoard from '../Components/MainScrum/ScrumBoard'
 import Modal from '../Components/CommonElements/Modal'
-import AuthService from '../Components/Service/AuthService'
 import { userStore } from '../Stores/UserStore'
+import { categoryStore } from '../Stores/CategoryStore'
 
-function Home() {
+const Home = () => {
 
     const token = userStore((state) => state.token);
-    const categoriesStored = userStore(state => state.categoriesStored);
+    const categoriesStored = categoryStore(state => state.categoriesStored);
+    const updateCategoriesStore = categoryStore((state) => state.updateCategStore);
     const [categories, setCategories] = useState([]);
-    const [categoryTitles, setCategoryTitles] = useState([]);
+
+    useEffect(() => {
+        updateCategoriesStore(categories);
+    }, [categoriesStored]);
+
     const inputs = [
         { type: 'text', name: 'title', placeholder: 'Title', required: true },
         { type: 'textarea', name: 'description', placeholder: 'Description' },
@@ -34,16 +39,6 @@ function Home() {
         }
     ];
 
-    const [showAddTask, setShowAddTask] = useState(false);
-
-    useEffect(() => {
-        setCategories(categoriesStored);
-      }, [categoriesStored]);
-
-
-    const handleChangeAddTaskButton = () => {
-        setShowAddTask(!showAddTask);
-    }
 
     return (
         <div className='Home'>

@@ -103,7 +103,6 @@ const Menu = ({ items }) => {
     const $indicator2 = useRef();
     const $items = useRef(items.map(createRef));
     const [active, setActive] = useState(0);
-    const [showDropdown, setShowDropdown] = useState(false);
 
     const animate = () => {
         const menuOffset = $root.current.getBoundingClientRect();
