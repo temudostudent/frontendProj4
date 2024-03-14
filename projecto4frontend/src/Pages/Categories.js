@@ -7,6 +7,7 @@ import { FaArrowLeft } from "react-icons/fa";
 const Categories = () => {
 
     const token = userStore((state) => state.token);
+    const updateCategStore = userStore((state) => state.updateCategStore);
     const [categoriesData ,setCategoriesData] = useState([]);
     const [numberTasks, setNumberTasks] = useState([]);
     const [selected , setSelected] = useState([]);
@@ -22,31 +23,26 @@ const Categories = () => {
     useEffect(() => {
         
         fetchCategories();
-      }, [token]);
+        updateCategStore(categoriesData);
+      }, [token, categoriesData]);
 
-      const fetchCategories = async () => {
-        try {
-          const allCategories = await AuthService.getAllCategories(token);
-      
-          const categoriesWithTasks = await Promise.all(
-            allCategories.map(async (category) => {
-              const tasks = await AuthService.getTasksByCategories(token, category.id);
-              return { ...category, number_tasks: tasks.length };
-            })
-          );
-      
-
-          console.log(categoriesWithTasks);
-
-
-          setCategoriesData(categoriesWithTasks);
-
-          
-          setLoading(false);
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      };
+    const fetchCategories = async () => {
+      try {
+        const allCategories = await AuthService.getAllCategories(token);
+    
+        const categoriesWithTasks = await Promise.all(
+          allCategories.map(async (category) => {
+            const tasks = await AuthService.getTasksByCategories(token, category.id);
+            return { ...category, number_tasks: tasks.length };
+          })
+        );
+    
+        setCategoriesData(categoriesWithTasks);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
 
 
     const handleNewCategorySubmit = async (event) => {

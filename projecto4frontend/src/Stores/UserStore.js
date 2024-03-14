@@ -8,11 +8,8 @@ export const userStore = create (
             updateToken : (token) => set({token}),
             resetUserStore: () => set({ token: '' , categoriesStored: ''}),
             
-            categoriesStored:'',
+            categoriesStored:[],
             updateCategStore : (categoriesStored) => set({categoriesStored}),
-
-            forceUpdateCategories: false,
-            updateForceUpdateCategories: (forceUpdateCategories) => set({forceUpdateCategories}),
         }),
         {
             name: 'mystore',

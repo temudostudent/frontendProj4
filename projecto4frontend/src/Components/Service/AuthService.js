@@ -89,7 +89,7 @@ USER
                   toast.warning("Invalid credentials")
               }
         } catch (error) {
-            console.error('Error getting username:', error);
+            console.error('Error:', error);
         }
 
     },
@@ -117,7 +117,7 @@ CATEGORIES
                 toast.warning('Something went wrong. The categories were not found.')
               }
         } catch (error) {
-            console.error('Error getting username:', error);
+            console.error('Error:', error);
         }
     },
 
@@ -146,7 +146,7 @@ CATEGORIES
                 toast.warning("Category not created. Something went wrong")
               }
         } catch (error) {
-            console.error('Error getting username:', error);
+            console.error('Error:', error);
         }
     },
 
@@ -171,7 +171,7 @@ CATEGORIES
                 toast.warning("Category with this name not found")
               }
         } catch (error) {
-            console.error('Error getting username:', error);
+            console.error('Error:', error);
         }
     },
 
@@ -201,7 +201,7 @@ CATEGORIES
                 toast.warning("Category not created. Something went wrong")
               }
         } catch (error) {
-            console.error('Error getting username:', error);
+            console.error('Error:', error);
         }
     },
 
@@ -224,9 +224,83 @@ CATEGORIES
                 toast.warning('Something went wrong. The categories were not found.')
               }
         } catch (error) {
-            console.error('Error getting username:', error);
+            console.error('Error:', error);
         }
     },
+
+/*----------------------
+TASKS
+----------------------*/
+
+getAllTasks: async (token) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/tasks`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                'token': token
+            }
+        });
+        if (response.status === 200) {
+   
+            return response.data;
+  
+          } else if (response.status === 401) {
+            toast.warning("Invalid credentials")
+          }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+},
+
+getAllTasksFromUser: async (token, username) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/${username}/tasks`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                'token': token,
+                'username': username
+            }
+        });
+        if (response.status === 200) {
+   
+            return response.data;
+  
+          } else if (response.status === 401) {
+            toast.warning("Invalid credentials")
+          } else if (response.status === 406) {
+            toast.warning("Unauthorized access")
+          }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+},
+
+newTask: async (token, username, task) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/${username}/addTask`, null, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                'token': token
+            }
+        });
+        if (response.status === 200) {
+   
+            return response.data;
+  
+          } else if (response.status === 401) {
+            toast.warning("Invalid credentials")
+          } else if (response.status === 404) {
+            toast.warning("Impossible to create task. Verify all fields")
+          }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+},
+
+
 
 };
 

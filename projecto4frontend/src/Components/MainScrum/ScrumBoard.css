@@ -7,6 +7,8 @@
 --blue3-color: #4682A9;
 --orange-color: #D7693C;
 --dark-color: #282828;
+
+
 }
 
 .scrum_section {
@@ -20,30 +22,31 @@ e matém-se na mesma poisção*/
 .column {
   margin: 40px 10px 0px 10px;
   flex-shrink: 0;
-  width: 320px;
+  width: 25%;
   height: 500px;
   background-color: var(--lightblue-color);
   border-radius: 12px;
   border-width: 2px;
   padding-top: 12px;
   box-shadow: 3px 5px rgb(192, 192, 192);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   button{
-    width: 300px;
+    width: 100%;
     border: none;
     text-align: left;
     font-size: 15px;
     border-radius: 5px;
     margin-left: 10px;
-    background-color: var(--dark-color);
+    background-color: var(--white);
+    color: var(--dark-color);
     padding: 3px 0px 8px 5px;
     font-weight: bold;
     cursor: pointer;
+    
   }
-
-}
-
-.column1{
 
 }
 
@@ -52,12 +55,12 @@ e matém-se na mesma poisção*/
   text-align: center;
   font-size: 16px;
   border-bottom: solid;
-  color: rgb(14, 14, 14);
+  color: var(--dark-color);
   font-weight: bold;
-  margin: 0px 30px 20px 30px;
+  margin: 0px 30px;
   padding: 0px 50px;
   overflow-wrap: break-word;
-  max-width: 250px;
+  width: -moz-available;
 }
 
 /*display: flex faz com que todos os elementos filhos deste sejam flexíveis. Quando não há nenhum flex-direction defenido
