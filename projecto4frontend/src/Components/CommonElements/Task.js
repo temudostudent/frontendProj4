@@ -1,40 +1,43 @@
-import React from "react";
-import { grid, borderRadius } from "../styles/constants";
-import { Draggable } from "react-beautiful-dnd";
-import QuoteList from "../styles/list";
-import Title from "../styles/title";
+import React from 'react';
+import { Draggable } from 'react-beautiful-dnd';
+import { MdEdit, MdDelete } from "react-icons/md";
 
-const Container = styled.div`
-  margin: ${grid}px;
-  display: flex;
-  flex-direction: column;
-`;
+const Task = ({ task, index }) => {
 
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-top-left-radius: ${borderRadius}px;
-  border-top-right-radius: ${borderRadius}px;
-  background-color: ${({ isDragging }) =>
-    isDragging ? colors.G50 : colors.N30};
-  transition: background-color 0.2s ease;
-  &:hover {
-    background-color: ${colors.G50};
+  const handleTaskPriority = (priority) => {
+    if (priority === 100) {
+      return <span className='priority-color low'></span>;
+    } else if (priority === 200) {
+      return <span className='priority-color medium'></span>;
+    } else {
+      return <span className='priority-color high'></span>;
+    }
   }
-`;
 
-const Task = (props) => {
-  const title = props.title;
   return (
-    <Draggable draggableId={title} index={index}>
+    <Draggable draggableId={task.id}>
+
       {(provided, snapshot) => (
-        <Container ref={provided.innerRef} {...provided.draggableProps}>
-         
-        </Container>
+        <div 
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          className={`task ${snapshot.isDragging ? 'dragging' : ''}`}
+          onClick={() => console.log(task)}
+          onDragStart={() => console.log("Arrastando tarefa com ID:", task.id)}
+        >
+          {handleTaskPriority(task.priority)}
+          <div className='container-task'>
+            <p>{task.title}</p>
+            <div className='buttons-container'>
+              <span ><MdEdit /></span>
+              <span ><MdDelete /></span>
+            </div>
+          </div>
+        </div>
       )}
     </Draggable>
   );
-};
+}
 
-export default Column;
+export default Task;

@@ -2,18 +2,12 @@ import React, {useState, useEffect} from 'react'
 import ScrumBoard from '../Components/MainScrum/ScrumBoard'
 import Modal from '../Components/CommonElements/Modal'
 import { userStore } from '../Stores/UserStore'
-import { categoryStore } from '../Stores/CategoryStore'
 
 const Home = () => {
 
     const token = userStore((state) => state.token);
-    const categoriesStored = categoryStore(state => state.categoriesStored);
-    const updateCategoriesStore = categoryStore((state) => state.updateCategStore);
-    const [categories, setCategories] = useState([]);
 
-    useEffect(() => {
-        updateCategoriesStore(categories);
-    }, [categoriesStored]);
+    
 
     const inputs = [
         { type: 'text', name: 'title', placeholder: 'Title', required: true },
@@ -35,7 +29,7 @@ const Home = () => {
             type: 'select', 
             name: 'category', 
             required: true,
-            options: categories.map(category => ({ value: category.name, label: category.name}))
+            //options: categories.map(category => ({ value: category.name, label: category.name}))
         }
     ];
 

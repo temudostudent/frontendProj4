@@ -8,8 +8,7 @@ export const actionStore = create (
             updateShowModal : (showModal) => set({showModal}),     
         }),
         {
-            name: 'mystore',
-            storage: createJSONStorage(() => sessionStorage)
+            name: 'actionStore'
         }
 
     )

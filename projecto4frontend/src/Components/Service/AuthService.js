@@ -94,6 +94,31 @@ USER
 
     },
 
+    updateUser: async (token, username, updatedData) => {
+        try {
+            const response = await axios.put(`${API_BASE_URL}/update/${username}`, updatedData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*',
+                    'token': token
+                }
+            });
+            if (response.status === 200) {
+
+                toast.success("Profile updated successfully");
+       
+                return response;
+      
+            } else if (response.status === 401) {
+                toast.warning("Invalid credentials")
+            } else if (response.status === 422) {
+              toast.warning(response.statusText);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    },
+
 /*----------------------
 CATEGORIES
 ----------------------*/
@@ -279,7 +304,7 @@ getAllTasksFromUser: async (token, username) => {
 
 newTask: async (token, username, task) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/${username}/addTask`, null, {
+        const response = await axios.post(`${API_BASE_URL}/${username}/addTask`, null, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': '*/*',
@@ -300,6 +325,28 @@ newTask: async (token, username, task) => {
     }
 },
 
+updateTaskStatus: async (token, taskId, newStateId) => {
+    try {
+        const response = await axios.put(`${API_BASE_URL}/tasks/${taskId}/${newStateId}`, null, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                'token': token
+            }
+        });
+        if (response.status === 200) {
+
+            toast.success('Task status updated')
+  
+          } else if (response.status === 401) {
+            toast.warning("Invalid credentials")
+          } else if (response.status === 404) {
+            toast.warning("Impossible to update task status. Task not found or invalid status")
+          }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+},
 
 
 };

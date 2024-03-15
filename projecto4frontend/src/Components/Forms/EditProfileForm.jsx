@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import Modal from 'react-modal'
+import AuthService from '../Service/AuthService'
 import '../../App.css'
 
 Modal.setAppElement('#root');
@@ -19,36 +20,28 @@ const EditProfileForm = ({username, token, userData, onUpdateSuccess}) => {
     const handleSubmit = async (event) => {
       event.preventDefault();
 
-      console.log(inputs);
+      try {
+        const username = await AuthService.getUsername(token);
+  
+        const updateResponse = await AuthService.updateUser(token, username, inputs);
+    
+        if (updateResponse) {
 
-        try {
-        
-        const response = await fetch(`http://localhost:8080/project_backend/rest/users/update/${username}`,
-          {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': '*/*',
-              token: token
-          },
-          body: JSON.stringify(inputs)
-          });
-
-          if (response.status === 200) {
-       
-            toast.success("Profile updated successfully");
-            onUpdateSuccess(inputs); //Atualizar os dados
-            setInputs({});
-            event.target.reset();
-          } else if (response.status === 401) {
-              toast.warning("Invalid credentials")
-          } else {
-            toast.warning(response.statusText);
-          }
-      
-        }catch (error) {
-          console.error('Error editing:', error);
+          onUpdateSuccess(inputs);
+          setInputs({});
+          event.target.reset();
+        } else {
+         
+          console.error("Update unsuccessful:", updateResponse);
+     
+          toast.error("Failed to update profile. Please try again.");
         }
+      } catch (error) {
+        
+        console.error("Error updating profile:", error);
+        
+        toast.error("An error occurred while updating profile. Please try again later.");
+      }
     };
 
 

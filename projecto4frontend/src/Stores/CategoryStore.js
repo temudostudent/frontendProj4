@@ -9,8 +9,7 @@ export const categoryStore = create (
     
         }),
         {
-            name: 'mystore',
-            storage: createJSONStorage(() => sessionStorage)
+            name: 'categoryStore'
         }
 
     )

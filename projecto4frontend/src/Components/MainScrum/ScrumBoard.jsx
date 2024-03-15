@@ -1,19 +1,19 @@
 import React, { useState , useEffect } from 'react'
 import { userStore } from '../../Stores/UserStore'
 import { actionStore } from '../../Stores/ActionStore'
-import { taskStore } from '../../Stores/TaskStore'
+import { useTaskStore } from '../../Stores/TaskStore'
 import AuthService from '../../Components/Service/AuthService'
-import { MdEdit, MdDelete } from "react-icons/md"
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import Task from '../../Components/CommonElements/Task'
+import { DragDropContext, Droppable } from 'react-beautiful-dnd'
+import { toast } from 'react-toastify'
 import './ScrumBoard.css';
 
 const ScrumBoard = (props) => {
 
   const token = userStore((state) => state.token);
   const updateShowModal = actionStore((state) => state.updateShowModal);
-  const taskStored = taskStore((state) => state.taskStored);
-  const updateTaskStore = taskStore((state) => state.updateTaskStore);
-  const [taskData, setTaskData] = useState([]);
+  const taskStore = useTaskStore((state) => state);
+  const { taskData, updateTasks } = taskStore;
   const [loading, setLoading] = useState(true);
 
 
@@ -26,7 +26,7 @@ const ScrumBoard = (props) => {
     try {
       const username = await AuthService.getUsername(token);
       const userTasks = await AuthService.getAllTasksFromUser(token, username);
-      setTaskData(userTasks);
+      updateTasks(userTasks);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -37,62 +37,65 @@ const ScrumBoard = (props) => {
     updateShowModal(true);
   }
 
-  const handleTaskPriority = (priority) => {
-    if (priority === 100) {
-      return <span className='priority-color low'></span>;
-    } else if (priority === 200) {
-      return <span className='priority-color medium'></span>;
-    } else {
-      return <span className='priority-color high'></span>;
-    }
-  }
-
-  const onDragEnd = (result) => {
+  const onDragEnd = async (result) => {
     if (!result.destination) {
       return;
     }
-    const items = Array.from(taskData);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-    setTaskData(items.map((task, index) => ({
-      ...task,
-      stateId: index === result.destination.index ? result.destination.droppableId : task.stateId
-    })));
-    
-  }
+
+    try {
+      const taskId = result.draggableId;
+      const newStateId = parseInt(result.destination.droppableId);
+      console.log(result);
+      await AuthService.updateTaskStatus(token, taskId, newStateId);
+
+      fetchUserTasks();
+
+    } catch (error) {
+      console.error('Error updating task status:', error);
+      if (error.response) {
+        const { status } = error.response;
+        if (status === 401) {
+          toast.warning('Invalid credentials');
+        } else if (status === 404) {
+          toast.warning('Task not found or invalid status');
+        } else {
+          toast.error('An unexpected error occurred');
+        }
+      } else {
+        toast.error('An unexpected error occurred');
+      }
+    }
+  };
 
 
   const renderTasksByStatus = (status) => {
+    let droppableId;
+    switch (status) {
+      case 100:
+        droppableId = "100";
+        break;
+      case 200:
+        droppableId = "200";
+        break;
+      case 300:
+        droppableId = "300";
+        break;
+      default:
+        droppableId = status.toString();
+    }
+
     return (
-      <Droppable droppableId={status.toString()} key={status}>
+      <Droppable droppableId={droppableId}>
         {(provided, snapshot) => (
           <div
             {...provided.droppableProps}
             ref={provided.innerRef}
-            className={`task_list list${status}`}
+            className={`task_list ${status}`}
           >
             {taskData && taskData
               .filter(task => task.stateId === status)
-              .map((task, index) => (
-                <Draggable key={task.id} draggableId={task.id} index={index}>
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      className="task"
-                    >
-                      {handleTaskPriority(task.priority)}
-                      <div className='container-task'>
-                        <p>{task.title}</p>
-                        <div className='buttons-container'>
-                          <span ><MdEdit /></span>
-                          <span ><MdDelete /></span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </Draggable>
+              .map((task) => (
+                <Task key={task.id} task={task} />
               ))}
             {provided.placeholder}
           </div>

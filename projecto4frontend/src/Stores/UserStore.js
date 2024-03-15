@@ -6,10 +6,14 @@ export const userStore = create (
         (set) => ({
             token:'', //state variable
             updateToken : (token) => set({token}),
-            resetUserStore: () => set({ token: '' , categoriesStored: ''}),    
+            resetUserStore: () => set({ token: ''}),    
+
+            updateUserData: (newUserData) => set({ userData: newUserData }),
+
+            userData:[],
         }),
         {
-            name: 'mystore',
+            name: 'userStore',
             storage: createJSONStorage(() => sessionStorage)
         }
 

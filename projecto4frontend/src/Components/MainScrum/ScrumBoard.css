@@ -208,7 +208,7 @@ consoante vão sendo adicionados*/
   padding-top: 4%;
   height: 81%;;
   overflow: auto;
-  width: 80%;
+  width: 70%;
 }
 
 .task_list::-webkit-scrollbar {
