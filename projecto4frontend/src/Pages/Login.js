@@ -1,6 +1,6 @@
 import React, { useRef } from "react"
 import logo from '../Components/Assets/agileflow-favicon-white.png'
-import { ToastContainer, toast } from 'react-toastify'
+import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import LoginForm from '../Components/Forms/LoginForm'
 import SignupForm from "../Components/Forms/SignUpForm"

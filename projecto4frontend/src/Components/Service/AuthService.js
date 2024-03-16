@@ -9,6 +9,30 @@ const AuthService = {
 USER
 ----------------------*/
 
+    login: async (inputs) => {
+
+        try{
+            const response = await axios.post(`${API_BASE_URL}/login`, inputs, 
+            {
+                headers: 
+                {
+                    'Accept': '*/*',
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.status === 200) {
+                return response;
+            } else if (response.status === 401) {
+                toast.warning("Invalid credentials, please try again");
+            } else {
+                throw new Error("Something went wrong");
+            }
+        } catch (error) {
+            console.error('There was a problem with the fetch operation:', error);
+            toast.error("An error occurred, please try again later.");
+        };
+    },
+
     logout: async (token) => {
 
         try {
@@ -347,6 +371,32 @@ updateTaskStatus: async (token, taskId, newStateId) => {
         console.error('Error:', error);
     }
 },
+
+deleteTask: async (token, taskId) => {
+    try {
+        const response = await axios.delete(`${API_BASE_URL}/delete/${taskId}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                'token': token
+            }
+        });
+        if (response.status === 200) {
+   
+            toast.success("Task deleted successfully")
+  
+          } else if (response.status === 401) {
+            toast.warning("Invalid credentials")
+          } else if (response.status === 403) {
+            toast.warning("You don't have permission to delete a task")
+          } else if (response.status === 404) {
+            toast.warning("Task with this id is not found")
+          }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+},
+
 
 
 };

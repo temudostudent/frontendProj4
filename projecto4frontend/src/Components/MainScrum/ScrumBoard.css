@@ -25,7 +25,6 @@ e matém-se na mesma poisção*/
   flex-shrink: 0;
   width: 25%;
   height: 500px;
-  background-color: var(--lightblue-color);
   border-radius: 12px;
   border-width: 2px;
   padding-top: 12px;
@@ -51,6 +50,18 @@ e matém-se na mesma poisção*/
 
 }
 
+.column1{
+  background-color: #c8ae7e44;
+}
+
+.column2{
+  background-color: #59a4b16b;
+}
+
+.column3{
+  background-color: #4d7d9980;
+}
+
 /*overflow-wrap faz com que quando a palavra chegar ao max-width seja partida e vá para alinha a seguir*/
 .title {
   text-align: center;
@@ -73,19 +84,20 @@ o standard é fazer um "flex-direction: row;" que faz com que os filhos tenham u
 }
 
 .low{
-  width: 45%;
+  width: 35%;
   background-color: var(--lowpriority-color);
 }
 
 .medium{
-  width: 55%;
+  width: 40%;
   background-color: var(--mediumpriority-color);
 }
 
 .high{
-  width: 65%;
+  width: 45%;
   background-color: var(--highpriority-color);
 }
+
 
 .task {
   display: flex;

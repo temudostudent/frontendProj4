@@ -1,32 +1,28 @@
 import React, { useState , useEffect } from 'react'
-import { userStore } from '../../Stores/UserStore'
 import { actionStore } from '../../Stores/ActionStore'
 import { useTaskStore } from '../../Stores/TaskStore'
 import AuthService from '../../Components/Service/AuthService'
 import Task from '../../Components/CommonElements/Task'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
-import { toast } from 'react-toastify'
 import './ScrumBoard.css';
 
 const ScrumBoard = (props) => {
 
-  const token = userStore((state) => state.token);
+  const {token , userData , taskData} = props
   const updateShowModal = actionStore((state) => state.updateShowModal);
-  const taskStore = useTaskStore((state) => state);
-  const { taskData, updateTasks } = taskStore;
+  const updateUserTasks = useTaskStore((state) => state.updateTasks);
   const [loading, setLoading] = useState(true);
 
 
   useEffect(() => {
     fetchUserTasks();
-  }, [token]);
+  }, [token, userData]);
 
 
   const fetchUserTasks = async () => {
     try {
-      const username = await AuthService.getUsername(token);
-      const userTasks = await AuthService.getAllTasksFromUser(token, username);
-      updateTasks(userTasks);
+      const userTasks = await AuthService.getAllTasksFromUser(token, userData.username);
+      updateUserTasks(userTasks);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -37,6 +33,21 @@ const ScrumBoard = (props) => {
     updateShowModal(true);
   }
 
+  const handleTaskDelete = async (taskId) => {
+    try {
+      
+      setLoading(true);
+      await AuthService.deleteTask(token, taskId);
+
+      fetchUserTasks();
+      setLoading(false);
+      
+    } catch (error) {
+        console.error('Error deleting task:', error);
+    }
+  }
+
+
   const onDragEnd = async (result) => {
     if (!result.destination) {
       return;
@@ -45,6 +56,11 @@ const ScrumBoard = (props) => {
     try {
       const taskId = result.draggableId;
       const newStateId = parseInt(result.destination.droppableId);
+
+      if (newStateId === parseInt(result.source.droppableId)) {
+        return;
+      }
+
       console.log(result);
       await AuthService.updateTaskStatus(token, taskId, newStateId);
 
@@ -52,55 +68,31 @@ const ScrumBoard = (props) => {
 
     } catch (error) {
       console.error('Error updating task status:', error);
-      if (error.response) {
-        const { status } = error.response;
-        if (status === 401) {
-          toast.warning('Invalid credentials');
-        } else if (status === 404) {
-          toast.warning('Task not found or invalid status');
-        } else {
-          toast.error('An unexpected error occurred');
-        }
-      } else {
-        toast.error('An unexpected error occurred');
-      }
     }
   };
 
 
   const renderTasksByStatus = (status) => {
-    let droppableId;
-    switch (status) {
-      case 100:
-        droppableId = "100";
-        break;
-      case 200:
-        droppableId = "200";
-        break;
-      case 300:
-        droppableId = "300";
-        break;
-      default:
-        droppableId = status.toString();
-    }
 
     return (
-      <Droppable droppableId={droppableId}>
-        {(provided, snapshot) => (
-          <div
-            {...provided.droppableProps}
-            ref={provided.innerRef}
-            className={`task_list ${status}`}
-          >
-            {taskData && taskData
-              .filter(task => task.stateId === status)
-              .map((task) => (
-                <Task key={task.id} task={task} />
-              ))}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
+      
+        <Droppable droppableId={status} >
+          {(provided, snapshot) => (
+            <div
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              className={`task_list ${status}`}
+            >
+              {taskData && taskData
+                .filter((task) => task.stateId === parseInt(status))
+                .map((task, index) => (
+                  <Task key={task.id} task={task} index={index} onDelete={handleTaskDelete}/>
+                ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      
     );
   }
 
@@ -114,21 +106,22 @@ const ScrumBoard = (props) => {
           <section className="scrum_section">
             <div className="column column1">
               <div className="title">To Do</div>
-              {renderTasksByStatus(100)}
+              {renderTasksByStatus("100")}
               <button onClick={handleChangeAddTaskButton}>&nbsp;+ New Task</button>
             </div>
 
             <div className="column column2">
               <div className="title">Doing</div>
-              {renderTasksByStatus(200)}
+              {renderTasksByStatus("200")}
             </div>
 
             <div className="column column3">
               <div className="title">Done</div>
-              {renderTasksByStatus(300)}
+              {renderTasksByStatus("300")}
             </div>
           </section>
         </DragDropContext>
+        
       )}
     </main>
   );

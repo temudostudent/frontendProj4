@@ -21,8 +21,6 @@ const EditProfileForm = ({username, token, userData, onUpdateSuccess}) => {
       event.preventDefault();
 
       try {
-        const username = await AuthService.getUsername(token);
-  
         const updateResponse = await AuthService.updateUser(token, username, inputs);
     
         if (updateResponse) {

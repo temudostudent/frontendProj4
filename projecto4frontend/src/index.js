@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import ReactDOM from 'react-dom/client'
 import './App.css'
 import App from './App'
+import Sidebar from './Sidebar'
 import Home from './Pages/Home'
 import Categories from './Pages/Categories'
 import Profile from './Pages/Profile'
@@ -22,6 +23,7 @@ function Routing() {
         <Route path="/home" element={ <> {MemoizedHeader} <Home /> </> } />
         <Route path="/categories" element={ <> {MemoizedHeader} <Categories /> </> } />
         <Route path="/profile" element={ <Profile />} />
+        <Route path="/sidebar" element={ <> {MemoizedHeader} <Sidebar /> </>} />
         <Route index element={<App />} />
       </Routes>
     </Router>
@@ -29,10 +31,11 @@ function Routing() {
 }
 
 root.render(
-  <React.StrictMode>
+  <>
     <Routing />
     <Footer />
-  </React.StrictMode>
+  </>
+    
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -2,11 +2,13 @@ import React, { useState } from "react"
 import logo from '../Assets/agileflow-high-resolution-logo-transparent.png'
 import { useNavigate } from 'react-router-dom'
 import { userStore } from '../../Stores/UserStore'
+import AuthService from "../Service/AuthService"
 
 function LoginForm() {
 
     const [inputs, setInputs] = useState({});
     const updateToken = userStore((state) => state.updateToken);
+    const updateUserData = userStore((state) => state.updateUserData);
     const navigate = useNavigate();
     
     const handleChange = (event) => {
@@ -21,19 +23,11 @@ function LoginForm() {
 
         try{
 
-        const response = await fetch ('http://localhost:8080/project_backend/rest/users/login',
-            {
-                method: 'POST',
-                headers: 
-                {
-                    'Accept': '*/*',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(inputs)
-            });
-            if (response.ok) {
-                const data = await response.text();
+        const response = await AuthService.login(inputs);
+            if (response.status === 200) {
+                const data = await response.data;
                 updateToken(data);
+                fetchUserData(data);
                 navigate('/home', {replace: true});
             } else if (response.status === 401) {
                 alert("Invalid credentials, please try again");
@@ -44,6 +38,17 @@ function LoginForm() {
             console.error('There was a problem with the fetch operation:', error);
             alert("An error occurred, please try again later.");
         };
+    }
+
+    const fetchUserData = async (token) => {
+        try {
+            const username = await AuthService.getUsername(token);
+
+            const userData = await AuthService.getUserData(token, username);
+            updateUserData(userData);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
     }
     
     

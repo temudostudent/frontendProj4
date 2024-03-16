@@ -6,11 +6,10 @@ export const userStore = create (
         (set) => ({
             token:'', //state variable
             updateToken : (token) => set({token}),
-            resetUserStore: () => set({ token: ''}),    
-
-            updateUserData: (newUserData) => set({ userData: newUserData }),
+            resetUserStore: () => set({ token: '', userData: [] }),    
 
             userData:[],
+            updateUserData: (newUserData) => set({ userData: newUserData }),
         }),
         {
             name: 'userStore',

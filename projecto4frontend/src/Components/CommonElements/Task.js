@@ -1,21 +1,30 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Draggable } from 'react-beautiful-dnd';
 import { MdEdit, MdDelete } from "react-icons/md";
 
-const Task = ({ task, index }) => {
+const Task = ({ task , index , onDelete}) => {
 
   const handleTaskPriority = (priority) => {
+    let priorityClass = 'priority-color ';
     if (priority === 100) {
-      return <span className='priority-color low'></span>;
+      priorityClass += 'low';
     } else if (priority === 200) {
-      return <span className='priority-color medium'></span>;
+      priorityClass += 'medium';
     } else {
-      return <span className='priority-color high'></span>;
+      priorityClass += 'high';
     }
+    return <span className={priorityClass}></span>;
   }
 
+  const handleDeleteClick = () => {
+    onDelete(task.id);
+    console.log(task);
+  }
+
+
   return (
-    <Draggable draggableId={task.id}>
+    <Draggable draggableId={task.id} index={index}>
 
       {(provided, snapshot) => (
         <div 
@@ -23,15 +32,13 @@ const Task = ({ task, index }) => {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           className={`task ${snapshot.isDragging ? 'dragging' : ''}`}
-          onClick={() => console.log(task)}
-          onDragStart={() => console.log("Arrastando tarefa com ID:", task.id)}
         >
           {handleTaskPriority(task.priority)}
           <div className='container-task'>
             <p>{task.title}</p>
             <div className='buttons-container'>
               <span ><MdEdit /></span>
-              <span ><MdDelete /></span>
+              <span onClick={handleDeleteClick}><MdDelete /></span>
             </div>
           </div>
         </div>
@@ -39,5 +46,9 @@ const Task = ({ task, index }) => {
     </Draggable>
   );
 }
+
+Task.propTypes = {
+  task: PropTypes.object.isRequired,
+};
 
 export default Task;
