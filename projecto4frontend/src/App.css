@@ -358,3 +358,26 @@ Modal
 	background-color: #5780aa;
 }
 
+/*--------------------
+Home
+--------------------*/
+
+
+.container-home{
+	display: flex;
+}
+
+.sidebar-active .scrum-board-container {
+    transition: width 0.3s ease;
+    width: calc(100% - 10%);
+}
+
+.sidebar-inactive .scrum-board-container {
+    transition: width 0.3s ease;
+    width: 100%;
+}
+
+.scrum-board-container.scrum-board-expanded {
+    transition: width 0.3s ease;
+    width: calc(100% - 10%);
+}

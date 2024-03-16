@@ -328,16 +328,17 @@ getAllTasksFromUser: async (token, username) => {
 
 newTask: async (token, username, task) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/${username}/addTask`, null, {
+        const response = await axios.post(`${API_BASE_URL}/${username}/addTask`, task, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': '*/*',
                 'token': token
             }
         });
-        if (response.status === 200) {
+        if (response.status === 201) {
    
-            return response.data;
+            toast.success("New task added successfully")
+            return response;
   
           } else if (response.status === 401) {
             toast.warning("Invalid credentials")
@@ -391,6 +392,31 @@ deleteTask: async (token, taskId) => {
             toast.warning("You don't have permission to delete a task")
           } else if (response.status === 404) {
             toast.warning("Task with this id is not found")
+          }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+},
+
+editTask: async (token, taskId, inputs) => {
+    try {
+        const response = await axios.put(`${API_BASE_URL}/updatetask/${taskId}`, inputs, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                'token': token
+            }
+        });
+        if (response.status === 200) {
+            toast.success('Task status updated')
+            return response;
+  
+          } else if (response.status === 401) {
+            toast.warning("Invalid credentials")
+          } else if (response.status === 404) {
+            toast.warning("Impossible to update task. Verify all field")
+          } else if (response.status === 403){
+            toast.warning("You don't have permission to update this task");
           }
     } catch (error) {
         console.error('Error:', error);

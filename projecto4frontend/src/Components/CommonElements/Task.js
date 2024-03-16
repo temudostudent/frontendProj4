@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Draggable } from 'react-beautiful-dnd';
 import { MdEdit, MdDelete } from "react-icons/md";
+import { useTaskStore } from '../../Stores/TaskStore'
+import { useActionsStore } from '../../Stores/ActionStore'
 
 const Task = ({ task , index , onDelete}) => {
+
+  const { setSelectedTask } = useTaskStore();
+  const { updateShowSidebar, updateIsEditing } = useActionsStore();
 
   const handleTaskPriority = (priority) => {
     let priorityClass = 'priority-color ';
@@ -17,10 +22,16 @@ const Task = ({ task , index , onDelete}) => {
     return <span className={priorityClass}></span>;
   }
 
-  const handleDeleteClick = () => {
-    onDelete(task.id);
-    console.log(task);
+  const handleDeleteClick = async () => {
+    await onDelete(task.id);
   }
+
+  const handleEditClick = () => {
+    setSelectedTask(task);
+    updateIsEditing(true);
+    updateShowSidebar(false);
+    console.log(task);
+  };
 
 
   return (
@@ -37,7 +48,7 @@ const Task = ({ task , index , onDelete}) => {
           <div className='container-task'>
             <p>{task.title}</p>
             <div className='buttons-container'>
-              <span ><MdEdit /></span>
+              <span onClick={handleEditClick}><MdEdit /></span>
               <span onClick={handleDeleteClick}><MdDelete /></span>
             </div>
           </div>

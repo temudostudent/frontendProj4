@@ -7,27 +7,21 @@ const Menu = ({ items }) => {
     const $indicator1 = useRef();
     const $indicator2 = useRef();
     const $items = useRef(items.map(createRef));
-    const [active, setActive] = useState(null); 
-    const [showSubmenu, setShowSubmenu] = useState(false); 
+    const [active, setActive] = useState(null);
     const [submenuItems, setSubmenuItems] = useState([]);
 
     const handleMenuItemClick = (index) => {
         if (active === index) {
             setActive(null);
-            setShowSubmenu(false);
         } else {
             setActive(index);
-            setShowSubmenu(true);
             setSubmenuItems(items[index].submenu || []);
         }
     };
 
     const handleMenuItemHover = (index) => {
-        if (active === index) {
-            setActive(null);
-        } else {
-            setActive(index);
-        }
+        setActive(index);
+        setSubmenuItems(items[index].submenu || []);
     }
 
     const animate = () => {
@@ -64,7 +58,7 @@ const Menu = ({ items }) => {
     return (
         <div ref={$root} className="menu">
             {items.map((item, index) => (
-                <div key={item.name} className="menu-item" onMouseEnter={() => handleMenuItemClick(index)}>
+                <div key={item.name} className="menu-item" onMouseEnter={() => handleMenuItemHover(index)} onClick={() => handleMenuItemClick(index)}>
                     <a
                         ref={$items.current[index]}
                         className={`item ${active === index ? "active" : ""}`}
@@ -73,7 +67,7 @@ const Menu = ({ items }) => {
                     >
                         <span className="container-item">{item.name} <IoMdArrowDropdown /></span>
                     </a>
-                    {showSubmenu && active === index && (
+                    {(active === index) && (
                         <div className="submenu">
                             {submenuItems.map((submenuItem, index) => (
                                 <div key={index} className="submenu-item">

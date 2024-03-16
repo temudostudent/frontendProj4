@@ -41,22 +41,19 @@ const Header = () => {
     const items = [
         {   name: "Board", 
             color: "#c8ae7e", 
-            href: "#",
             submenu: [
                 { name: "My ScrumBoard", href: "/home" },
                 { name: "Complete ScrumBoard", href: "/complete-board" },
             ] },
         {   name: "Tasks", 
-            color: "#59a4b1", 
-            href: "#", 
+            color: "#59a4b1",  
             submenu: [
                 { name: "Create Task", href: "/create-task" },
                 { name: "View Tasks", href: "/view-tasks" },
             ] },
         {   name: "Categories", color: "#2D9596", href: "/categories" },
         {   name: "Users", 
-            color: "#4d7d99", 
-            href: "#",
+            color: "#4d7d99",
             submenu: [
                 { name: "Manage Users", href: "/manage-users" },
                 { name: "User Settings", href: "/user-settings" },
@@ -70,7 +67,7 @@ const Header = () => {
                 <img src={logo} alt="Logo da empresa" />
             </div> 
                 <Menu items={items} />
-            <div className="profile-container" onMouseEnter={() => setShowAccountDrop(true)}>
+            <div className="profile-container" onClick={() => setShowAccountDrop(true)}>
                 <a>{headerUsername}</a> {/*Mostra username*/}
                 <span className="photo-container">
                     <img src={headerPhoto} /> {/*Mostra foto de perfil*/}

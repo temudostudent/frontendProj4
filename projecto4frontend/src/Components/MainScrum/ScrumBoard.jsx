@@ -1,6 +1,6 @@
 import React, { useState , useEffect } from 'react'
-import { actionStore } from '../../Stores/ActionStore'
 import { useTaskStore } from '../../Stores/TaskStore'
+import { useActionsStore } from '../../Stores/ActionStore'
 import AuthService from '../../Components/Service/AuthService'
 import Task from '../../Components/CommonElements/Task'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
@@ -9,41 +9,41 @@ import './ScrumBoard.css';
 const ScrumBoard = (props) => {
 
   const {token , userData , taskData} = props
-  const updateShowModal = actionStore((state) => state.updateShowModal);
-  const updateUserTasks = useTaskStore((state) => state.updateTasks);
+  const { selectedTask, updateTasks, setSelectedTask } = useTaskStore();
+  const { updateShowSidebar, updateIsEditing } = useActionsStore();
   const [loading, setLoading] = useState(true);
 
 
   useEffect(() => {
     fetchUserTasks();
-  }, [token, userData]);
+  }, [token, userData, taskData]);
 
 
   const fetchUserTasks = async () => {
     try {
       const userTasks = await AuthService.getAllTasksFromUser(token, userData.username);
-      updateUserTasks(userTasks);
+      updateTasks(userTasks);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
-  const handleChangeAddTaskButton = () => {
-    updateShowModal(true);
-  }
-
   const handleTaskDelete = async (taskId) => {
     try {
-      
-      setLoading(true);
-      await AuthService.deleteTask(token, taskId);
 
-      fetchUserTasks();
-      setLoading(false);
+      if(taskId){
+
+        setLoading(true);
+        await AuthService.deleteTask(token, taskId);
+  
+        await fetchUserTasks();
+        setLoading(false);
+      }
       
     } catch (error) {
         console.error('Error deleting task:', error);
+        setLoading(false);
     }
   }
 
@@ -60,8 +60,6 @@ const ScrumBoard = (props) => {
       if (newStateId === parseInt(result.source.droppableId)) {
         return;
       }
-
-      console.log(result);
       await AuthService.updateTaskStatus(token, taskId, newStateId);
 
       fetchUserTasks();
@@ -70,6 +68,13 @@ const ScrumBoard = (props) => {
       console.error('Error updating task status:', error);
     }
   };
+
+  const handleNewTaskButton = () => {
+    updateShowSidebar(false);
+    updateIsEditing(false);
+    setSelectedTask(null);
+    console.log(selectedTask);
+  }
 
 
   const renderTasksByStatus = (status) => {
@@ -107,7 +112,7 @@ const ScrumBoard = (props) => {
             <div className="column column1">
               <div className="title">To Do</div>
               {renderTasksByStatus("100")}
-              <button onClick={handleChangeAddTaskButton}>&nbsp;+ New Task</button>
+              <button onClick={handleNewTaskButton}>&nbsp;+ New Task</button>
             </div>
 
             <div className="column column2">
