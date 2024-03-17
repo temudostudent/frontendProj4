@@ -254,9 +254,9 @@ CATEGORIES
         }
     },
 
-    getTasksByCategories: async (token) => {
+    getTasksByCategories: async (token, categoryName) => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/categories`, {
+            const response = await axios.get(`${API_BASE_URL}/tasks/${categoryName}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': '*/*',
@@ -269,8 +269,8 @@ CATEGORIES
       
               } else if (response.status === 401) {
                 toast.warning("Invalid credentials")
-              } else if (response.status === 404) {
-                toast.warning('Something went wrong. The categories were not found.')
+              } else if (response.status === 403) {
+                toast.warning("You don't have permission for this request")
               }
         } catch (error) {
             console.error('Error:', error);

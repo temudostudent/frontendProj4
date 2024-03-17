@@ -114,10 +114,28 @@ o standard é fazer um "flex-direction: row;" que faz com que os filhos tenham u
   border-color: transparent;
   margin: 6px 0;
   padding: 4px 8px 0 8px;
+  width:97%;
+
+  .top-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 4px;
+
+    span{
+      font-size: 0.7em;
+    }
+  }
 
   .container-task{
     display: flex;
     justify-content: space-between;
+    overflow-wrap: break-word;
+    max-width: 100%;
+
+    p{
+      max-width: 90%;
+    }
   }
 
   .buttons-container{
@@ -220,7 +238,7 @@ consoante vão sendo adicionados*/
   flex-direction: column;
   padding-top: 4%;
   height: 81%;;
-  overflow: auto;
+  overflow-y: auto;
   width: 70%;
 }
 

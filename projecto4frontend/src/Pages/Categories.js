@@ -1,5 +1,5 @@
 import React, { useState , useEffect } from 'react'
-import Table from '../Components/CommonElements/Table'
+import EnhancedTable from '../Components/CommonElements/Table'
 import AuthService from '../Components/Service/AuthService'
 import { userStore } from '../Stores/UserStore'
 import { useCategoryStore } from '../Stores/CategoryStore'
@@ -10,7 +10,6 @@ const Categories = () => {
     const token = userStore((state) => state.token);
     const updateCategStore = useCategoryStore((state) => state.updateCategories);
     const [categoriesData ,setCategoriesData] = useState([]);
-    const [numberTasks, setNumberTasks] = useState([]);
     const [selected , setSelected] = useState([]);
     const [loading, setLoading] = useState(true);
     const [newCategoryName, setNewCategoryName] = useState('');
@@ -21,6 +20,21 @@ const Categories = () => {
         setSelected(selectedCategoryIds);
       };
 
+      const headCells = [
+        {
+          id: 'name',
+          numeric: false,
+          disablePadding: true,
+          label: 'Title',
+        },
+        {
+          id: 'number_tasks',
+          numeric: true,
+          disablePadding: false,
+          label: '# Tasks',
+        }
+      ];
+
     useEffect(() => {
         
         fetchCategories();
@@ -29,19 +43,25 @@ const Categories = () => {
 
     const fetchCategories = async () => {
       try {
-        const allCategories = await AuthService.getAllCategories(token);
-    
-        const categoriesWithTasks = await Promise.all(
-          allCategories.map(async (category) => {
-            const tasks = await AuthService.getTasksByCategories(token, category.id);
-            return { ...category, number_tasks: tasks.length };
-          })
-        );
-    
-        setCategoriesData(categoriesWithTasks);
-        setLoading(false);
+          const allCategories = await AuthService.getAllCategories(token);
+          
+          // Check if allCategories is not undefined before mapping over it
+          if (allCategories !== undefined) {
+              const categoriesWithTasks = await Promise.all(
+                  allCategories.map(async (category) => {
+                      const tasks = await AuthService.getTasksByCategories(token, category.name);
+                      return { ...category, number_tasks: tasks.length };
+                  })
+              );
+              
+              setCategoriesData(categoriesWithTasks);
+          } else {
+              console.error('Error: Categories data is undefined');
+          }
+          
+          setLoading(false);
       } catch (error) {
-        console.error('Error fetching data:', error);
+          console.error('Error fetching data:', error);
       }
     };
 
@@ -157,7 +177,8 @@ const Categories = () => {
                     <div>Loading...</div>
                 ) : (
                     <>
-                        <Table 
+                        <EnhancedTable 
+                            headCells={headCells}
                             data={categoriesData}
                             onDeleteSelectedCategories={handleDeleteSelectedCategories}
                             onCategorySelectionChange={handleCategorySelectionChange}

@@ -56,23 +56,10 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-const headCells = [
-  {
-    id: 'name',
-    numeric: false,
-    disablePadding: true,
-    label: 'Title',
-  },
-  {
-    id: 'number_tasks',
-    numeric: true,
-    disablePadding: false,
-    label: '# Tasks',
-  }
-];
+
 
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
+  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, headCells } =
     props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -207,7 +194,7 @@ export default function EnhancedTable(props) {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const { data, onCategorySelectionChange, onDeleteSelectedCategories, onAddCategoryChange, onEditSelect } = props;
+  const { data, onCategorySelectionChange, onDeleteSelectedCategories, onAddCategoryChange, onEditSelect, headCells  } = props;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -285,6 +272,7 @@ export default function EnhancedTable(props) {
           className="categories-table"
         >
           <EnhancedTableHead
+            headCells={headCells}
             numSelected={selected.length}
             order={order}
             orderBy={orderBy}

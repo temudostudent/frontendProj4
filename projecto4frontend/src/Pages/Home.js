@@ -1,4 +1,5 @@
-import React, { useState , useEffect} from 'react'
+import React, { useState , useEffect, useCallback} from 'react'
+import { useLocation } from 'react-router-dom';
 import AuthService from '../Components/Service/AuthService'
 import ScrumBoard from '../Components/MainScrum/ScrumBoard'
 import { userStore } from '../Stores/UserStore'
@@ -9,6 +10,9 @@ import Sidebar from '../Components/CommonElements/Sidebar'
 
 const Home = () => {
 
+    const location = useLocation();
+    const { pathname } = location;
+
     const token = userStore((state) => state.token);
     const userData = userStore((state) => state.userData);
     const categories = useCategoryStore((state) => state.categories);
@@ -16,16 +20,16 @@ const Home = () => {
     const { tasks, updateTasks, selectedTask, setSelectedTask} = useTaskStore();
     const { showSidebar, updateShowSidebar, isEditing } = useActionsStore();
     const [loading, setLoading] = useState(true);
-    
+
 
     useEffect(() => {
         fetchInitialData();
     }, []);
 
-
+    
     const fetchInitialData = async () => {
         try {
-            await Promise.all([fetchUserTasks(token), fetchCategories(token)]);
+            await Promise.all([fetchTasks(token), fetchCategories(token)]);
             setLoading(false); 
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -33,10 +37,21 @@ const Home = () => {
         }
     };
 
-    const fetchUserTasks = async (token) => {
-        const userTasks = await AuthService.getAllTasksFromUser(token, userData.username);
-        updateTasks(userTasks);
-    };
+    const fetchTasks = async () => {
+        try {
+          if (pathname === '/alltasks') {
+            const userTasks = await AuthService.getAllTasks(token);
+            updateTasks(userTasks);
+          } else {
+            const userTasks = await AuthService.getAllTasksFromUser(token, userData.username);
+            updateTasks(userTasks);
+          }
+          setLoading(false);
+        } catch (error) {
+          console.error('Error fetching tasks:', error);
+          setLoading(false);
+        }
+      };
 
     const fetchCategories = async () => {
         const allCategories = await AuthService.getAllCategories(token);
@@ -52,7 +67,7 @@ const Home = () => {
 
             if (response.status === 201) {
                 
-                const tasksUpdated = await fetchUserTasks(token);
+                const tasksUpdated = await fetchTasks(token);
                 updateTasks(tasksUpdated);
             } else {
                 console.error('Error creating task:', response.error);
@@ -74,7 +89,7 @@ const Home = () => {
 
             if (response.status === 200) {
                 
-                const tasksUpdated = await fetchUserTasks(token);
+                const tasksUpdated = await fetchTasks(token);
                 updateTasks(tasksUpdated);
                 updateShowSidebar(true);
                 setSelectedTask(null);
@@ -134,8 +149,6 @@ const Home = () => {
                             token={token}
                             userData={userData}
                             taskData={tasks}
-                            isEditing={isEditing}
-                            sidebarActive={showSidebar}
                         />
                     </div>
                 </div>

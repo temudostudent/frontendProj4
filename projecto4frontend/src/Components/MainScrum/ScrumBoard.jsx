@@ -1,4 +1,5 @@
 import React, { useState , useEffect } from 'react'
+import { useLocation } from 'react-router-dom';
 import { useTaskStore } from '../../Stores/TaskStore'
 import { useActionsStore } from '../../Stores/ActionStore'
 import AuthService from '../../Components/Service/AuthService'
@@ -8,26 +9,34 @@ import './ScrumBoard.css';
 
 const ScrumBoard = (props) => {
 
+  const location = useLocation();
+  const { pathname } = location;
+
   const {token , userData , taskData} = props
   const { selectedTask, updateTasks, setSelectedTask } = useTaskStore();
   const { updateShowSidebar, updateIsEditing } = useActionsStore();
   const [loading, setLoading] = useState(true);
 
 
-  useEffect(() => {
-    fetchUserTasks();
-  }, [token, userData, taskData]);
-
-
-  const fetchUserTasks = async () => {
+  const fetchTasks = async () => {
     try {
-      const userTasks = await AuthService.getAllTasksFromUser(token, userData.username);
-      updateTasks(userTasks);
+      if (pathname === '/alltasks') {
+        const userTasks = await AuthService.getAllTasks(token);
+        updateTasks(userTasks);
+      } else {
+        const userTasks = await AuthService.getAllTasksFromUser(token, userData.username);
+        updateTasks(userTasks);
+      }
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error fetching tasks:', error);
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchTasks();
+  }, [token, userData, pathname, updateTasks, taskData]);
 
   const handleTaskDelete = async (taskId) => {
     try {
@@ -37,7 +46,7 @@ const ScrumBoard = (props) => {
         setLoading(true);
         await AuthService.deleteTask(token, taskId);
   
-        await fetchUserTasks();
+        await fetchTasks();
         setLoading(false);
       }
       
@@ -62,7 +71,7 @@ const ScrumBoard = (props) => {
       }
       await AuthService.updateTaskStatus(token, taskId, newStateId);
 
-      fetchUserTasks();
+      fetchTasks();
 
     } catch (error) {
       console.error('Error updating task status:', error);

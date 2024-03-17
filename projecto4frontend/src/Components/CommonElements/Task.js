@@ -44,7 +44,10 @@ const Task = ({ task , index , onDelete}) => {
           {...provided.dragHandleProps}
           className={`task ${snapshot.isDragging ? 'dragging' : ''}`}
         >
-          {handleTaskPriority(task.priority)}
+          <div className='top-container'>
+            <span>{task.owner.username}</span>
+            {handleTaskPriority(task.priority)}
+          </div>
           <div className='container-task'>
             <p>{task.title}</p>
             <div className='buttons-container'>

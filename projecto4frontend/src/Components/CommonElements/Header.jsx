@@ -8,6 +8,7 @@ import { userStore } from '../../Stores/UserStore'
 import { useNavigate } from 'react-router-dom'
 import AuthService from "../Service/AuthService"
 import Menu from './Menu'
+import { useActionsStore } from '../../Stores/ActionStore'
 
 const Header = () => {
     const token = userStore((state) => state.token);
@@ -16,6 +17,7 @@ const Header = () => {
     const [showAccountDrop, setShowAccountDrop] = useState(false);
     const [headerUsername, setHeaderUsername] = useState('');
     const [headerPhoto, setHeaderPhoto] = useState(defaultPhoto);
+    const { updateIsAllTasksPage } = useActionsStore();
    
 
     useEffect(() => {
@@ -42,8 +44,8 @@ const Header = () => {
         {   name: "Board", 
             color: "#c8ae7e", 
             submenu: [
-                { name: "My ScrumBoard", href: "/home" },
-                { name: "Complete ScrumBoard", href: "/complete-board" },
+                { name: "My ScrumBoard", href: "/home", onClick: () => {updateIsAllTasksPage(false)} },
+                { name: "Complete ScrumBoard", href: "/alltasks", onClick: () => {updateIsAllTasksPage(true)} },
             ] },
         {   name: "Tasks", 
             color: "#59a4b1",  
@@ -55,7 +57,7 @@ const Header = () => {
         {   name: "Users", 
             color: "#4d7d99",
             submenu: [
-                { name: "Manage Users", href: "/manage-users" },
+                { name: "Manage Users", href: "/users" },
                 { name: "User Settings", href: "/user-settings" },
             ] },
     ];

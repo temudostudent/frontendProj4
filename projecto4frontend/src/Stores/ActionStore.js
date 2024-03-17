@@ -9,4 +9,7 @@ export const useActionsStore = create((set) => ({
 
     isEditing : false,
     updateIsEditing : (isEditing) => set({isEditing}),
+
+    isAllTasksPage : false,
+    updateIsAllTasksPage : (isAllTasksPage) => set({isAllTasksPage}),
 }));
