@@ -18,3 +18,9 @@ export const userStore = create (
 
     )
 );
+
+export const useUsersListStore = create((set) => ({
+    usersListData: [],
+    updateUsersListData: (newUsersListData) => set({ usersListData: newUsersListData }),
+}));
+

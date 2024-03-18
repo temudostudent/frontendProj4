@@ -15,8 +15,7 @@ const Home = () => {
 
     const token = userStore((state) => state.token);
     const userData = userStore((state) => state.userData);
-    const categories = useCategoryStore((state) => state.categories);
-    const updateCategories = useCategoryStore((state) => state.updateCategories);
+    const { categories, updateCategories} = useCategoryStore();
     const { tasks, updateTasks, selectedTask, setSelectedTask} = useTaskStore();
     const { showSidebar, updateShowSidebar, isEditing } = useActionsStore();
     const [loading, setLoading] = useState(true);
@@ -109,7 +108,7 @@ const Home = () => {
             required: true,
             options: [
                 { value: '', label: 'Category', disabled: true, categoryId: null},
-                ...categories.map(category => ({ value: category.name, label: category.name, categoryId: category.id}))
+                ...(categories ? categories.map(category => ({ value: category.name, label: category.name, categoryId: category.id})) : [])
               ]
         },
         { type: 'text', name: 'title', placeholder: 'Title', required: true },

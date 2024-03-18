@@ -16,6 +16,8 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
+import Menu from '@mui/material/Menu'
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -115,11 +117,20 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected, onDeleteSelectedCategories, setSelected, onEditSelect} = props;
+  const { numSelected, onDeleteSelected, setSelected, onEditSelect, filterData} = props;
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleDelete = () => {
-    onDeleteSelectedCategories();
+    onDeleteSelected();
     setSelected([]);
+  };
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
 
 
@@ -174,11 +185,25 @@ function EnhancedTableToolbar(props) {
 
       ) : (
         <Tooltip title="Filter list">
-          <IconButton>
+          <IconButton onClick={handleMenuOpen}>
             <FilterListIcon />
           </IconButton>
         </Tooltip>
       )}
+      {filterData && (
+        <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+      >
+        {filterData.map((option) => (
+          <MenuItem key={option.id} onClick={handleMenuClose}>
+            {option.label}
+          </MenuItem>
+        ))}
+      </Menu>
+      )}
+    
     </Toolbar>
   );
 }
@@ -194,7 +219,7 @@ export default function EnhancedTable(props) {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const { data, onCategorySelectionChange, onDeleteSelectedCategories, onAddCategoryChange, onEditSelect, headCells  } = props;
+  const { data, onSelectionChange, onDeleteSelected, onAddChange, onEditSelect, headCells, filterData } = props;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -206,6 +231,7 @@ export default function EnhancedTable(props) {
     if (event.target.checked) {
       const newSelected = data.map((n) => n.id);
       setSelected(newSelected);
+      console.log(newSelected);
       return;
     }
     setSelected([]);
@@ -213,6 +239,7 @@ export default function EnhancedTable(props) {
 
   const handleClick = (event, id) => {
     const selectedIndex = selected.indexOf(id);
+    console.log(selectedIndex);
     let newSelected = [];
 
     if (selectedIndex === -1) {
@@ -229,7 +256,7 @@ export default function EnhancedTable(props) {
     }
     setSelected(newSelected);
 
-    onCategorySelectionChange(newSelected);
+    onSelectionChange(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -261,15 +288,16 @@ export default function EnhancedTable(props) {
     <Paper sx={{ width: '100%', mb: 2 }}>
       <EnhancedTableToolbar 
         numSelected={selected.length} 
-        onDeleteSelectedCategories={onDeleteSelectedCategories}
+        onDeleteSelected={onDeleteSelected}
         onEditSelect={onEditSelect}
+        filterData={filterData}
         setSelected={setSelected}
       />
       <TableContainer>
         <Table
-          sx={{ minWidth: 750 }}
+          sx={{ minWidth: 600 }}
           aria-labelledby="tableTitle"
-          className="categories-table"
+          className="table"
         >
           <EnhancedTableHead
             headCells={headCells}
@@ -287,15 +315,16 @@ export default function EnhancedTable(props) {
 
               return (
                 <TableRow
+                  key={row.id}
                   hover
                   onClick={(event) => handleClick(event, row.id)}
                   role="checkbox"
                   aria-checked={isItemSelected}
                   tabIndex={-1}
-                  key={row.id}
                   selected={isItemSelected}
                   sx={{ cursor: 'pointer' }}
                 >
+                  {/* Coluna para a checkbox */}
                   <TableCell padding="checkbox">
                     <Checkbox
                       color="primary"
@@ -305,30 +334,26 @@ export default function EnhancedTable(props) {
                       }}
                     />
                   </TableCell>
-                  <TableCell
-                    component="th"
-                    id={labelId}
-                    scope="row"
-                    padding="none"
-                  >
-                    {row.name}
-                  </TableCell>
-                  <TableCell align="right">{row.number_tasks}</TableCell>
+                  {headCells.map((headCell) => (
+                    <TableCell
+                      key={headCell.id}
+                      align={headCell.numeric ? 'right' : 'left'}
+                      padding={headCell.disablePadding ? 'none' : 'normal'}
+                    >
+                      {row[headCell.id]}
+                    </TableCell>
+                  ))}
                 </TableRow>
               );
             })}
-            {emptyRows > 0 && (
-              <TableRow>
-                <TableCell colSpan={3} />
-              </TableRow>
-            )}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer> 
       <div className='bottom-table-container'>
+      {onAddChange && (
         <div className='add-category-button-container'>
-          <button onClick={onAddCategoryChange}>+ Category</button>
-        </div>
+          <button onClick={onAddChange}>+ Category</button>
+        </div>)}
         <TablePagination
           rowsPerPageOptions={[5, 10, 20]}
           component="div"
@@ -341,5 +366,6 @@ export default function EnhancedTable(props) {
       </div>
     </Paper>
   </Box>
-  );
+);
+            
 }

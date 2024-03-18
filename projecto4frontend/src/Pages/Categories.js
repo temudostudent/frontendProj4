@@ -8,8 +8,7 @@ import { FaArrowLeft } from "react-icons/fa";
 const Categories = () => {
 
     const token = userStore((state) => state.token);
-    const updateCategStore = useCategoryStore((state) => state.updateCategories);
-    const [categoriesData ,setCategoriesData] = useState([]);
+    const { categories, updateCategories } = useCategoryStore();
     const [selected , setSelected] = useState([]);
     const [loading, setLoading] = useState(true);
     const [newCategoryName, setNewCategoryName] = useState('');
@@ -20,26 +19,26 @@ const Categories = () => {
         setSelected(selectedCategoryIds);
       };
 
-      const headCells = [
-        {
-          id: 'name',
-          numeric: false,
-          disablePadding: true,
-          label: 'Title',
-        },
-        {
-          id: 'number_tasks',
-          numeric: true,
-          disablePadding: false,
-          label: '# Tasks',
-        }
-      ];
+    const headCells = [
+      {
+        id: 'name',
+        numeric: false,
+        disablePadding: true,
+        label: 'Title',
+      },
+      {
+        id: 'number_tasks',
+        numeric: true,
+        disablePadding: false,
+        label: '# Tasks',
+      }
+    ];
 
     useEffect(() => {
         
         fetchCategories();
-        updateCategStore(categoriesData);
-      }, [token, categoriesData]);
+
+    }, [token, categories]);
 
     const fetchCategories = async () => {
       try {
@@ -54,7 +53,7 @@ const Categories = () => {
                   })
               );
               
-              setCategoriesData(categoriesWithTasks);
+              updateCategories(categoriesWithTasks);
           } else {
               console.error('Error: Categories data is undefined');
           }
@@ -77,7 +76,7 @@ const Categories = () => {
                 setNewCategoryName('');
                 // Atualizar a lista de categorias
                 const updatedCategories = await AuthService.getAllCategories(token);
-                setCategoriesData(updatedCategories);
+                updateCategories(updatedCategories);
                 setIsFormVisible(false);
             }
         } catch (error) {
@@ -106,7 +105,7 @@ const Categories = () => {
 
       try {
    
-        const categoryToEdit = categoriesData.find(category => selected.includes(category.id));
+        const categoryToEdit = categories.find(category => selected.includes(category.id));
     
         if (categoryToEdit) {
    
@@ -176,16 +175,16 @@ const Categories = () => {
                 {loading ? (
                     <div>Loading...</div>
                 ) : (
-                    <>
+                    <div className="categories-table">
                         <EnhancedTable 
                             headCells={headCells}
-                            data={categoriesData}
-                            onDeleteSelectedCategories={handleDeleteSelectedCategories}
-                            onCategorySelectionChange={handleCategorySelectionChange}
-                            onAddCategoryChange={handleChangeAddCategory}
+                            data={categories}
+                            onDeleteSelected={handleDeleteSelectedCategories}
+                            onSelectionChange={handleCategorySelectionChange}
+                            onAddChange={handleChangeAddCategory}
                             onEditSelect={handleChangeEditForm}
                             />
-                    </>
+                    </ div>
                 )}
             </div>
         </div>

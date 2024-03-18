@@ -233,11 +233,14 @@ Categories
 	flex: 2;
 	height: 78vh;
 	display: flex;
-	justify-content: end;
+	justify-content: center;
 	align-items: center;
 	overflow-y: auto;
     max-height: 78vh;
-	padding: 0 50px;
+
+	.categories-table{
+		width: 55%;
+	}
 }
 
 .container-addCategoriesForm {
@@ -252,7 +255,6 @@ Categories
 
 	span{
 		cursor: pointer;
-		
 	}
 
 	button{ 
@@ -380,4 +382,26 @@ Home
 .scrum-board-container.scrum-board-expanded {
     transition: width 0.3s ease;
     width: calc(100% - 10%);
+}
+
+
+/*---------
+USERS PAGE
+---------*/
+
+.users-container{
+    display: flex;
+	justify-content: center;
+    align-items: center;
+	height: 78vh;
+	max-height: 78vh;
+    padding: 20px;
+
+	.table-container{
+		display: flex;
+		justify-content: center;
+		width: 80%;
+        overflow-y: auto;
+        max-height: 78vh;
+	}
 }

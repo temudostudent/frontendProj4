@@ -424,6 +424,74 @@ editTask: async (token, taskId, inputs) => {
 },
 
 
+/*----------------------
+ALL USERS
+----------------------*/
+
+getAllUsersData: async (token) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/all`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                'token': token
+            }
+        });
+        if (response.status === 200) {
+   
+            return response.data;
+  
+          } else if (response.status === 401) {
+            toast.warning("Invalid credentials")
+          }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+},
+
+getUsersByVisibility: async (token, visible) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/all/visible/${visible}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                'token': token
+            }
+        });
+        if (response.status === 200) {
+   
+            return response.data;
+  
+          } else if (response.status === 401) {
+            toast.warning("Invalid credentials")
+          }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+},
+
+updateVisibility: async (token, username) => {
+    try {
+        const response = await axios.put(`${API_BASE_URL}/update/${username}/visibility`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                'token': token
+            }
+        });
+        if (response.status === 200) {
+            toast.success('User visibility updated')
+  
+          } else if (response.status === 401) {
+            toast.warning("Invalid credentials")
+          }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+},
+
+
+
 
 };
 
