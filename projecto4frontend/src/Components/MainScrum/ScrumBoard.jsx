@@ -41,18 +41,13 @@ const ScrumBoard = (props) => {
   const handleTaskDelete = async (taskId) => {
     try {
 
-      console.log(taskId);
       if(taskId){
 
-        console.log('wwwwwwwwwwwwwwwwwwwwwww');
-
-        //setLoading(true);
-        await AuthService.deleteTask(token, taskId);
-
-
+        setLoading(true);
+        await AuthService.eraseTask(token, taskId);
   
         await fetchTasks();
-        //setLoading(false);
+        setLoading(false);
       }
       
     } catch (error) {

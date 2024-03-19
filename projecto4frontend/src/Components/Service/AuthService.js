@@ -376,8 +376,32 @@ updateTaskStatus: async (token, taskId, newStateId) => {
     }
 },
 
+eraseTask: async (token, taskId) => {
+    try {
+        const response = await axios.put(`${API_BASE_URL}/${taskId}`, null, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                'token': token
+            }
+        });
+        if (response.status === 200) {
+   
+            toast.success("Task erased successfully")
+  
+          } else if (response.status === 401) {
+            toast.warning("Invalid credentials")
+          } else if (response.status === 403) {
+            toast.warning("You don't have permission to erase a task")
+          } else if (response.status === 404) {
+            toast.warning("Task with this id is not found")
+          }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+},
+
 deleteTask: async (token, taskId) => {
-    console.log('Task deleted');
     try {
         const response = await axios.delete(`${API_BASE_URL}/delete/${taskId}`, {
             headers: {
