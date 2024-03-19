@@ -85,19 +85,26 @@ const Categories = () => {
     };
 
     const handleDeleteSelectedCategories = async () => {
+
+      let response;
+
         try {
           await Promise.all(
             selected.map(async (categoryId) => {
-              await AuthService.deleteCategory(token, categoryId);
+              console.log(categoryId);
+              response = await AuthService.deleteCategory(token, categoryId);
             })
           );
       
-          await fetchCategories();
+          if(response){
+            await fetchCategories();
+          }
+          
 
-            } catch (error) {
-            console.error('Error deleting categories:', error);
-            }
-      };
+          } catch (error) {
+          console.error('Error deleting categories:', error);
+          }
+    };
 
     const handleEditCategorySubmit = async (event) => {
 
@@ -177,6 +184,7 @@ const Categories = () => {
                 ) : (
                     <div className="categories-table">
                         <EnhancedTable 
+                            dataType="Categories"
                             headCells={headCells}
                             data={categories}
                             onDeleteSelected={handleDeleteSelectedCategories}

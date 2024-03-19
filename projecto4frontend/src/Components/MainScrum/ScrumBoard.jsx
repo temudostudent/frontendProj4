@@ -41,13 +41,18 @@ const ScrumBoard = (props) => {
   const handleTaskDelete = async (taskId) => {
     try {
 
+      console.log(taskId);
       if(taskId){
 
-        setLoading(true);
+        console.log('wwwwwwwwwwwwwwwwwwwwwww');
+
+        //setLoading(true);
         await AuthService.deleteTask(token, taskId);
+
+
   
         await fetchTasks();
-        setLoading(false);
+        //setLoading(false);
       }
       
     } catch (error) {
@@ -100,7 +105,12 @@ const ScrumBoard = (props) => {
               {taskData && taskData
                 .filter((task) => task.stateId === parseInt(status))
                 .map((task, index) => (
-                  <Task key={task.id} task={task} index={index} onDelete={handleTaskDelete}/>
+                  <Task 
+                    key={task.id} 
+                    task={task} 
+                    index={index} 
+                    onDelete={handleTaskDelete}
+                    className={task.erased ? 'erased-task' : ''}/>
                 ))}
               {provided.placeholder}
             </div>

@@ -256,3 +256,7 @@ consoante vão sendo adicionados*/
   background-color: rgb(186, 186, 186);
   margin-top: 5px;
 }
+
+.erased-task{
+  background-color: #D7693C;
+}

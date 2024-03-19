@@ -23,7 +23,7 @@ const Task = ({ task , index , onDelete}) => {
   }
 
   const handleDeleteClick = async () => {
-    await onDelete(task.id);
+    onDelete(task.id);
   }
 
   const handleEditClick = () => {

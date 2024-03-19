@@ -211,13 +211,17 @@ CATEGORIES
             if (response.status === 200) {
        
                 toast.success("Category deleted successfully")
+                return response;
       
               } else if (response.status === 400) {
                 toast.warning("Category with this name can't be deleted while it has tasks associated")
+                console.log('banaan');
               } else if (response.status === 403) {
                 toast.warning("You don't have permission to delete a category")
               } else if (response.status === 404) {
                 toast.warning("Category with this name not found")
+              } else if (response.status === 401) {
+                toast.warning("Invalid credentials")
               }
         } catch (error) {
             console.error('Error:', error);
@@ -226,8 +230,7 @@ CATEGORIES
 
     newCategory: async (token, input) => {
         try {
-            const response = await axios.post(`${API_BASE_URL}/newCategory`,
-            input,
+            const response = await axios.post(`${API_BASE_URL}/newCategory`, input,
             {
                 headers: {
                     'Content-Type': 'application/json',
@@ -374,6 +377,7 @@ updateTaskStatus: async (token, taskId, newStateId) => {
 },
 
 deleteTask: async (token, taskId) => {
+    console.log('Task deleted');
     try {
         const response = await axios.delete(`${API_BASE_URL}/delete/${taskId}`, {
             headers: {
@@ -470,9 +474,31 @@ getUsersByVisibility: async (token, visible) => {
     }
 },
 
-updateVisibility: async (token, username) => {
+getUsersByType: async (token, type) => {
     try {
-        const response = await axios.put(`${API_BASE_URL}/update/${username}/visibility`, {
+        const response = await axios.get(`${API_BASE_URL}/all/${type}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                'token': token
+            }
+        });
+        if (response.status === 200) {
+   
+            return response.data;
+  
+          } else if (response.status === 401) {
+            toast.warning("Invalid credentials")
+          }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+},
+
+updateVisibility: async (token, username) => {
+
+    try {
+        const response = await axios.put(`${API_BASE_URL}/update/${username}/visibility`, null, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': '*/*',
@@ -482,6 +508,56 @@ updateVisibility: async (token, username) => {
         if (response.status === 200) {
             toast.success('User visibility updated')
   
+          } else if (response.status === 401) {
+            toast.warning("Invalid credentials")
+          }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+},
+
+eraseAllTasksFromUser: async (token, username) => {
+
+    try {
+        const response = await axios.put(`${API_BASE_URL}/eraseAllTasks/${username}`, null, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                'token': token
+            }
+        });
+        if (response.status === 200) {
+            toast.success('All tasks were erased successfully')
+  
+          } else if (response.status === 401) {
+            toast.warning("Invalid credentials")
+          } else if (response.status === 403) {
+            toast.warning("You don't have permission to erase these tasks")
+          } else if (response.status === 404) {
+            toast.warning("Something went wrong. The tasks were not erased.")
+          }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+},
+
+
+deleteUser: async (token, username) => {
+    try {
+        const response = await axios.delete(`${API_BASE_URL}/${username}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                'token': token
+            }
+        });
+        if (response.status === 200) {
+   
+            toast.success("User deleted successfully")
+            return response;
+  
+          } else if (response.status === 404) {
+            toast.warning("User with this name not found")
           } else if (response.status === 401) {
             toast.warning("Invalid credentials")
           }

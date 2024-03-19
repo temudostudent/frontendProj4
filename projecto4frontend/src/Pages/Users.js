@@ -1,17 +1,17 @@
-import React, {useEffect, useState} from "react";
-import { userStore, useUsersListStore } from '../Stores/UserStore'
+import React, {useEffect, useState } from "react";
+import { userStore } from '../Stores/UserStore'
+import { useUsersListStore } from '../Stores/UsersDataStore'
 import EnhancedTable from '../Components/CommonElements/Table'
 import AuthService from '../Components/Service/AuthService'
 
 const Users = () => {
 
     const { token } = userStore(); 
-    const { usersListData, updateUsersListData } = useUsersListStore(); 
+    const { usersListData, updateUsersListData } = useUsersListStore();
     const [loading, setLoading] = useState(true);
     const [selected , setSelected] = useState([]);
 
     const handleUsersSelectionChange = (selectedUsersIds) => {
-        console.log(selectedUsersIds);
         setSelected(selectedUsersIds);
       };
 
@@ -48,53 +48,68 @@ const Users = () => {
             label: 'Type Of User',
         },
         {
-          id: 'number_tasks',
+          id: 'number_tasks_user',
           numeric: true,
           disablePadding: false,
           label: '# Tasks',
         }
       ];
 
-      const filterData = [
+    const filterData = [
         {
-            id: 'product owner',
+            id: 'all',
+            numeric: false,
+            label: 'All Users',
+        },
+        {
+            id: 300,
             numeric: false,
             label: 'Product Owner',
-          },
-          {
-              id: 'scrum master',
-              numeric: false,
-              label: 'Scrum Master',
-          },
-          {
-              id: 'developer',
-              numeric: false,
-              label: 'Developer',
-          },
-          {
-              id: 'active',
-              numeric: false,
-              label: 'Active',
-              onClick: () => fetchUsersByVisibility(true),
-          },
-          {
-              id: 'inactive',
-              numeric: false,
-              label: 'Inactive',
-              onClick: () => fetchUsersByVisibility(false),
-          },
-      ];
+        },
+        {
+            id: 200,
+            numeric: false,
+            label: 'Scrum Master',
+        },
+        {
+            id: 100,
+            numeric: false,
+            label: 'Developer',
+        },
+        {
+            id: 'active',
+            numeric: false,
+            label: 'Active',
+        },
+        {
+            id: 'inactive',
+            numeric: false,
+            label: 'Inactive',
+        },
+    ];
 
 
-      useEffect(() => {
-        fetchUsers();
-      }, []);
-
+    useEffect(() => {
+        const fetchData = async () => {
+            await fetchUsers({});
+            console.log(usersListData);
+        };
     
-      const fetchUsers = async () => {
+        fetchData();
+    }, []);
+    
+      const fetchUsers = async ({type, visible}) => {
         try {
-            
-            let usersList = await AuthService.getAllUsersData(token);
+
+            let usersList;
+
+            if (type !== undefined) {
+                usersList = await AuthService.getUsersByType(token, type);
+            }else if (visible !== undefined) {
+                usersList = await AuthService.getUsersByVisibility (token, visible);
+            }else{
+                usersList = await AuthService.getAllUsersData(token);
+            }
 
             if (usersList !== undefined) {
                 
@@ -105,15 +120,14 @@ const Users = () => {
 
                         const typeOfUserFormatted = formatTypeOfUser(user);
 
-                        return { ...user, number_tasks: tasks.length, typeOfUser: typeOfUserFormatted};
+                        return { ...user, id:user.username, number_tasks_user: tasks.length, typeOfUser: typeOfUserFormatted};
                     })
                 );
                 
-                updateUsersListData(usersFormatted);
+                await updateUsersListData(usersFormatted);
 
-                console.log(usersListData);
             } else {
-                console.error('Error: Categories data is undefined');
+                console.error('Error: Users data is undefined');
             }
             
             setLoading(false);
@@ -121,35 +135,6 @@ const Users = () => {
             console.error('Error fetching data:', error);
         }
       };
-
-      const fetchUsersByVisibility = async (visible) => {
-        try {
-                let usersList = await AuthService.getUsersByVisibility(token, visible);
-
-                if (usersList !== undefined) {
-                        
-                    const usersFormatted = await Promise.all(
-                        usersList.map(async (user) => {
-                            const tasks = await AuthService.getAllTasksFromUser(token, user.username);
-
-                            const typeOfUserFormatted = formatTypeOfUser(user);
-
-                            return { ...user, number_tasks: tasks.length, typeOfUser: typeOfUserFormatted};
-                        })
-                    );
-                    
-                    updateUsersListData(usersFormatted);
-
-                    console.log(usersListData);
-                } else {
-                    console.error('Error: Categories data is undefined');
-                }
-                
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
 
       const formatTypeOfUser = (userData) => {
         if (userData.typeOfUser === 100) {
@@ -161,19 +146,49 @@ const Users = () => {
         }
       };
 
-      const handleInactiveSelectedUsers = async () => {
+      const handleUsersVisibility = async () => {
         try {
           await Promise.all(
             selected.map(async (username) => {
-              await AuthService.deleteCategory(token, username);
+              await AuthService.updateVisibility(token, username);
             })
           );
       
-          await fetchUsers();
+          await fetchUsers({});
 
             } catch (error) {
             console.error('Error deleting categories:', error);
             }
+      };
+
+      const handleUsersDeleteAllTasks = async () => {
+        try {
+          await Promise.all(
+            selected.map(async (username) => {
+              await AuthService.eraseAllTasksFromUser(token, username);
+            })
+          );
+      
+          await fetchUsers({});
+
+            } catch (error) {
+            console.error('Error deleting categories:', error);
+            }
+      };
+
+
+
+      const handleFilterList = async (id) => {
+
+        if (id ==='all'){ await fetchUsers({});
+
+        } else if(id==='active') {  await fetchUsers({visible: true});
+
+        } else if(id==='inactive') { await fetchUsers({visible: false});
+
+        }  else { await fetchUsers({type: id});
+
+        }
       };
 
     return (
@@ -184,11 +199,14 @@ const Users = () => {
                 ) : (
                     <>
                         <EnhancedTable 
+                            dataType="Users"
                             headCells={headCells}
                             data={usersListData}
                             filterData={filterData}
+                            handleFilter={handleFilterList}
                             onSelectionChange={handleUsersSelectionChange}
-                            onDeleteSelected={handleInactiveSelectedUsers}
+                            onDeleteSelected={handleUsersDeleteAllTasks}
+                            onChangeVisibilitySelect={handleUsersVisibility}
                             />
                     </>
                 )}

@@ -58,7 +58,7 @@ const Header = () => {
             color: "#4d7d99",
             submenu: [
                 { name: "Manage Users", href: "/users" },
-                { name: "User Settings", href: "/user-settings" },
+                { name: "Add New User", href: "/register-user" },
             ] },
     ];
 

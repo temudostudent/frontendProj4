@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -18,10 +18,12 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu'
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 
@@ -61,7 +63,7 @@ function stableSort(array, comparator) {
 
 
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, headCells } =
+  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, headCells, dataType } =
     props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -77,15 +79,21 @@ function EnhancedTableHead(props) {
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
             inputProps={{
-              'aria-label': 'select all desserts',
+              'aria-label': 'select all',
             }}
           />
         </TableCell>
+        {dataType === "Users" && (
+          <TableCell>
+            {/*Vazia*/}
+          </TableCell>
+        )}
+        
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
+            //padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
@@ -117,11 +125,26 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected, onDeleteSelected, setSelected, onEditSelect, filterData} = props;
+  const { dataType, numSelected, onDeleteSelected, selected, setSelected, onEditSelect, filterData, handleFilter, onChangeVisibilitySelect, onPermDeleteSelect} = props;
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleDelete = () => {
     onDeleteSelected();
+    setSelected([]);
+  };
+
+  const handleEdit = () => {
+    onEditSelect();
+    setSelected([]);
+  };
+
+  const handleVisibility = () => {
+    onChangeVisibilitySelect();
+    setSelected([]);
+  };
+
+  const handlePermDelete = () => {
+    onPermDeleteSelect();
     setSelected([]);
   };
 
@@ -161,26 +184,53 @@ function EnhancedTableToolbar(props) {
           id="tableTitle"
           component="div"
         >
-          Categories
+          {dataType}
         </Typography>
       )}
 
       {numSelected === 1 ? (
-        <Tooltip title="Edit or Delete">
+        <Tooltip >
           <div className='table-buttons-container'>
-            <IconButton onClick={onEditSelect}>
+            <IconButton title="Edit" onClick={handleEdit}>
               <EditIcon />
             </IconButton>
-            <IconButton onClick={handleDelete}>
+            <IconButton 
+              title={dataType === "Users" ? "Delete Tasks" : "Delete"} 
+              onClick={handleDelete}
+            >
               <DeleteIcon />
             </IconButton>
+
+
+            {dataType === "Users" && (
+            <IconButton title="Reverse Current Visibility" onClick={handleVisibility}>
+              <ChangeCircleIcon/>
+            </IconButton>
+            )}
+
+            {!selected[0].visible && dataType === "Users" && (
+              <IconButton title="Permanently Delete"  onClick={handlePermDelete}>
+                <DeleteForeverIcon />
+              </IconButton>
+            )}
           </div>
         </Tooltip>
       ) : numSelected > 1 ? (
-        <Tooltip title="Delete">
-            <IconButton onClick={handleDelete}>
+        <Tooltip>
+          <div className='table-buttons-container'>
+            <IconButton 
+                title={dataType === "Users" ? "Delete Tasks" : "Delete"}
+                onClick={handleDelete}
+              >
               <DeleteIcon />
             </IconButton>
+            {dataType === "Users" && (
+            <IconButton title="Reverse Current Visibility" onClick={handleVisibility}>
+              <ChangeCircleIcon/>
+            </IconButton>
+            )}
+
+          </div>
         </Tooltip>
 
       ) : (
@@ -197,10 +247,10 @@ function EnhancedTableToolbar(props) {
         onClose={handleMenuClose}
       >
         {filterData.map((option) => (
-          <MenuItem key={option.id} onClick={handleMenuClose}>
+          <MenuItem key={option.id} onClick={() => handleFilter(option.id)}>
             {option.label}
           </MenuItem>
-        ))}
+      ))}
       </Menu>
       )}
     
@@ -219,7 +269,7 @@ export default function EnhancedTable(props) {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const { data, onSelectionChange, onDeleteSelected, onAddChange, onEditSelect, headCells, filterData } = props;
+  const { dataType, data, onSelectionChange, onDeleteSelected, onAddChange, onEditSelect, headCells, filterData, handleFilter, onChangeVisibilitySelect, onPermDeleteSelect } = props;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -231,7 +281,6 @@ export default function EnhancedTable(props) {
     if (event.target.checked) {
       const newSelected = data.map((n) => n.id);
       setSelected(newSelected);
-      console.log(newSelected);
       return;
     }
     setSelected([]);
@@ -239,7 +288,6 @@ export default function EnhancedTable(props) {
 
   const handleClick = (event, id) => {
     const selectedIndex = selected.indexOf(id);
-    console.log(selectedIndex);
     let newSelected = [];
 
     if (selectedIndex === -1) {
@@ -254,6 +302,7 @@ export default function EnhancedTable(props) {
         selected.slice(selectedIndex + 1),
       );
     }
+
     setSelected(newSelected);
 
     onSelectionChange(newSelected);
@@ -287,11 +336,16 @@ export default function EnhancedTable(props) {
     <Box sx={{ width: '80%' }}>
     <Paper sx={{ width: '100%', mb: 2 }}>
       <EnhancedTableToolbar 
+        dataType={dataType}
+        selected={selected}
         numSelected={selected.length} 
         onDeleteSelected={onDeleteSelected}
         onEditSelect={onEditSelect}
         filterData={filterData}
         setSelected={setSelected}
+        handleFilter={handleFilter}
+        onChangeVisibilitySelect={onChangeVisibilitySelect}
+        onPermDeleteSelect={onPermDeleteSelect}
       />
       <TableContainer>
         <Table
@@ -300,6 +354,7 @@ export default function EnhancedTable(props) {
           className="table"
         >
           <EnhancedTableHead
+            dataType={dataType}
             headCells={headCells}
             numSelected={selected.length}
             order={order}
@@ -317,7 +372,10 @@ export default function EnhancedTable(props) {
                 <TableRow
                   key={row.id}
                   hover
-                  onClick={(event) => handleClick(event, row.id)}
+                  onClick={(event) => {
+                    console.log("Clicked row:", row.id);
+                    handleClick(event, row.id);
+                  }}
                   role="checkbox"
                   aria-checked={isItemSelected}
                   tabIndex={-1}
@@ -334,11 +392,22 @@ export default function EnhancedTable(props) {
                       }}
                     />
                   </TableCell>
+                  
+                  {/* Coluna de visibilidade */}
+                  {dataType === "Users" && (
+                    <TableCell padding="checkbox">
+                    {row.visible ? 
+                      <VisibilityOutlinedIcon color="primary" /> :
+                      <VisibilityOffOutlinedIcon color="primary" />
+                    }
+                  </TableCell>
+                  )}
+
                   {headCells.map((headCell) => (
                     <TableCell
                       key={headCell.id}
                       align={headCell.numeric ? 'right' : 'left'}
-                      padding={headCell.disablePadding ? 'none' : 'normal'}
+                      //padding={headCell.disablePadding ? 'none' : 'normal'}
                     >
                       {row[headCell.id]}
                     </TableCell>
@@ -350,10 +419,11 @@ export default function EnhancedTable(props) {
         </Table>
       </TableContainer> 
       <div className='bottom-table-container'>
-      {onAddChange && (
-        <div className='add-category-button-container'>
-          <button onClick={onAddChange}>+ Category</button>
-        </div>)}
+        {dataType === "Categories" && (
+            <div className='add-category-button-container'>
+              <button onClick={onAddChange}>+ Category</button>
+            </div>
+          )}
         <TablePagination
           rowsPerPageOptions={[5, 10, 20]}
           component="div"
