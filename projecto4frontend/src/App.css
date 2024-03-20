@@ -389,6 +389,25 @@ Home
 USERS PAGE
 ---------*/
 
+.container-users{
+	display: flex;
+}
+
+.sidebar-active .table-container {
+    transition: width 0.3s ease;
+    width: calc(100% - 10%);
+}
+
+.sidebar-inactive .table-container {
+    transition: width 0.3s ease;
+    width: 100%;
+}
+
+.table-container.table-expanded {
+    transition: width 0.3s ease;
+    width: calc(100% - 10%);
+}
+
 .users-container{
     display: flex;
 	justify-content: center;
@@ -396,12 +415,15 @@ USERS PAGE
 	height: 78vh;
 	max-height: 78vh;
     padding: 20px;
+	
+}
 
-	.table-container{
-		display: flex;
-		justify-content: center;
-		width: 80%;
-        overflow-y: auto;
-        max-height: 78vh;
-	}
+.table-container{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 80%;
+	overflow-y: auto;
+	max-height: 78vh;
+	padding-left: 7%;
 }

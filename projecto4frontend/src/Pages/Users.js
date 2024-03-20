@@ -1,15 +1,18 @@
 import React, {useEffect, useState } from "react";
 import { userStore } from '../Stores/UserStore'
 import { useUsersListStore } from '../Stores/UsersDataStore'
+import { useActionsStore } from '../Stores/ActionStore'
 import EnhancedTable from '../Components/CommonElements/Table'
 import AuthService from '../Components/Service/AuthService'
+import Sidebar from '../Components/CommonElements/Sidebar'
 
 const Users = () => {
 
     const { token } = userStore(); 
-    const { usersListData, updateUsersListData } = useUsersListStore();
+    const { usersListData, updateUsersListData, setSelectedUser } = useUsersListStore();
     const [loading, setLoading] = useState(true);
     const [selected , setSelected] = useState([]);
+    const { showSidebar, updateShowSidebar } = useActionsStore();
 
     const handleUsersSelectionChange = (selectedUsersIds) => {
         setSelected(selectedUsersIds);
@@ -17,6 +20,12 @@ const Users = () => {
 
 
     const headCells = [
+        {
+          id: 'photoURL',
+          numeric: false,
+          disablePadding: true,
+          label: 'Profile Pic',
+        },
         {
           id: 'username',
           numeric: false,
@@ -146,6 +155,11 @@ const Users = () => {
         }
       };
 
+      const handleEditButton = async () => {
+        setSelectedUser(await AuthService.getUserData(token, selected[0]));
+        updateShowSidebar(false);
+      }
+
       const handleUsersVisibility = async () => {
         try {
           await Promise.all(
@@ -176,6 +190,42 @@ const Users = () => {
             }
       };
 
+      const handleUsersPermDelete = async () => {
+        try {
+            await Promise.all(
+              selected.map(async (username) => {
+                await AuthService.deleteUser(token, username);
+              })
+            );
+        
+            await fetchUsers({});
+  
+              } catch (error) {
+              console.error('Error deleting categories:', error);
+              }
+      };
+
+      const handleUsersUpdate = async (username, updatedData) => {
+
+        console.log(username, updatedData);
+        try {
+            
+            const response = await AuthService.updateUser(token, username, updatedData);
+
+            console.log(response);
+
+            if(response.status === 200){
+                await fetchUsers({});
+                updateShowSidebar(true);
+                setSelectedUser(null);
+            }
+        
+              } catch (error) {
+              console.error('Error updating user:', error);
+              }
+      };
+
+
 
 
       const handleFilterList = async (id) => {
@@ -191,9 +241,42 @@ const Users = () => {
         }
       };
 
+
+
+      const inputs = [
+        { type: 'text', name: 'firstName' },
+        { type: 'text', name: 'lastName' },
+        { type: 'text', name: 'email' },
+        { type: 'text', name: 'phone' },
+        { type: 'url', name: 'photoURL' },
+        { 
+            type: 'select', 
+            name: 'typeOfUser', 
+            required: true,
+            options: [
+            { value: '', label: 'Type', disabled: true},
+            { value: 300, label: 'Product Owner' },
+            { value: 200, label: 'Scrum Master' },
+            { value: 100, label: 'Developer' }
+            ]
+        },
+        
+    ];
+
+
+
     return (
-        <div className="users-container">
-            <div className="table-container">
+        <div className={`container-users ${showSidebar ? 'sidebar-active' : 'sidebar-inactive'}`}>
+            <div className="sidebar-container">
+                <Sidebar
+                    collapsedWidth={showSidebar ? '100%' : '0'}
+                    formTitle={'Edit User'} 
+                    inputs={inputs}
+                    formSubmitTitle={'Save Changes'}
+                    onSubmit={handleUsersUpdate}
+                />
+            </div>
+            <div className={`table-container ${showSidebar ? 'table-expanded' : ''}`}>
             {loading ? (
                     <div>Loading...</div>
                 ) : (
@@ -207,6 +290,8 @@ const Users = () => {
                             onSelectionChange={handleUsersSelectionChange}
                             onDeleteSelected={handleUsersDeleteAllTasks}
                             onChangeVisibilitySelect={handleUsersVisibility}
+                            onPermDeleteSelect={handleUsersPermDelete}
+                            onEditSelect={handleEditButton}
                             />
                     </>
                 )}

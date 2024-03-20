@@ -1,10 +1,19 @@
 import React, { useState } from "react"
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import logo from '../Assets/agileflow-favicon-white.png'
 
 function SignUpForm({ onSignUpSuccess }) {
 
-    const [inputs, setInputs] = useState({});
+    const [inputs, setInputs] = useState({
+        photoURL: logo,
+        username: '',
+        firstName: '',
+        lastName: '',
+        email: '',
+        typeOfUser: '',
+        password: ''
+    });
 
     //Inputs
     const handleChange = (event) => {

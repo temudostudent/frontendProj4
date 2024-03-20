@@ -1,10 +1,12 @@
 import React, { useState, useEffect} from "react"
 import './FormStyle.css'
+import { useActionsStore } from '../../Stores/ActionStore'
 
 const FormTask = (props) => {
 
     const { title, inputs, buttonText, onSubmit, initialValues } = props;
     const [formData, setFormData] = useState(initialValues || {});
+    const { isEditing } = useActionsStore();
 
     useEffect(() => {
         setFormData(initialValues || {});
@@ -18,7 +20,7 @@ const FormTask = (props) => {
         }))
     };
 
-    const handleSubmit = async (event) => {
+    const handleSubmitTask = async (event) => {
         event.preventDefault();
         try {
 
@@ -43,6 +45,27 @@ const FormTask = (props) => {
             
         }
     };
+
+    const handleSubmitUser = async (event) => {
+        event.preventDefault();
+        try {
+            if (onSubmit) {
+                const updatedData = {};
+                Object.keys(formData).forEach(key => {
+                    if (key === 'typeOfUser') {
+                        updatedData[key] = parseInt(formData[key]);
+                    } else if (formData[key] !== initialValues[key]) {
+                        updatedData[key] = formData[key];
+                    }
+                });
+                await onSubmit(updatedData);
+                setFormData({});
+            }
+        } catch (error) {
+            console.error('Erro ao submeter o formulário:', error);
+        }
+    };
+
 
     const createInput = (input) => {
         const { type, name, placeholder, options, label } = input;
@@ -73,10 +96,10 @@ const FormTask = (props) => {
                         type={type} 
                         name={name} 
                         id={name} 
-                        placeholder={placeholder} 
+                        placeholder={formData[name]} 
                         required={input.required} 
                         onChange={handleChange} 
-                        value={formData[name] || ''}
+                        value={''}
                     />
                 </div>
             );
@@ -90,7 +113,7 @@ const FormTask = (props) => {
             <div className="form-content">
                 
                 <h2>{title}</h2>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={isEditing ? handleSubmitTask : handleSubmitUser}>
                     {inputs.map((input, index) => (
                         <div key={index}>
                             {createInput(input)}

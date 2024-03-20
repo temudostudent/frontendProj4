@@ -135,14 +135,14 @@ const Home = () => {
              {!loading && (
                  <div className={`container-home ${showSidebar ? 'sidebar-active' : 'sidebar-inactive'}`}>
                 <div className="sidebar-container">
-                 <Sidebar
-                        collapsedWidth={showSidebar ? '100%' : '0'}
-                        formTitle={isEditing ? 'Edit Task' : 'Add Task'} 
-                        inputs={inputs}
-                        formSubmitTitle={isEditing ? 'Save Changes' : 'Submit'}
-                        onSubmit={isEditing ? handleEditTask : handleCreateTask}
-                    />
-                    </div>
+                <Sidebar
+                    collapsedWidth={showSidebar ? '100%' : '0'}
+                    formTitle={isEditing ? 'Edit Task' : 'Add Task'} 
+                    inputs={inputs}
+                    formSubmitTitle={isEditing ? 'Save Changes' : 'Submit'}
+                    onSubmit={isEditing ? handleEditTask : handleCreateTask}
+                />
+                </div>
                      <div className={`scrum-board-container ${showSidebar ? 'scrum-board-expanded' : ''}`}>
                         <ScrumBoard
                             token={token}

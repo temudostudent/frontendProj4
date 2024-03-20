@@ -191,7 +191,7 @@ function EnhancedTableToolbar(props) {
       {numSelected === 1 ? (
         <Tooltip >
           <div className='table-buttons-container'>
-            <IconButton title="Edit" onClick={handleEdit}>
+            <IconButton title="Edit" onClick={dataType === "Users" ? onEditSelect : handleEdit}>
               <EditIcon />
             </IconButton>
             <IconButton 
@@ -395,7 +395,7 @@ export default function EnhancedTable(props) {
                   
                   {/* Coluna de visibilidade */}
                   {dataType === "Users" && (
-                    <TableCell padding="checkbox">
+                    <TableCell style={{ padding: "6px 6px 0" }}>
                     {row.visible ? 
                       <VisibilityOutlinedIcon color="primary" /> :
                       <VisibilityOffOutlinedIcon color="primary" />
@@ -404,13 +404,17 @@ export default function EnhancedTable(props) {
                   )}
 
                   {headCells.map((headCell) => (
-                    <TableCell
-                      key={headCell.id}
-                      align={headCell.numeric ? 'right' : 'left'}
-                      //padding={headCell.disablePadding ? 'none' : 'normal'}
-                    >
-                      {row[headCell.id]}
-                    </TableCell>
+                      <TableCell
+                          key={headCell.id}
+                          align={headCell.numeric ? 'right' : 'left'}
+                          //padding={headCell.disablePadding ? 'none' : 'normal'}
+                      >
+                          {headCell.id === 'photoURL' ? (
+                              <img src={row[headCell.id]} alt="Profile Pic" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', marginTop: '2px' }} />
+                          ) : (
+                              row[headCell.id]
+                          )}
+                      </TableCell>
                   ))}
                 </TableRow>
               );
