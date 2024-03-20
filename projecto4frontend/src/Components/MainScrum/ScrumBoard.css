@@ -178,6 +178,12 @@ o standard é fazer um "flex-direction: row;" que faz com que os filhos tenham u
   border-color: rgb(86, 86, 86);
 }
 
+.task.erased{
+  opacity: 0.5;
+}
+
+
+
 /*Esta classe existe principalmente para diferenciar o elemento que está a ser arrastado. No máximo só um elemento
 poderá ter esta classe. Se não houver nenhum elemento a ser arrastado esta classe não vai estar a ser usada*/
 .drag {
@@ -256,4 +262,6 @@ consoante vão sendo adicionados*/
   background-color: rgb(186, 186, 186);
   margin-top: 5px;
 }
+
+
 

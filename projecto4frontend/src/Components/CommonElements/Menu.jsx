@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, createRef } from "react";
 import gsap from "gsap";
 import { IoMdArrowDropdown } from "react-icons/io";
 
-const Menu = ({ items }) => {
+const Menu = ({ items, typeOfUser }) => {
     const $root = useRef();
     const $indicator1 = useRef();
     const $indicator2 = useRef();
@@ -58,25 +58,29 @@ const Menu = ({ items }) => {
     return (
         <div ref={$root} className="menu">
             {items.map((item, index) => (
-                <div key={item.name} className="menu-item" onMouseEnter={() => handleMenuItemHover(index)} onClick={() => handleMenuItemClick(index)}>
-                    <a
-                        ref={$items.current[index]}
-                        className={`item ${active === index ? "active" : ""}`}
-                        href={item.href}
-                        aria-label={item.name}
-                    >
-                        <span className="container-item">{item.name} <IoMdArrowDropdown /></span>
-                    </a>
-                    {(active === index) && (
-                        <div className="submenu">
-                            {submenuItems.map((submenuItem, index) => (
-                                <div key={index} className="submenu-item">
-                                    <a href={submenuItem.href}>{submenuItem.name}</a>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
+                
+                // Se não for, não renderizar o item
+                !((item.name === "Categories" || item.name === "Users") && typeOfUser !== 300) && (
+                    <div key={item.name} className="menu-item" onMouseEnter={() => handleMenuItemHover(index)} onClick={() => handleMenuItemClick(index)}>
+                        <a
+                            ref={$items.current[index]}
+                            className={`item ${active === index ? "active" : ""}`}
+                            href={item.href}
+                            aria-label={item.name}
+                        >
+                            <span className="container-item">{item.name} <IoMdArrowDropdown /></span>
+                        </a>
+                        {(active === index) && (
+                            <div className="submenu">
+                                {submenuItems.map((submenuItem, index) => (
+                                    <div key={index} className="submenu-item">
+                                        <a href={submenuItem.href}>{submenuItem.name}</a>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )
             ))}
             <div ref={$indicator1} className="indicator" />
             <div ref={$indicator2} className="indicator" />

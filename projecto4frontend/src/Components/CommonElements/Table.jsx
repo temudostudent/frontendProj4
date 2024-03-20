@@ -410,7 +410,7 @@ export default function EnhancedTable(props) {
                           //padding={headCell.disablePadding ? 'none' : 'normal'}
                       >
                           {headCell.id === 'photoURL' ? (
-                              <img src={row[headCell.id]} alt="Profile Pic" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', marginTop: '2px' }} />
+                              <img src={row[headCell.id]} alt="Profile Pic" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover'}} />
                           ) : (
                               row[headCell.id]
                           )}

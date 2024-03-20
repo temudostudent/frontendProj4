@@ -6,7 +6,6 @@ const FormTask = (props) => {
 
     const { title, inputs, buttonText, onSubmit, initialValues } = props;
     const [formData, setFormData] = useState(initialValues || {});
-    const { isEditing } = useActionsStore();
 
     useEffect(() => {
         setFormData(initialValues || {});
@@ -46,26 +45,6 @@ const FormTask = (props) => {
         }
     };
 
-    const handleSubmitUser = async (event) => {
-        event.preventDefault();
-        try {
-            if (onSubmit) {
-                const updatedData = {};
-                Object.keys(formData).forEach(key => {
-                    if (key === 'typeOfUser') {
-                        updatedData[key] = parseInt(formData[key]);
-                    } else if (formData[key] !== initialValues[key]) {
-                        updatedData[key] = formData[key];
-                    }
-                });
-                await onSubmit(updatedData);
-                setFormData({});
-            }
-        } catch (error) {
-            console.error('Erro ao submeter o formulário:', error);
-        }
-    };
-
 
     const createInput = (input) => {
         const { type, name, placeholder, options, label } = input;
@@ -96,10 +75,10 @@ const FormTask = (props) => {
                         type={type} 
                         name={name} 
                         id={name} 
-                        placeholder={formData[name]} 
+                        placeholder={placeholder} 
                         required={input.required} 
                         onChange={handleChange} 
-                        value={''}
+                        value={formData[name] || ''}
                     />
                 </div>
             );
@@ -113,7 +92,7 @@ const FormTask = (props) => {
             <div className="form-content">
                 
                 <h2>{title}</h2>
-                <form onSubmit={isEditing ? handleSubmitTask : handleSubmitUser}>
+                <form onSubmit={handleSubmitTask}>
                     {inputs.map((input, index) => (
                         <div key={index}>
                             {createInput(input)}

@@ -99,7 +99,7 @@ input {
 	overflow: hidden;
 	width: 60%;
 	max-width: 100%;
-	min-height: 480px;
+	min-height: 525px;
 }
 
 .form-container {
@@ -391,6 +391,7 @@ USERS PAGE
 
 .container-users{
 	display: flex;
+	overflow-y: auto;
 }
 
 .sidebar-active .table-container {
@@ -423,7 +424,6 @@ USERS PAGE
 	justify-content: center;
 	align-items: center;
 	width: 80%;
-	overflow-y: auto;
-	max-height: 78vh;
+	max-height: 80vh;
 	padding-left: 7%;
 }

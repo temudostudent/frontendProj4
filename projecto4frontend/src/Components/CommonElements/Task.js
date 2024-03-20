@@ -42,7 +42,7 @@ const Task = ({ task , index , onDelete}) => {
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className={`task ${snapshot.isDragging ? 'dragging' : ''}`}
+          className={`task ${snapshot.isDragging ? 'dragging' : ''} ${task.erased ? 'erased' : ''}`}
         >
           <div className='top-container'>
             <span>{task.owner.username}</span>

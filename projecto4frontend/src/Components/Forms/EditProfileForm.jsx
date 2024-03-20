@@ -2,13 +2,17 @@ import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import Modal from 'react-modal'
 import AuthService from '../Service/AuthService'
+import { userStore } from '../../Stores/UserStore'
+
+
 import '../../App.css'
 
 Modal.setAppElement('#root');
 
-const EditProfileForm = ({username, token, userData, onUpdateSuccess}) => {
+const EditProfileForm = ({username, userData, onUpdateSuccess}) => {
     const [inputs, setInputs] = useState({});
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const token = userStore((state) => state.token);
   
     const handleChange = (event) => {
         const name = event.target.name;
@@ -18,28 +22,10 @@ const EditProfileForm = ({username, token, userData, onUpdateSuccess}) => {
     }
 
     const handleSubmit = async (event) => {
-      event.preventDefault();
-
-      try {
-        const updateResponse = await AuthService.updateUser(token, username, inputs);
-    
-        if (updateResponse) {
-
-          onUpdateSuccess(inputs);
-          setInputs({});
-          event.target.reset();
-        } else {
-         
-          console.error("Update unsuccessful:", updateResponse);
-     
-          toast.error("Failed to update profile. Please try again.");
-        }
-      } catch (error) {
-        
-        console.error("Error updating profile:", error);
-        
-        toast.error("An error occurred while updating profile. Please try again later.");
-      }
+      event.preventDefault(); 
+      onUpdateSuccess({username:username, inputs: inputs});
+      setInputs({}); 
+      event.target.reset();
     };
 
 
@@ -111,6 +97,16 @@ const EditProfileForm = ({username, token, userData, onUpdateSuccess}) => {
             name="email"
             
             placeholder={userData.email || ''}
+            onChange={handleChange}
+          />
+          <br />
+
+          <label htmlFor="phone">Phone:</label>
+          <input
+            type="text"
+            name="phone" 
+            
+            placeholder={userData.phone || ''}
             onChange={handleChange}
           />
           <br />

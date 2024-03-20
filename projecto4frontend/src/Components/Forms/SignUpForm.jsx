@@ -1,80 +1,50 @@
 import React, { useState } from "react"
-import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import logo from '../Assets/agileflow-favicon-white.png'
+import AuthService from "../Service/AuthService"
 
 function SignUpForm({ onSignUpSuccess }) {
 
     const [inputs, setInputs] = useState({
-        photoURL: logo,
         username: '',
         firstName: '',
         lastName: '',
         email: '',
-        typeOfUser: '',
+        phone: '',
         password: ''
     });
 
-    //Inputs
-    const handleChange = (event) => {
-        const name = event.target.name;
-        const value = event.target.value;
+    console.log(inputs);
 
-        setInputs(values => ({...values, [name]: value}))
+    //Inputs
+    const handleChange = (event) => { 
+        const { name, value } = event.target;
+        setInputs({...inputs, [name]: value});
+    }
+
+    const inputsFormatted = () => {
+        return { ...inputs, photoURL: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg' };
     }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        try{
+        console.log(inputsFormatted());
 
-        const response = await fetch ('http://localhost:8080/project_backend/rest/users/register',
-            {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(inputs)
-            });
-                if (response.ok) {
-                    toast.success("Thanks for being awesome! Account registered successfully!");
-
-                    onSignUpSuccess();
-                    setInputs({});
-                }else {
-                    const errorData = await response.text();
-
-                    switch (response.status) {
-                        case 422:
-                            switch (errorData) {
-                                case "There's an empty field, fill all values":
-                                    toast.error("Please fill all fields");
-                                    break;
-                                case "Invalid email":
-                                    toast.error("The email you used is not valid");
-                                    break;
-                                case "Invalid phone number":
-                                    toast.error("The phone number is not valid");
-                                    break;
-                                default:
-                                    console.error('Unknown error message:', errorData);
-                                    toast.error("Something went wrong");
-                            }
-                            break;
-                        case 409: 
-                            toast.error("Username already in use");
-                            break;
-                        default:
-                            console.log('Unknown error message:', errorData);
-                            toast.error("Something went wrong");
-                    }
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                toast.error("Something went wrong");
+        try {
+            const response = await AuthService.register(inputsFormatted());
+    
+            console.log(response);
+    
+            if (response.status === 201) {
+                onSignUpSuccess();
+                setInputs({});
+            } else {
+                console.error("Failed to register. Response:", response);
             }
-        };
+        } catch (error) {
+            console.error("An error occurred during registration:", error);
+        }
+    };
 
     return (
 
@@ -88,6 +58,7 @@ function SignUpForm({ onSignUpSuccess }) {
 			        <input type="email" name="email" value={inputs.email || ''} placeholder="Email" onChange={handleChange} required/>
                     <input type="text" name="phone" value={inputs.phone || ''} placeholder="Contact" onChange={handleChange} required/>
                     <input type="password" name="password" value={inputs.password || ''} placeholder="Password" onChange={handleChange} required/>
+                    <input type="url" name="photoURL" value={inputs.photoURL || ''} placeholder="Profile Photo" onChange={handleChange}/>
                     <button type="submit">Sign Up</button>
             </form>
         </div>

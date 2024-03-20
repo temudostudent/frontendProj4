@@ -205,7 +205,22 @@ const Users = () => {
               }
       };
 
-      const handleUsersUpdate = async (username, updatedData) => {
+
+      const handleFilterList = async (id) => {
+
+        if (id ==='all'){ await fetchUsers({});
+
+        } else if(id==='active') {  await fetchUsers({visible: true});
+
+        } else if(id==='inactive') { await fetchUsers({visible: false});
+
+        }  else { await fetchUsers({type: id});
+
+        }
+      };
+
+
+      /*const handleUsersUpdate = async (username, updatedData) => {
 
         console.log(username, updatedData);
         try {
@@ -223,22 +238,28 @@ const Users = () => {
               } catch (error) {
               console.error('Error updating user:', error);
               }
-      };
+      };*/
 
+      const handleUpdateSuccess = async (username, inputs) => {
 
-
-
-      const handleFilterList = async (id) => {
-
-        if (id ==='all'){ await fetchUsers({});
-
-        } else if(id==='active') {  await fetchUsers({visible: true});
-
-        } else if(id==='inactive') { await fetchUsers({visible: false});
-
-        }  else { await fetchUsers({type: id});
-
+        try {
+          const updateResponse = await AuthService.updateUser(token, username, inputs);
+      
+          if (updateResponse) {
+  
+            await fetchUsers({});
+            updateShowSidebar(true);
+            setSelectedUser(null);
+        
+          } else {
+           
+            console.error("Update unsuccessful:", updateResponse);
+          }
+        } catch (error) {
+          
+          console.error("Error updating profile:", error);
         }
+  
       };
 
 
@@ -273,7 +294,7 @@ const Users = () => {
                     formTitle={'Edit User'} 
                     inputs={inputs}
                     formSubmitTitle={'Save Changes'}
-                    onSubmit={handleUsersUpdate}
+                    onSubmit={handleUpdateSuccess}
                 />
             </div>
             <div className={`table-container ${showSidebar ? 'table-expanded' : ''}`}>

@@ -22,7 +22,7 @@ const Header = () => {
 
     useEffect(() => {
         userHeaderData();
-    }, [token, userData.photoURL])
+    }, [token, userData])
 
 
     const userHeaderData = async() => {
@@ -68,7 +68,7 @@ const Header = () => {
             <div className="site-identity">
                 <img src={logo} alt="Logo da empresa" />
             </div> 
-                <Menu items={items} />
+                <Menu items={items} typeOfUser={userData.typeOfUser}/>
             <div className="profile-container" onClick={() => setShowAccountDrop(true)}>
                 <a>{headerUsername}</a> {/*Mostra username*/}
                 <span className="photo-container">

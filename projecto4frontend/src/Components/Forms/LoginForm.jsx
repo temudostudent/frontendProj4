@@ -45,7 +45,8 @@ function LoginForm() {
             const username = await AuthService.getUsername(token);
 
             const userData = await AuthService.getUserData(token, username);
-            updateUserData(userData);
+
+            await updateUserData(userData);
         } catch (error) {
             console.error('Error fetching data:', error);
         }

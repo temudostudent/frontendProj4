@@ -10,9 +10,25 @@ const Profile = () => {
     const updateUserData = userStore((state) => state.updateUserData);
     const token = userStore((state) => state.token);
 
-    const handleUpdateSuccess = async (updatedUserData) => {
-      await AuthService.getUserData(token, userData.username);
-      updateUserData({ ...userData, ...updatedUserData });  
+    const handleUpdateSuccess = async (inputs) => {
+
+      try {
+        const updateResponse = await AuthService.updateUser(token, userData.username, inputs);
+    
+        if (updateResponse) {
+
+          await AuthService.getUserData(token, userData.username);
+          updateUserData({ ...userData, ...inputs });
+      
+        } else {
+         
+          console.error("Update unsuccessful:", updateResponse);
+        }
+      } catch (error) {
+        
+        console.error("Error updating profile:", error);
+      }
+
     };
 
     return (
@@ -23,7 +39,6 @@ const Profile = () => {
                 {userData && 
                 <EditProfileForm 
                   username={userData.username} 
-                  token={token} 
                   userData={userData}
                   onUpdateSuccess={handleUpdateSuccess} />}
             </div>
