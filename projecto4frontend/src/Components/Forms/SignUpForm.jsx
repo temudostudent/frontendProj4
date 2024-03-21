@@ -1,17 +1,12 @@
 import React, { useState } from "react"
-import 'react-toastify/dist/ReactToastify.css';
 import AuthService from "../Service/AuthService"
+import { useLocation } from 'react-router-dom';
 
 function SignUpForm({ onSignUpSuccess }) {
 
-    const [inputs, setInputs] = useState({
-        username: '',
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        password: ''
-    });
+    const location = useLocation();
+    const { pathname } = location;
+    const [inputs, setInputs] = useState({});
 
     console.log(inputs);
 
@@ -21,17 +16,11 @@ function SignUpForm({ onSignUpSuccess }) {
         setInputs({...inputs, [name]: value});
     }
 
-    const inputsFormatted = () => {
-        return { ...inputs, photoURL: 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg' };
-    }
-
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        console.log(inputsFormatted());
-
         try {
-            const response = await AuthService.register(inputsFormatted());
+            const response = await AuthService.register(inputs);
     
             console.log(response);
     
@@ -48,7 +37,7 @@ function SignUpForm({ onSignUpSuccess }) {
 
     return (
 
-        <div className="form-container sign-up-container">
+        <div className={pathname === "/" ? "form-container sign-up-container" : pathname === "/register-user" ? "form-container add-new-user-container" : "form-container"}>
             <form  action="#" onSubmit={handleSubmit}>
                 <h1>Create Account</h1>
                 <br />
@@ -58,7 +47,7 @@ function SignUpForm({ onSignUpSuccess }) {
 			        <input type="email" name="email" value={inputs.email || ''} placeholder="Email" onChange={handleChange} required/>
                     <input type="text" name="phone" value={inputs.phone || ''} placeholder="Contact" onChange={handleChange} required/>
                     <input type="password" name="password" value={inputs.password || ''} placeholder="Password" onChange={handleChange} required/>
-                    <input type="url" name="photoURL" value={inputs.photoURL || ''} placeholder="Profile Photo" onChange={handleChange}/>
+                    <input type="text" name="photoURL" value={inputs.photoURL || ''} placeholder="Profile Photo" onChange={handleChange} required/>
                     <button type="submit">Sign Up</button>
             </form>
         </div>

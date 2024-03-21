@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Draggable } from 'react-beautiful-dnd';
-import { MdEdit, MdDelete } from "react-icons/md";
+import { MdEdit, MdDelete, MdOutlineRestore } from "react-icons/md";
 import { useTaskStore } from '../../Stores/TaskStore'
 import { useActionsStore } from '../../Stores/ActionStore'
 
-const Task = ({ task , index , onDelete}) => {
+
+const Task = ({ task , index , onEraseStatusChange, onTaskDoubleClick }) => {
 
   const { setSelectedTask } = useTaskStore();
   const { updateShowSidebar, updateIsEditing } = useActionsStore();
@@ -23,7 +24,11 @@ const Task = ({ task , index , onDelete}) => {
   }
 
   const handleDeleteClick = async () => {
-    onDelete(task.id);
+    onEraseStatusChange(task.id);
+  }
+
+  const handleRestoreClick = async () => {
+    onEraseStatusChange(task.id);
   }
 
   const handleEditClick = () => {
@@ -33,8 +38,14 @@ const Task = ({ task , index , onDelete}) => {
     console.log(task);
   };
 
+  const handleDoubleClick = () => {
+    onTaskDoubleClick(task);
+    console.log(task);
+  };
+
 
   return (
+    
     <Draggable draggableId={task.id} index={index}>
 
       {(provided, snapshot) => (
@@ -43,26 +54,38 @@ const Task = ({ task , index , onDelete}) => {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           className={`task ${snapshot.isDragging ? 'dragging' : ''} ${task.erased ? 'erased' : ''}`}
+          onDoubleClick={handleDoubleClick}
         >
           <div className='top-container'>
             <span>{task.owner.username}</span>
             {handleTaskPriority(task.priority)}
           </div>
           <div className='container-task'>
-            <p>{task.title}</p>
+            <div className='text-container'>
+              <p>{task.title}</p>
+              <p style={{ fontSize: '8px' }}>{task.category.name}</p>
+            </div>
             <div className='buttons-container'>
               <span onClick={handleEditClick}><MdEdit /></span>
-              <span onClick={handleDeleteClick}><MdDelete /></span>
+
+              {task.erased && (
+                <span onClick={handleRestoreClick}><MdOutlineRestore /></span>
+              )}
+
+              {!task.erased && (
+                <span onClick={handleDeleteClick}><MdDelete /></span>
+              )}
             </div>
           </div>
         </div>
       )}
     </Draggable>
+  
   );
 }
 
 Task.propTypes = {
-  task: PropTypes.object.isRequired,
+task: PropTypes.object.isRequired,
 };
 
 export default Task;

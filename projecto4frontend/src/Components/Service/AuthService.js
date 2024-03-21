@@ -335,6 +335,9 @@ TASKS
 ----------------------*/
 
 getAllTasks: async (token) => {
+
+    console.log('getAllTasks');
+
     try {
         const response = await axios.get(`${API_BASE_URL}/tasks`, {
             headers: {
@@ -356,6 +359,9 @@ getAllTasks: async (token) => {
 },
 
 getAllTasksFromUser: async (token, username) => {
+
+
+    console.log('getAllTasksFromUser');
     try {
         const response = await axios.get(`${API_BASE_URL}/${username}/tasks`, {
             headers: {
@@ -378,6 +384,66 @@ getAllTasksFromUser: async (token, username) => {
         console.error('Error:', error);
     }
 },
+
+getAllTasksByCategory: async (token, categoryName) => {
+
+    console.log('getAllTasksByCategory');
+
+
+    try {
+        const response = await axios.get(`${API_BASE_URL}/tasks/${categoryName}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                'token': token
+            }
+        });
+        if (response.status === 200) {
+   
+            console.log(response);
+            return response.data;
+  
+          } else if (response.status === 401) {
+            toast.warning("Invalid credentials")
+          } else if (response.status === 403) {
+            toast.warning("You don't have permission for this request")
+          }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+},
+
+getAllTasksByErasedStatus: async (token, erasedStatus) => {
+
+    console.log('wwwwwwwww', erasedStatus);
+
+
+    try {
+        const response = await axios.get(`${API_BASE_URL}/${erasedStatus}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*',
+                'token': token
+            }
+        });
+
+        console.log(response);
+
+        if (response.status === 200) {
+   
+            console.log(response);
+            return response.data;
+  
+          } else if (response.status === 401) {
+            toast.warning("Invalid credentials")
+          } else if (response.status === 403) {
+            toast.warning("You don't have permission for this request")
+          }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+},
+
 
 newTask: async (token, username, task) => {
     try {
@@ -426,7 +492,7 @@ updateTaskStatus: async (token, taskId, newStateId) => {
     }
 },
 
-eraseTask: async (token, taskId) => {
+eraseStatusTask: async (token, taskId) => {
     try {
         const response = await axios.put(`${API_BASE_URL}/${taskId}`, null, {
             headers: {
@@ -437,7 +503,7 @@ eraseTask: async (token, taskId) => {
         });
         if (response.status === 200) {
    
-            toast.success("Task erased successfully")
+            toast.success(response.data)
   
           } else if (response.status === 401) {
             toast.warning("Invalid credentials")

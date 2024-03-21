@@ -220,27 +220,7 @@ const Users = () => {
       };
 
 
-      /*const handleUsersUpdate = async (username, updatedData) => {
-
-        console.log(username, updatedData);
-        try {
-            
-            const response = await AuthService.updateUser(token, username, updatedData);
-
-            console.log(response);
-
-            if(response.status === 200){
-                await fetchUsers({});
-                updateShowSidebar(true);
-                setSelectedUser(null);
-            }
-        
-              } catch (error) {
-              console.error('Error updating user:', error);
-              }
-      };*/
-
-      const handleUpdateSuccess = async (username, inputs) => {
+      const handleUpdateSuccess = async (inputs, username) => {
 
         try {
           const updateResponse = await AuthService.updateUser(token, username, inputs);

@@ -23,7 +23,7 @@ const EditProfileForm = ({username, userData, onUpdateSuccess}) => {
 
     const handleSubmit = async (event) => {
       event.preventDefault(); 
-      onUpdateSuccess({username:username, inputs: inputs});
+      onUpdateSuccess(inputs, username);
       setInputs({}); 
       event.target.reset();
     };

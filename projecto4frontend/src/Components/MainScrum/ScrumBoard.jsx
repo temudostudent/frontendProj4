@@ -5,6 +5,7 @@ import { useActionsStore } from '../../Stores/ActionStore'
 import AuthService from '../../Components/Service/AuthService'
 import Task from '../../Components/CommonElements/Task'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
+import  ModalInfo from '../CommonElements/ModalInfo'
 import './ScrumBoard.css';
 
 const ScrumBoard = (props) => {
@@ -14,9 +15,9 @@ const ScrumBoard = (props) => {
 
   const {token , userData , taskData} = props
   const { selectedTask, updateTasks, setSelectedTask } = useTaskStore();
-  const { updateShowSidebar, updateIsEditing } = useActionsStore();
+  const { updateShowSidebar, updateIsEditing, updateShowModal, showModal } = useActionsStore();
   const [loading, setLoading] = useState(true);
-
+  const [selectedTaskInfo, setSelectedTaskInfo] = useState(null);
 
   const fetchTasks = async () => {
     try {
@@ -36,15 +37,15 @@ const ScrumBoard = (props) => {
 
   useEffect(() => {
     fetchTasks();
-  }, [token, userData, pathname, updateTasks, taskData]);
+  }, [token, userData, pathname, updateTasks,/* taskData*/]);
 
-  const handleTaskDelete = async (taskId) => {
+  const handleTaskEraseStatus = async (taskId) => {
     try {
 
       if(taskId){
 
         setLoading(true);
-        await AuthService.eraseTask(token, taskId);
+        await AuthService.eraseStatusTask(token, taskId);
   
         await fetchTasks();
         setLoading(false);
@@ -82,9 +83,36 @@ const ScrumBoard = (props) => {
     updateShowSidebar(false);
     updateIsEditing(false);
     setSelectedTask(null);
-    console.log(selectedTask);
   }
 
+  const handleTaskDoubleClick = (task) => {
+    setSelectedTaskInfo(task);
+    updateShowModal(true);
+  };
+
+  const parsePriorityToString = (priority) => {
+    let newPriority = '';
+    if(priority === 100) {
+      newPriority = 'low';
+    } else if(priority === 200) {
+      newPriority = 'medium';
+    } else if(priority === 300) {
+      newPriority = 'high';
+    }
+    return newPriority;
+  }
+
+  const parseStateIdToString = (stateId) => {
+    let newStateId = '';
+    if(stateId === 100) {
+      newStateId = 'To Do';
+    } else if(stateId === 200) {
+      newStateId = 'Doing';
+    } else if(stateId === 300) {
+      newStateId = 'Done';
+    }
+    return newStateId;
+  }
 
   const renderTasksByStatus = (status) => {
 
@@ -104,7 +132,8 @@ const ScrumBoard = (props) => {
                     key={task.id} 
                     task={task} 
                     index={index} 
-                    onDelete={handleTaskDelete}
+                    onEraseStatusChange={handleTaskEraseStatus}
+                    onTaskDoubleClick={handleTaskDoubleClick}
                     className={task.erased ? 'erased-task' : ''}/>
                 ))}
               {provided.placeholder}
@@ -114,7 +143,6 @@ const ScrumBoard = (props) => {
       
     );
   }
-
 
   return (
     <main>
@@ -142,6 +170,23 @@ const ScrumBoard = (props) => {
         </DragDropContext>
         
       )}
+
+      {showModal && selectedTaskInfo && (
+          <ModalInfo 
+            title="Task Details"
+            inputs={[
+              { label: 'Title', type: 'textarea', value: selectedTaskInfo.title, disabled: true },
+              { label: 'Description', type: 'textarea', value: selectedTaskInfo.description, disabled: true },
+              { label: 'Start Date', type: 'text', value: selectedTaskInfo.startDate, disabled: true },
+              { label: 'Limit Date', type: 'text', value: selectedTaskInfo.limitDate, disabled: true },
+              { label: 'Owner', type: 'text', value: selectedTaskInfo.owner.username, disabled: true },
+              { label: 'Category', type: 'text', value: selectedTaskInfo.category.name, disabled: true },
+              { label: 'Priority', type: 'text', value: parsePriorityToString(selectedTaskInfo.priority), disabled: true },
+              { label: 'Status', type: 'text', value: parseStateIdToString(selectedTaskInfo.stateId), disabled: true },
+            ]}
+          />
+        )}
+
     </main>
   );
 }

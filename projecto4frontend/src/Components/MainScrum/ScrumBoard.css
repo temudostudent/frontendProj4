@@ -133,8 +133,10 @@ o standard é fazer um "flex-direction: row;" que faz com que os filhos tenham u
     overflow-wrap: break-word;
     max-width: 100%;
 
-    p{
-      max-width: 90%;
+    .text-container{
+
+      width: 90%;
+      padding: 0 0 10px;
     }
   }
 

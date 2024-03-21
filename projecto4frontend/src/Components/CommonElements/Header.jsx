@@ -22,7 +22,8 @@ const Header = () => {
 
     useEffect(() => {
         userHeaderData();
-    }, [token, userData])
+        console.log(userData);
+    }, [token, userData.photoURL])
 
 
     const userHeaderData = async() => {
@@ -44,21 +45,15 @@ const Header = () => {
         {   name: "Board", 
             color: "#c8ae7e", 
             submenu: [
-                { name: "My ScrumBoard", href: "/home", onClick: () => {updateIsAllTasksPage(false)} },
-                { name: "Complete ScrumBoard", href: "/alltasks", onClick: () => {updateIsAllTasksPage(true)} },
+                { name: "My ScrumBoard", path: "/home", onClick: () => {updateIsAllTasksPage(false)} },
+                { name: "Complete ScrumBoard", path: "/alltasks", onClick: () => {updateIsAllTasksPage(true)} },
             ] },
-        {   name: "Tasks", 
-            color: "#59a4b1",  
-            submenu: [
-                { name: "Create Task", href: "/create-task" },
-                { name: "View Tasks", href: "/view-tasks" },
-            ] },
-        {   name: "Categories", color: "#2D9596", href: "/categories" },
+        {   name: "Categories", color: "#2D9596", path: "/categories" },
         {   name: "Users", 
             color: "#4d7d99",
             submenu: [
-                { name: "Manage Users", href: "/users" },
-                { name: "Add New User", href: "/register-user" },
+                { name: "Manage Users", path: "/users" },
+                { name: "Add New User", path: "/register-user" },
             ] },
     ];
 
@@ -77,7 +72,7 @@ const Header = () => {
             </div>
             {showAccountDrop && (
             <div className="accountDrop" onMouseLeave={() => setShowAccountDrop(false)}>
-                <a href="/profile">My Profile</a>
+                <a onClick={() => navigate("/profile")}>My Profile</a>
                 <a onClick={handleLogout}>Logout</a>
 
             </div>

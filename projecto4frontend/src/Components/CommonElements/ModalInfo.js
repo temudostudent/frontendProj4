@@ -1,38 +1,32 @@
-import React, { useEffect, useState } from 'react'
-import { useActionsStore } from '../../Stores/ActionStore'
+import React, { useEffect, useState } from 'react';
+import { useActionsStore } from '../../Stores/ActionStore';
 
-const Modal = (props) => {
-
+const ModalInfo = (props) => {
     const showModal = useActionsStore((state) => state.showModal);
     const updateShowModal = useActionsStore((state) => state.updateShowModal);
-    const { title, inputs, buttonText } = props;
+    const { title, inputs } = props;
 
     const closeModal = () => {
         updateShowModal(false);
     }
 
     const createInput = (input) => {
-        const { type, name, placeholder, options } = input;
-
-        if (type === 'select') {
-            return (
-                <select name={name} required={input.required}>
-                    {options.map((option, index) => (
-                        <option key={index} value={option.value}>{option.label}</option>
-                    ))}
-                </select>
-            );
-        } else {
-            return <input type={type} name={name} placeholder={placeholder} required={input.required} />;
-        }
+        const { type, label, name, value } = input;
+        return (
+            <div key={name}>
+                <label>{label}</label>
+                <input type={type} name={name} value={value} disabled />
+            </div>
+        );
     }
 
+    
 
     return (
         <>
             {showModal && (
                 <div className="modal">
-                    <div className="modal-content">
+                    <div className="modalInfo-content">
                         <span className="close" onClick={closeModal}>&times;</span>
                         <h2>{title}</h2>
                         <form>
@@ -42,7 +36,6 @@ const Modal = (props) => {
                                 </div>
                             ))}
                         </form>
-                        <button>{buttonText}</button>
                     </div>
                 </div>
             )}
@@ -50,4 +43,4 @@ const Modal = (props) => {
     );
 }
 
-export default Modal; 
+export default ModalInfo;

@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect, createRef } from "react";
 import gsap from "gsap";
 import { IoMdArrowDropdown } from "react-icons/io";
+import { useNavigate } from 'react-router-dom';
 
 const Menu = ({ items, typeOfUser }) => {
     const $root = useRef();
@@ -9,6 +10,7 @@ const Menu = ({ items, typeOfUser }) => {
     const $items = useRef(items.map(createRef));
     const [active, setActive] = useState(null);
     const [submenuItems, setSubmenuItems] = useState([]);
+    const navigate = useNavigate();
 
     const handleMenuItemClick = (index) => {
         if (active === index) {
@@ -65,16 +67,21 @@ const Menu = ({ items, typeOfUser }) => {
                         <a
                             ref={$items.current[index]}
                             className={`item ${active === index ? "active" : ""}`}
-                            href={item.href}
+                            onClick={() => navigate(item.path)}
                             aria-label={item.name}
                         >
-                            <span className="container-item">{item.name} <IoMdArrowDropdown /></span>
+                            <span className="container-item">{item.name} 
+                                                            {!(item.name === "Categories")  && (
+                                                                <IoMdArrowDropdown />
+                                                                )}                        
+                            </span>
+
                         </a>
                         {(active === index) && (
-                            <div className="submenu">
+                            <div className="submenu" style={{cursor: 'pointer'}}>
                                 {submenuItems.map((submenuItem, index) => (
                                     <div key={index} className="submenu-item">
-                                        <a href={submenuItem.href}>{submenuItem.name}</a>
+                                        <a onClick={() => navigate(submenuItem.path)}>{submenuItem.name}</a>
                                     </div>
                                 ))}
                             </div>
