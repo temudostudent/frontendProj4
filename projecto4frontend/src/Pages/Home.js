@@ -1,26 +1,28 @@
-import React, { useState , useEffect, useCallback} from 'react'
+import React, { useState , useEffect} from 'react'
 import { useLocation } from 'react-router-dom';
 import AuthService from '../Components/Service/AuthService'
 import ScrumBoard from '../Components/MainScrum/ScrumBoard'
 import { userStore } from '../Stores/UserStore'
+import { useUsersListStore } from '../Stores/UsersDataStore'
 import { useTaskStore } from '../Stores/TaskStore'
 import { useActionsStore } from '../Stores/ActionStore'
 import { useCategoryStore } from '../Stores/CategoryStore'
-import { IoMdArrowDropdown } from "react-icons/io";
 import Sidebar from '../Components/CommonElements/Sidebar'
 
 const Home = () => {
 
     const location = useLocation();
-    const { pathname } = location;
 
     const token = userStore((state) => state.token);
     const userData = userStore((state) => state.userData);
     const { categories, updateCategories} = useCategoryStore();
+    const { usersListData, updateUsersListData} = useUsersListStore();
     const { tasks, updateTasks, selectedTask, setSelectedTask} = useTaskStore();
     const { showSidebar, updateShowSidebar, isEditing } = useActionsStore();
     const [loading, setLoading] = useState(true);
     const [selectedFilter, setSelectedFilter] = useState('All');
+    const [selectedOption, setSelectedOption] = useState('');
+    const [selectedValue, setSelectedValue] = useState('');
 
 
     useEffect(() => {
@@ -29,9 +31,9 @@ const Home = () => {
 
     
     const fetchInitialData = async () => {
-        console.log('Fetching initial data');
+
         try {
-            await Promise.all([fetchTasks(token), fetchCategories(token)]);
+            await Promise.all([fetchTasks(token), fetchCategories(token), fetchUsers(token)]);
             setLoading(false); 
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -39,17 +41,25 @@ const Home = () => {
         }
     };
 
-    const fetchTasks = async (categoryName , erasedStatus) => {
+    const fetchTasks = async (categoryName , erasedStatus, username) => {
 
         console.log('Fetching tasks');
         let userTasks;
         
         try {
-            if (pathname === '/alltasks') {
+            if (location.pathname === '/alltasks') {
+
+                console.log('category name',categoryName);
+                console.log('erased stat',erasedStatus);
+
                 if (categoryName) {
-                    userTasks = await AuthService.getAllTasksByCategory(categoryName);
-                } else if (erasedStatus) {
-                    userTasks = await AuthService.getAllTasksByErasedStatus(erasedStatus);
+                    userTasks = await AuthService.getAllTasksByCategory(token, categoryName);
+                    console.log('maça');
+                    
+                } else if (erasedStatus=== true || erasedStatus=== false) {
+                    userTasks = await AuthService.getAllTasksByErasedStatus(token, erasedStatus);
+                } else if (username){
+                    userTasks = await AuthService.getAllTasksFromUser(token, username);
                 } else {
                     userTasks = await AuthService.getAllTasks(token);
                 }
@@ -69,6 +79,11 @@ const Home = () => {
     const fetchCategories = async () => {
         const allCategories = await AuthService.getAllCategories(token);
         updateCategories(allCategories);
+    };
+
+    const fetchUsers = async () => {
+        const allUsers = await AuthService.getAllUsersData(token);
+        updateUsersListData(allUsers);
     };
 
     const handleCreateTask = async (taskInput) => {
@@ -100,8 +115,6 @@ const Home = () => {
         try {
             
             const response = await AuthService.editTask(token, selectedTask.id, taskInput);
-          
-            console.log(response);
 
             if (response.status === 200) {
                 
@@ -148,42 +161,89 @@ const Home = () => {
 
     const handleFilterChange = async (event) => {
         const selectedValue = event.target.value;
+      
+        console.log(selectedValue);
+        setSelectedFilter(selectedValue);
+        setSelectedOption('');
+      
+        
+        if (selectedValue === 'All') {
+          fetchTasks();
+        }
+      };
 
-        console.log('aqui');
+
+      const handleOptionChange = (event) => {
+        const selectedOptionValue = event.target.value;
     
-        switch (selectedValue) {
-            case 'All':
-                fetchTasks();
+        setSelectedOption(selectedOptionValue);
+    
+        switch (selectedFilter) {
+            case 'State':
+                if (selectedOptionValue == 'Active') {
+                    fetchTasks('', false);
+                }else {
+                    fetchTasks('', true);
+                }
                 break;
-            case 'Active':
-                fetchTasks({erasedStatus : false});          
+            case 'Categories':
+                if (selectedOptionValue !== '') {
+                    fetchTasks(selectedOptionValue);
+                }
                 break;
-            case 'Erased':
-                fetchTasks({erasedStatus : true});
+            case 'Users':
+                if (selectedOptionValue !== '') {
+                    fetchTasks('', '', selectedOptionValue);
+                }
                 break;
             default:
-                fetchTasks({categoryName : 'selectedValue'});
                 break;
         }
-    }
+    };
 
 
     const renderSelect = ({ name }) => {
         return (
-          <select name={name} onChange={handleFilterChange} value={selectedFilter}>
-            <option disabled>{name}</option>
-            <option value="All">All</option>
-            <option value="Active">Active</option>
-            <option value="Erased">Erased</option>
-            <option value="" disabled>Categories <IoMdArrowDropdown /> </option>
-            {categories.map((category, index) => (
-              <option key={index} value={category.name} data-category-id={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-        );
-      }
+            <div>
+                <select name={name} onChange={handleFilterChange} value={selectedFilter}>
+                <option value="All">All</option>
+                    <option value="State">State</option>
+                    <option value="Categories">Categories</option>
+                    <option value="Users">Users</option>
+                </select>
+
+                {selectedFilter === 'State' && (
+                    <select onChange={handleOptionChange} value={selectedOption}>
+                    <option value="" disabled>Select State</option>
+                    <option value="Active">Active</option>
+                    <option value="Erased">Erased</option>
+                    </select>
+                )}
+
+                {selectedFilter === 'Categories' && (
+                    <select onChange={handleOptionChange} value={selectedOption}>
+                    <option value="" disabled>Select Category</option>
+                    {categories.map((category, index) => (
+                        <option key={index} value={category.name} data-category-id={category.id}>
+                        {category.name}
+                        </option>
+                    ))}
+                    </select>
+                )}
+
+                {selectedFilter === 'Users' && (
+                    <select onChange={handleOptionChange} value={selectedOption}>
+                    <option value="" disabled>Select User</option>
+                    {usersListData.map((user, index) => (
+                        <option key={index} value={user.username} data-category-id={user.username}>
+                        {user.username}
+                        </option>
+                    ))}
+                    </select>
+                )}
+                </div>
+            );
+        };
 
 
     return (
@@ -207,7 +267,10 @@ const Home = () => {
                         />
                     </div>
                     <div className='select-filter-container'>
-                        {renderSelect({ name: 'Filters' })}
+                        {(location.pathname === '/alltasks') && (
+                                renderSelect({ name: 'Filters' })
+                        )}
+                        
                     </div>
                 </div>
             )}

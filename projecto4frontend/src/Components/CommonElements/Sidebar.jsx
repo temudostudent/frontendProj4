@@ -36,7 +36,7 @@ function Sidebar({ formTitle, inputs, formSubmitTitle, onSubmit}) {
 
 
     function renderComponent() {
-        if (location.pathname === '/home') {
+        if (location.pathname === '/home' || location.pathname === '/alltasks') {
             return (
                 <FormTask 
                     title={formTitle} 

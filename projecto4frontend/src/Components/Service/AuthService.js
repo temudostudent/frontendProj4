@@ -387,7 +387,7 @@ getAllTasksFromUser: async (token, username) => {
 
 getAllTasksByCategory: async (token, categoryName) => {
 
-    console.log('getAllTasksByCategory');
+    console.log('getAllTasksByCategory', categoryName);
 
 
     try {
@@ -409,17 +409,15 @@ getAllTasksByCategory: async (token, categoryName) => {
             toast.warning("You don't have permission for this request")
           }
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error fetch tasks by category:', error);
     }
 },
 
 getAllTasksByErasedStatus: async (token, erasedStatus) => {
 
-    console.log('wwwwwwwww', erasedStatus);
-
 
     try {
-        const response = await axios.get(`${API_BASE_URL}/${erasedStatus}`, {
+        const response = await axios.get(`${API_BASE_URL}/erasedTasks/?erased=${erasedStatus}`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': '*/*',
@@ -431,7 +429,6 @@ getAllTasksByErasedStatus: async (token, erasedStatus) => {
 
         if (response.status === 200) {
    
-            console.log(response);
             return response.data;
   
           } else if (response.status === 401) {
@@ -440,7 +437,7 @@ getAllTasksByErasedStatus: async (token, erasedStatus) => {
             toast.warning("You don't have permission for this request")
           }
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error fetch tasks by erased status:', error);
     }
 },
 

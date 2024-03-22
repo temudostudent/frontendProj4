@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import Modal from 'react-modal'
-import AuthService from '../Service/AuthService'
 import { userStore } from '../../Stores/UserStore'
-
-
-import '../../App.css'
+import { useLocation } from 'react-router-dom';
 
 Modal.setAppElement('#root');
 
@@ -13,13 +10,14 @@ const EditProfileForm = ({username, userData, onUpdateSuccess}) => {
     const [inputs, setInputs] = useState({});
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const token = userStore((state) => state.token);
+    const location = useLocation();
   
     const handleChange = (event) => {
-        const name = event.target.name;
-        const value = event.target.value;
+      const { name, value } = event.target;
+      const newValue = name === 'typeOfUser' ? parseTypeIdToString(value) : value;
 
-        setInputs(values => ({ ...values, [name]: value}))
-    }
+      setInputs((prevInputs) => ({ ...prevInputs, [name]: newValue }));
+    };
 
     const handleSubmit = async (event) => {
       event.preventDefault(); 
@@ -67,6 +65,34 @@ const EditProfileForm = ({username, userData, onUpdateSuccess}) => {
           toast.error('Error updating password. Please try again later.');
       }
       };
+
+
+      const parseTypeIdToString = (typeId) => {
+        let newTypeId = '';
+        if(typeId === 100) {
+          newTypeId = 'Developer';
+        } else if(typeId === 200) {
+          newTypeId = 'Scrum Master';
+        } else if(typeId === 300) {
+          newTypeId = 'Product Owner';
+        }
+        return newTypeId;
+      }
+
+
+      const parseTypeStringToId = (type) => {
+        let newType = '';
+        if(type === 'Developer') {
+          newType = 100;
+        } else if(type === 'Scrum Master') {
+          newType = 200;
+        } else if(type === 'Product Owner') {
+          newType = 300;
+        }
+        return newType;
+      }
+
+
 
     return (
       <div>
@@ -119,11 +145,27 @@ const EditProfileForm = ({username, userData, onUpdateSuccess}) => {
             placeholder={userData.photoURL || ''}  
             onChange={handleChange}
           />
+         {location.pathname === '/users' && (
+            <>
+              <br />
+              <label htmlFor="typeOfUser">Type:</label>
+              <select
+                name="typeOfUser"
+                value={userData.typeOfUser} // Use o valor numérico diretamente
+                onChange={handleChange}
+              >
+                <option value={100}>Developer</option>
+                <option value={200}>Scrum Master</option>
+                <option value={300}>Product Owner</option>
+              </select>
+            </>
+          )}
           <br />
           <div className="editProfile-buttons-container">
               <button type="button" onClick={() => setModalIsOpen(true)}>Change Password</button>
               <button type="submit">Submit</button>
           </div>
+          
       </form>
             <Modal
                 isOpen={modalIsOpen}

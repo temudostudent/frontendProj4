@@ -11,11 +11,11 @@ const ModalInfo = (props) => {
     }
 
     const createInput = (input) => {
-        const { type, label, name, value } = input;
+        const { label, name, value } = input;
         return (
-            <div key={name}>
+            <div key={name} className='info-container'>
                 <label>{label}</label>
-                <input type={type} name={name} value={value} disabled />
+                <h4>{value}</h4>
             </div>
         );
     }
@@ -29,13 +29,13 @@ const ModalInfo = (props) => {
                     <div className="modalInfo-content">
                         <span className="close" onClick={closeModal}>&times;</span>
                         <h2>{title}</h2>
-                        <form>
+                        <div className='modal-info-container'>
                             {inputs.map((input, index) => (
                                 <div key={index}>
                                     {createInput(input)}
                                 </div>
                             ))}
-                        </form>
+                        </div>
                     </div>
                 </div>
             )}

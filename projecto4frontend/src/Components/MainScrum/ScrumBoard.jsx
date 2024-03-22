@@ -93,11 +93,11 @@ const ScrumBoard = (props) => {
   const parsePriorityToString = (priority) => {
     let newPriority = '';
     if(priority === 100) {
-      newPriority = 'low';
+      newPriority = 'Low';
     } else if(priority === 200) {
-      newPriority = 'medium';
+      newPriority = 'Medium';
     } else if(priority === 300) {
-      newPriority = 'high';
+      newPriority = 'High';
     }
     return newPriority;
   }
