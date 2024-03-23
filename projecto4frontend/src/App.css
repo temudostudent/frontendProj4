@@ -272,7 +272,7 @@ Profile Edit
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 78%;
+	height: 78vh;
 }
 
 .edit-profile-container{
@@ -280,7 +280,7 @@ Profile Edit
 }
 
 .edit-profile-container form{
-	padding: 25px;
+	padding: 6px;
 	border-radius: 5px;
 }
 

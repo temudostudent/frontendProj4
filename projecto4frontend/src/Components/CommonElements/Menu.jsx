@@ -60,34 +60,32 @@ const Menu = ({ items, typeOfUser }) => {
     return (
         <div ref={$root} className="menu">
             {items.map((item, index) => (
-                
-                // Se não for, não renderizar o item
-                !((item.name === "Categories" || item.name === "Users") && typeOfUser !== 300) && (
-                    <div key={item.name} className="menu-item" onMouseEnter={() => handleMenuItemHover(index)} onClick={() => handleMenuItemClick(index)}>
+                <div key={item.name} className="menu-item" onMouseEnter={() => handleMenuItemHover(index)} onClick={() => handleMenuItemClick(index)}>
+                    {(item.name === "Board" || (item.name === "Users" && typeOfUser !== 100) || (item.name === "Categories" && typeOfUser === 300)) && (
                         <a
                             ref={$items.current[index]}
                             className={`item ${active === index ? "active" : ""}`}
                             onClick={() => navigate(item.path)}
                             aria-label={item.name}
                         >
-                            <span className="container-item">{item.name} 
-                                                            {!(item.name === "Categories")  && (
-                                                                <IoMdArrowDropdown />
-                                                                )}                        
+                            <span className="container-item">
+                                {item.name} 
+                                {!(item.name === "Categories" || (item.name === "Users" && typeOfUser === 200)) && (
+                                    <IoMdArrowDropdown />
+                                )}                        
                             </span>
-
                         </a>
-                        {(active === index) && (
-                            <div className="submenu" style={{cursor: 'pointer'}}>
-                                {submenuItems.map((submenuItem, index) => (
-                                    <div key={index} className="submenu-item">
-                                        <a onClick={() => navigate(submenuItem.path)}>{submenuItem.name}</a>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                )
+                    )}
+                    {(active === index && (item.name === "Board" || (item.name === "Users" && typeOfUser !== 100) || (item.name === "Categories" && typeOfUser === 300))) && (
+                        <div className="submenu" style={{cursor: 'pointer'}}>
+                            {submenuItems.map((submenuItem, index) => (
+                                <div key={index} className="submenu-item">
+                                    <a onClick={() => navigate(submenuItem.path)}>{submenuItem.name}</a>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
             ))}
             <div ref={$indicator1} className="indicator" />
             <div ref={$indicator2} className="indicator" />

@@ -42,19 +42,30 @@ const Header = () => {
     }
     
     const items = [
-        {   name: "Board", 
+        {   
+            name: "Board", 
             color: "#c8ae7e", 
             submenu: [
                 { name: "My ScrumBoard", path: "/home", onClick: () => {updateIsAllTasksPage(false)} },
                 { name: "Complete ScrumBoard", path: "/alltasks", onClick: () => {updateIsAllTasksPage(true)} },
-            ] },
-        {   name: "Categories", color: "#2D9596", path: "/categories" },
-        {   name: "Users", 
+            ] 
+        },
+        {   
+            name: "Categories", 
+            color: "#2D9596", 
+            path: "/categories" 
+        },
+        {   
+            name: "Users", 
             color: "#4d7d99",
-            submenu: [
+            
+            path: (userData.typeOfUser === 200) ? "/users" : null,
+          
+            submenu: (userData.typeOfUser === 300) ? [
                 { name: "Manage Users", path: "/users" },
-                { name: "Add New User", path: "/register-user" },
-            ] },
+                { name: "Add New User", path: "/register-user" }
+            ] : null
+        },
     ];
 
     return (

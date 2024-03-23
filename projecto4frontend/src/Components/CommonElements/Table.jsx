@@ -20,6 +20,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu'
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
@@ -63,7 +64,7 @@ function stableSort(array, comparator) {
 
 
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, headCells, dataType } =
+  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, headCells, dataType, typeOfUser } =
     props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -72,23 +73,29 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all',
-            }}
-          />
-        </TableCell>
-        {dataType === "Users" && (
-          <TableCell>
-            {/*Vazia*/}
-          </TableCell>
-        )}
-        
+
+      {(typeOfUser === 300) && (
+        <>
+            <TableCell padding="checkbox">
+              <Checkbox
+                color="primary"
+                indeterminate={numSelected > 0 && numSelected < rowCount}
+                checked={rowCount > 0 && numSelected === rowCount}
+                onChange={onSelectAllClick}
+                inputProps={{
+                  'aria-label': 'select all',
+                }}
+              />
+            </TableCell>
+            {dataType === "Users" && (
+              <TableCell>
+                {/*Vazia*/}
+              </TableCell>
+            )}          
+ 
+        </>
+      )}
+
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -125,7 +132,7 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { dataType, numSelected, onDeleteSelected, selected, setSelected, onEditSelect, filterData, handleFilter, onChangeVisibilitySelect, onPermDeleteSelect} = props;
+  const { dataType, typeOfUser, numSelected, onDeleteSelected, selected, setSelected, onEditSelect, filterData, handleFilter, onChangeVisibilitySelect, onPermDeleteSelect} = props;
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleDelete = () => {
@@ -189,35 +196,50 @@ function EnhancedTableToolbar(props) {
       )}
 
       {numSelected === 1 ? (
-        <Tooltip >
-          <div className='table-buttons-container'>
-            <IconButton title="Edit" onClick={dataType === "Users" ? onEditSelect : handleEdit}>
-              <EditIcon />
-            </IconButton>
-            <IconButton 
-              title={dataType === "Users" ? "Delete Tasks" : "Delete"} 
-              onClick={handleDelete}
-            >
-              <DeleteIcon />
-            </IconButton>
+        <Tooltip>
+        <div className='table-buttons-container'>
 
-
-            {dataType === "Users" && (
-            <IconButton title="Reverse Current Visibility" onClick={handleVisibility}>
-              <ChangeCircleIcon/>
-            </IconButton>
-            )}
-
-            {!selected[0].visible && dataType === "Users" && (
-              <IconButton title="Permanently Delete"  onClick={handlePermDelete}>
-                <DeleteForeverIcon />
+        {(typeOfUser === 200) && (
+            <>
+              <IconButton title="Edit" onClick={dataType === "Users" ? handleEdit : null}>
+                <VisibilityIcon />
               </IconButton>
-            )}
-          </div>
-        </Tooltip>
+            </>
+          )}
+
+
+
+
+          {(typeOfUser === 300) && (
+            <>
+              <IconButton title="Edit" onClick={dataType === "Users" ? handleEdit : handleEdit}>
+                <EditIcon />
+              </IconButton>
+              <IconButton 
+                title={dataType === "Users" ? "Delete Tasks" : "Delete"} 
+                onClick={handleDelete}
+              >
+                <DeleteIcon />
+              </IconButton>
+              {dataType === "Users" && (
+                <IconButton title="Reverse Current Visibility" onClick={handleVisibility}>
+                  <ChangeCircleIcon/>
+                </IconButton>
+              )}
+              {!selected[0].visible && dataType === "Users" && (
+                <IconButton title="Permanently Delete"  onClick={handlePermDelete}>
+                  <DeleteForeverIcon />
+                </IconButton>
+              )}
+            </>
+          )}
+        </div>
+      </Tooltip>
       ) : numSelected > 1 ? (
         <Tooltip>
           <div className='table-buttons-container'>
+          {(typeOfUser === 300) && (
+            <>
             <IconButton 
                 title={dataType === "Users" ? "Delete Tasks" : "Delete"}
                 onClick={handleDelete}
@@ -229,7 +251,8 @@ function EnhancedTableToolbar(props) {
               <ChangeCircleIcon/>
             </IconButton>
             )}
-
+            </>
+          )}
           </div>
         </Tooltip>
 
@@ -269,7 +292,7 @@ export default function EnhancedTable(props) {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const { dataType, data, onSelectionChange, onDeleteSelected, onAddChange, onEditSelect, headCells, filterData, handleFilter, onChangeVisibilitySelect, onPermDeleteSelect } = props;
+  const { dataType, data, typeOfUser, onSelectionChange, onDeleteSelected, onAddChange, onEditSelect, headCells, filterData, handleFilter, onChangeVisibilitySelect, onPermDeleteSelect } = props;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -339,6 +362,7 @@ export default function EnhancedTable(props) {
         dataType={dataType}
         selected={selected}
         numSelected={selected.length} 
+        typeOfUser={typeOfUser}
         onDeleteSelected={onDeleteSelected}
         onEditSelect={onEditSelect}
         filterData={filterData}
@@ -355,6 +379,7 @@ export default function EnhancedTable(props) {
         >
           <EnhancedTableHead
             dataType={dataType}
+            typeOfUser={typeOfUser}
             headCells={headCells}
             numSelected={selected.length}
             order={order}
@@ -382,25 +407,30 @@ export default function EnhancedTable(props) {
                   selected={isItemSelected}
                   sx={{ cursor: 'pointer' }}
                 >
-                  {/* Coluna para a checkbox */}
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      color="primary"
-                      checked={isItemSelected}
-                      inputProps={{
-                        'aria-labelledby': labelId,
-                      }}
-                    />
-                  </TableCell>
-                  
-                  {/* Coluna de visibilidade */}
-                  {dataType === "Users" && (
-                    <TableCell style={{ padding: "6px 6px 0" }}>
-                    {row.visible ? 
-                      <VisibilityOutlinedIcon color="primary" /> :
-                      <VisibilityOffOutlinedIcon color="primary" />
-                    }
-                  </TableCell>
+
+                {(typeOfUser === 300) && (
+                    <>
+                      {/* Coluna para a checkbox */}
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          color="primary"
+                          checked={isItemSelected}
+                          inputProps={{
+                            'aria-labelledby': labelId,
+                          }}
+                        />
+                      </TableCell>
+                      
+                      {/* Coluna de visibilidade */}
+                      {(dataType === "Users") && (
+                        <TableCell style={{ padding: "6px 6px 0" }}>
+                        {row.visible ? 
+                          <VisibilityOutlinedIcon color="primary" /> :
+                          <VisibilityOffOutlinedIcon color="primary" />
+                        }
+                      </TableCell>
+                      )}
+                    </>
                   )}
 
                   {headCells.map((headCell) => (

@@ -6,17 +6,22 @@ import { useLocation } from 'react-router-dom';
 
 Modal.setAppElement('#root');
 
-const EditProfileForm = ({username, userData, onUpdateSuccess}) => {
+const EditProfileForm = ({username, printData, onUpdateSuccess}) => {
     const [inputs, setInputs] = useState({});
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    const token = userStore((state) => state.token);
+    const { token, userData} = userStore();
     const location = useLocation();
   
     const handleChange = (event) => {
       const { name, value } = event.target;
-      const newValue = name === 'typeOfUser' ? parseTypeIdToString(value) : value;
-
-      setInputs((prevInputs) => ({ ...prevInputs, [name]: newValue }));
+    
+      if (name === 'typeOfUser') {
+        
+        setInputs((prevInputs) => ({ ...prevInputs, [name]: value }));
+      } else {
+        // Para outros campos, atualize o estado como antes
+        setInputs((prevInputs) => ({ ...prevInputs, [name]: value }));
+      }
     };
 
     const handleSubmit = async (event) => {
@@ -38,7 +43,7 @@ const EditProfileForm = ({username, userData, onUpdateSuccess}) => {
         }
 
       try{  
-        const response = await fetch(`http://localhost:8080/project_backend/rest/users/update/${userData.username}/password`, 
+        const response = await fetch(`http://localhost:8080/project_backend/rest/users/update/${printData.username}/password`, 
           {
               method: 'PUT',
               headers: {
@@ -51,7 +56,7 @@ const EditProfileForm = ({username, userData, onUpdateSuccess}) => {
           });
 
           if (response.status === 200) {
-              toast.success(response.statusText);
+              toast.success('Password updated successfully');
               setModalIsOpen(false);
               setInputs({});
               event.target.reset();
@@ -101,9 +106,9 @@ const EditProfileForm = ({username, userData, onUpdateSuccess}) => {
           <input
             type="text"
             name="firstName"
-            
-            placeholder={userData.firstName || ''} 
+            placeholder={printData.firstName || ''} 
             onChange={handleChange}
+            disabled={userData.typeOfUser === 200}
           />
           <br />
     
@@ -111,9 +116,9 @@ const EditProfileForm = ({username, userData, onUpdateSuccess}) => {
           <input
             type="text"
             name="lastName" 
-            
-            placeholder={userData.lastName || ''}
+            placeholder={printData.lastName || ''}
             onChange={handleChange}
+            disabled={userData.typeOfUser === 200}
           />
           <br />
     
@@ -122,8 +127,9 @@ const EditProfileForm = ({username, userData, onUpdateSuccess}) => {
             type="email"
             name="email"
             
-            placeholder={userData.email || ''}
+            placeholder={printData.email || ''}
             onChange={handleChange}
+            disabled={userData.typeOfUser === 200}
           />
           <br />
 
@@ -132,8 +138,9 @@ const EditProfileForm = ({username, userData, onUpdateSuccess}) => {
             type="text"
             name="phone" 
             
-            placeholder={userData.phone || ''}
+            placeholder={printData.phone || ''}
             onChange={handleChange}
+            disabled={userData.typeOfUser === 200}
           />
           <br />
     
@@ -142,29 +149,36 @@ const EditProfileForm = ({username, userData, onUpdateSuccess}) => {
             type="url"
             name="photoURL" 
             
-            placeholder={userData.photoURL || ''}  
+            placeholder={printData.photoURL || ''}  
             onChange={handleChange}
+            disabled={userData.typeOfUser === 200}
           />
-         {location.pathname === '/users' && (
+         {(location.pathname === '/users') && (userData.typeOfUser===300) && (
             <>
               <br />
               <label htmlFor="typeOfUser">Type:</label>
               <select
                 name="typeOfUser"
-                value={userData.typeOfUser} // Use o valor numérico diretamente
+                value={inputs.typeOfUser || printData.typeOfUser}
                 onChange={handleChange}
               >
                 <option value={100}>Developer</option>
                 <option value={200}>Scrum Master</option>
                 <option value={300}>Product Owner</option>
               </select>
-            </>
+              </>
           )}
+          {!(location.pathname === '/users' && userData.typeOfUser === 200) && (
+  <>
           <br />
           <div className="editProfile-buttons-container">
+          {!(location.pathname === '/users') && (
               <button type="button" onClick={() => setModalIsOpen(true)}>Change Password</button>
+          )}
               <button type="submit">Submit</button>
           </div>
+          </>
+          )}
           
       </form>
             <Modal

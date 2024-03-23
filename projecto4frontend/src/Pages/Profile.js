@@ -21,6 +21,8 @@ const Profile = () => {
           updateUserData({ ...userData, ...inputs });
       
         } else {
+
+          console.log(updateResponse);
          
           console.error("Update unsuccessful:", updateResponse);
         }
@@ -39,7 +41,7 @@ const Profile = () => {
                 {userData && 
                 <EditProfileForm 
                   username={userData.username} 
-                  userData={userData}
+                  printData={userData}
                   onUpdateSuccess={handleUpdateSuccess} />}
             </div>
           </div>

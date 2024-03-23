@@ -13,8 +13,8 @@ const ScrumBoard = (props) => {
   const location = useLocation();
   const { pathname } = location;
 
-  const {token , userData , taskData} = props
-  const { selectedTask, updateTasks, setSelectedTask } = useTaskStore();
+  const {token , userData, homeTasksChange } = props
+  const { tasks, selectedTask, updateTasks, setSelectedTask } = useTaskStore();
   const { updateShowSidebar, updateIsEditing, updateShowModal, showModal } = useActionsStore();
   const [loading, setLoading] = useState(true);
   const [selectedTaskInfo, setSelectedTaskInfo] = useState(null);
@@ -37,15 +37,37 @@ const ScrumBoard = (props) => {
 
   useEffect(() => {
     fetchTasks();
-  }, [token, userData, pathname, updateTasks,/* taskData*/]);
+  }, [token, userData, pathname, updateTasks, homeTasksChange]);
 
   const handleTaskEraseStatus = async (taskId) => {
+
+    console.log('Task erase status:', taskId);
     try {
 
       if(taskId){
 
         setLoading(true);
-        await AuthService.eraseStatusTask(token, taskId);
+        await AuthService.changeEraseStatusTask(token, taskId);
+  
+        await fetchTasks();
+        setLoading(false);
+      }
+      
+    } catch (error) {
+        console.error('Error deleting task:', error);
+        setLoading(false);
+    }
+  }
+
+
+  const handleTaskDelete = async (taskId) => {
+
+    try {
+
+      if(taskId){
+
+        setLoading(true);
+        await AuthService.deleteTask(token, taskId);
   
         await fetchTasks();
         setLoading(false);
@@ -125,7 +147,7 @@ const ScrumBoard = (props) => {
               ref={provided.innerRef}
               className={`task_list ${status}`}
             >
-              {taskData && taskData
+              {tasks && tasks
                 .filter((task) => task.stateId === parseInt(status))
                 .map((task, index) => (
                   <Task 
@@ -134,6 +156,7 @@ const ScrumBoard = (props) => {
                     index={index} 
                     onEraseStatusChange={handleTaskEraseStatus}
                     onTaskDoubleClick={handleTaskDoubleClick}
+                    onDeleteChange={handleTaskDelete}
                     className={task.erased ? 'erased-task' : ''}/>
                 ))}
               {provided.placeholder}
@@ -154,7 +177,12 @@ const ScrumBoard = (props) => {
             <div className="column column1">
               <div className="title">To Do</div>
               {renderTasksByStatus("100")}
-              <button onClick={handleNewTaskButton}>&nbsp;+ New Task</button>
+
+              {(location.pathname === '/home' || (location.pathname === '/alltasks' && userData.typeOfUser !== 100)) && (
+                  <button onClick={handleNewTaskButton}>&nbsp;+ New Task</button>
+              )}
+
+             
             </div>
 
             <div className="column column2">

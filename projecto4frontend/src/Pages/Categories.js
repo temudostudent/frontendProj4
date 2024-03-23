@@ -7,7 +7,7 @@ import { FaArrowLeft } from "react-icons/fa";
 
 const Categories = () => {
 
-    const token = userStore((state) => state.token);
+    const { token, userData } = userStore();
     const { categories, updateCategories } = useCategoryStore();
     const [selected , setSelected] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -91,12 +91,11 @@ const Categories = () => {
         try {
           await Promise.all(
             selected.map(async (categoryId) => {
-              console.log(categoryId);
               response = await AuthService.deleteCategory(token, categoryId);
             })
           );
       
-          if(response){
+          if(response.status === 200){
             await fetchCategories();
           }
           
@@ -185,6 +184,7 @@ const Categories = () => {
                     <div className="categories-table">
                         <EnhancedTable 
                             dataType="Categories"
+                            typeOfUser={userData.typeOfUser}
                             headCells={headCells}
                             data={categories}
                             onDeleteSelected={handleDeleteSelectedCategories}

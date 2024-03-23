@@ -172,11 +172,14 @@ USER
         try {
             const response = await axios.put(`${API_BASE_URL}/update/${username}`, updatedData, {
                 headers: {
-                    'Content-Type': 'application/json',
                     'Accept': '*/*',
+                    'Content-Type': 'application/json',
                     'token': token
                 }
             });
+
+            console.log(response);
+
             if (response.status === 200) {
 
                 toast.success("Profile updated successfully");
@@ -185,8 +188,13 @@ USER
       
             } else if (response.status === 401) {
                 toast.warning("Invalid credentials")
-            } else if (response.status === 422) {
+                return response;
+            } else if (response.status == 422) {
                 toast.warning(response.statusText);
+                return response;
+            } else {
+                console.error("Unhandled status code:", response.status);
+                return response;
             }
         } catch (error) {
             console.error('Error:', error);
@@ -360,7 +368,6 @@ getAllTasks: async (token) => {
 
 getAllTasksFromUser: async (token, username) => {
 
-
     console.log('getAllTasksFromUser');
     try {
         const response = await axios.get(`${API_BASE_URL}/${username}/tasks`, {
@@ -372,6 +379,8 @@ getAllTasksFromUser: async (token, username) => {
             }
         });
         if (response.status === 200) {
+
+            console.log(response);
    
             return response.data;
   
@@ -489,7 +498,11 @@ updateTaskStatus: async (token, taskId, newStateId) => {
     }
 },
 
-eraseStatusTask: async (token, taskId) => {
+changeEraseStatusTask: async (token, taskId) => {
+
+    console.log('change erase status task');
+
+
     try {
         const response = await axios.put(`${API_BASE_URL}/${taskId}`, null, {
             headers: {
@@ -498,6 +511,9 @@ eraseStatusTask: async (token, taskId) => {
                 'token': token
             }
         });
+
+        console.log(response);
+
         if (response.status === 200) {
    
             toast.success(response.data)

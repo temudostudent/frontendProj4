@@ -8,7 +8,7 @@ import Sidebar from '../Components/CommonElements/Sidebar'
 
 const Users = () => {
 
-    const { token } = userStore(); 
+    const { token, userData } = userStore(); 
     const { usersListData, updateUsersListData, setSelectedUser } = useUsersListStore();
     const [loading, setLoading] = useState(true);
     const [selected , setSelected] = useState([]);
@@ -127,9 +127,11 @@ const Users = () => {
                     usersList.map(async (user) => {
                         const tasks = await AuthService.getAllTasksFromUser(token, user.username);
 
+                        const activeTasks = tasks.filter(task => task.erased === false);
+
                         const typeOfUserFormatted = formatTypeOfUser(user);
 
-                        return { ...user, id:user.username, number_tasks_user: tasks.length, typeOfUser: typeOfUserFormatted};
+                        return { ...user, id:user.username, number_tasks_user: activeTasks.length, typeOfUser: typeOfUserFormatted};
                     })
                 );
                 
@@ -222,6 +224,8 @@ const Users = () => {
 
       const handleUpdateSuccess = async (inputs, username) => {
 
+        console.log(inputs);
+
         try {
           const updateResponse = await AuthService.updateUser(token, username, inputs);
       
@@ -284,6 +288,7 @@ const Users = () => {
                     <>
                         <EnhancedTable 
                             dataType="Users"
+                            typeOfUser={userData.typeOfUser}
                             headCells={headCells}
                             data={usersListData}
                             filterData={filterData}

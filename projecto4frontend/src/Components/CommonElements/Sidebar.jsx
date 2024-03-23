@@ -50,9 +50,8 @@ function Sidebar({ formTitle, inputs, formSubmitTitle, onSubmit}) {
             return initialValues ? (
                 <EditProfileForm 
                     username={initialValues.username}
-                    userData={initialValues}
+                    printData={initialValues}
                     onUpdateSuccess={onSubmit}
-
                 />
             ) : null;
         } else {

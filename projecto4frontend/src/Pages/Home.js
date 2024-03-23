@@ -15,14 +15,15 @@ const Home = () => {
 
     const token = userStore((state) => state.token);
     const userData = userStore((state) => state.userData);
+    
     const { categories, updateCategories} = useCategoryStore();
     const { usersListData, updateUsersListData} = useUsersListStore();
-    const { tasks, updateTasks, selectedTask, setSelectedTask} = useTaskStore();
+    const { updateTasks, selectedTask, setSelectedTask} = useTaskStore();
     const { showSidebar, updateShowSidebar, isEditing } = useActionsStore();
     const [loading, setLoading] = useState(true);
     const [selectedFilter, setSelectedFilter] = useState('All');
     const [selectedOption, setSelectedOption] = useState('');
-    const [selectedValue, setSelectedValue] = useState('');
+    const [updatedSignal, setUpdatedSignal] = useState(true);
 
 
     useEffect(() => {
@@ -33,7 +34,7 @@ const Home = () => {
     const fetchInitialData = async () => {
 
         try {
-            await Promise.all([fetchTasks(token), fetchCategories(token), fetchUsers(token)]);
+            await Promise.all([fetchCategories(), fetchUsers()]);
             setLoading(false); 
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -64,6 +65,8 @@ const Home = () => {
                     userTasks = await AuthService.getAllTasks(token);
                 }
             } else {
+
+                console.log('tarefas deste mesmo');
                 userTasks = await AuthService.getAllTasksFromUser(token, userData.username);
             }
     
@@ -98,8 +101,9 @@ const Home = () => {
 
             if (response.status === 201) {
                 
-                const tasksUpdated = await fetchTasks(token);
+                const tasksUpdated = await fetchTasks();
                 updateTasks(tasksUpdated);
+                setUpdatedSignal(!updatedSignal);
             } else {
                 console.error('Error creating task:', response.error);
             }
@@ -109,7 +113,7 @@ const Home = () => {
     };
 
     const handleEditTask = async (taskInput) => {
-        console.log(selectedTask);
+
         console.log('taskInput');
 
         try {
@@ -118,10 +122,11 @@ const Home = () => {
 
             if (response.status === 200) {
                 
-                const tasksUpdated = await fetchTasks(token);
+                const tasksUpdated = await fetchTasks();
                 updateTasks(tasksUpdated);
                 updateShowSidebar(true);
                 setSelectedTask(null);
+                setUpdatedSignal(!updatedSignal);
             } else {
                 console.error('Error creating task:', response.error);
             }
@@ -263,11 +268,12 @@ const Home = () => {
                         <ScrumBoard
                             token={token}
                             userData={userData}
-                            taskData={tasks}
+                            homeTasksChange={updatedSignal}
+                            
                         />
                     </div>
                     <div className='select-filter-container'>
-                        {(location.pathname === '/alltasks') && (
+                        {(location.pathname === '/alltasks') && (userData.typeOfUser!==100) && (
                                 renderSelect({ name: 'Filters' })
                         )}
                         

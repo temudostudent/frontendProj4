@@ -2,14 +2,18 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Draggable } from 'react-beautiful-dnd';
 import { MdEdit, MdDelete, MdOutlineRestore } from "react-icons/md";
+import { userStore } from '../../Stores/UserStore'
 import { useTaskStore } from '../../Stores/TaskStore'
 import { useActionsStore } from '../../Stores/ActionStore'
+import { useLocation } from 'react-router-dom';
 
 
-const Task = ({ task , index , onEraseStatusChange, onTaskDoubleClick }) => {
+const Task = ({ task , index , onEraseStatusChange, onTaskDoubleClick, onDeleteChange }) => {
 
   const { setSelectedTask } = useTaskStore();
   const { updateShowSidebar, updateIsEditing } = useActionsStore();
+  const userData = userStore((state) => state.userData);
+  const location = useLocation()
 
   const handleTaskPriority = (priority) => {
     let priorityClass = 'priority-color ';
@@ -23,12 +27,17 @@ const Task = ({ task , index , onEraseStatusChange, onTaskDoubleClick }) => {
     return <span className={priorityClass}></span>;
   }
 
-  const handleDeleteClick = async () => {
+  const handleEraseClick = async () => {
+    console.log('erase');
     onEraseStatusChange(task.id);
   }
 
   const handleRestoreClick = async () => {
     onEraseStatusChange(task.id);
+  }
+
+  const handlePermDeleteClick = async () => {
+    onDeleteChange(task.id);
   }
 
   const handleEditClick = () => {
@@ -65,17 +74,27 @@ const Task = ({ task , index , onEraseStatusChange, onTaskDoubleClick }) => {
               <p>{task.title}</p>
               <p style={{ fontSize: '8px' }}>{task.category.name}</p>
             </div>
-            <div className='buttons-container'>
-              <span onClick={handleEditClick}><MdEdit /></span>
 
-              {task.erased && (
-                <span onClick={handleRestoreClick}><MdOutlineRestore /></span>
-              )}
+            {(location.pathname === '/home' || (location.pathname === '/alltasks' && userData.typeOfUser !== 100)) && (
+                    <div className='buttons-container'>
+                    <span title="Edit" onClick={handleEditClick}><MdEdit /></span>
+      
+                    {task.erased && (
+                      <>
+                          <span title="Restore" onClick={handleRestoreClick}><MdOutlineRestore /></span>
+                          <span title="Delete" onClick={handlePermDeleteClick}><MdDelete /></span>
+                      </>
+                    )}
+      
+                    {!task.erased && (
+                      <span title="Erase" onClick={handleEraseClick}><MdDelete /></span>
+                    )}
+                  </div>
+            )}
 
-              {!task.erased && (
-                <span onClick={handleDeleteClick}><MdDelete /></span>
-              )}
-            </div>
+            
+
+
           </div>
         </div>
       )}
