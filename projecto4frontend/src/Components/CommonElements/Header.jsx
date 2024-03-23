@@ -4,11 +4,14 @@ import defaultPhoto from "../Assets/profile_pic_default.png"
 import './CommonElements.css'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { userStore } from '../../Stores/UserStore'
 import { useNavigate } from 'react-router-dom'
 import AuthService from "../Service/AuthService"
 import Menu from './Menu'
+import { userStore } from '../../Stores/UserStore'
 import { useActionsStore } from '../../Stores/ActionStore'
+import { useCategoryStore } from '../../Stores/CategoryStore'
+import { useTaskStore } from '../../Stores/TaskStore'
+import { useUsersListStore } from '../../Stores/UsersDataStore'
 
 const Header = () => {
     const token = userStore((state) => state.token);
@@ -35,6 +38,11 @@ const Header = () => {
         try {
             await AuthService.logout(token);
             userStore.getState().resetUserStore();
+            useActionsStore.getState().resetUseActionsStore();
+            useCategoryStore.getState().resetUseCategoryStore();
+            useTaskStore.getState().resetUseTaskStore();
+            useUsersListStore.getState().resetUseUsersListStore();
+            
             navigate('/');
         }catch (error) {
             console.log(error);

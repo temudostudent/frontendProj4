@@ -423,7 +423,7 @@ export default function EnhancedTable(props) {
                       
                       {/* Coluna de visibilidade */}
                       {(dataType === "Users") && (
-                        <TableCell style={{ padding: "6px 6px 0" }}>
+                        <TableCell style={{ padding: "4px 4px 0" }}>
                         {row.visible ? 
                           <VisibilityOutlinedIcon color="primary" /> :
                           <VisibilityOffOutlinedIcon color="primary" />
@@ -440,7 +440,7 @@ export default function EnhancedTable(props) {
                           //padding={headCell.disablePadding ? 'none' : 'normal'}
                       >
                           {headCell.id === 'photoURL' ? (
-                              <img src={row[headCell.id]} alt="Profile Pic" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover'}} />
+                              <img src={row[headCell.id]} alt="Profile Pic" style={{ width: '30px', height: '30px', borderRadius: '50%', objectFit: 'cover'}} />
                           ) : (
                               row[headCell.id]
                           )}
@@ -459,7 +459,7 @@ export default function EnhancedTable(props) {
             </div>
           )}
         <TablePagination
-          rowsPerPageOptions={[5, 10, 20]}
+          rowsPerPageOptions={[5]}
           component="div"
           count={data.length}
           rowsPerPage={rowsPerPage}
