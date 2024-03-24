@@ -56,7 +56,7 @@ const ScrumBoard = (props) => {
       updateTasks(prevTasks => {
         return prevTasks.map(task => {
           if (task.id === taskId) {
-            return { ...task, erased: true }; // Atualize apenas a propriedade erased
+            return { ...task, erased: true };
           }
           return task;
         });
@@ -72,7 +72,7 @@ const ScrumBoard = (props) => {
     try {
       
       await AuthService.deleteTask(token, taskId);
-      updateTasks(prevTasks => prevTasks.filter(task => task.id !== taskId)); // Remova a tarefa da lista
+      updateTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
       
     } catch (error) {
       console.error('Error deleting task:', error);
@@ -100,7 +100,7 @@ const ScrumBoard = (props) => {
       await updateTasks(prevTasks => {
         return prevTasks.map(task => {
           if (task.id === taskId) {
-            return { ...task, stateId: newStateId }; // Atualize apenas a propriedade stateId
+            return { ...task, stateId: newStateId };
           }
           return task;
         });

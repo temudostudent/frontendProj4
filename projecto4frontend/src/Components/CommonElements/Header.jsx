@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import logo from '../Assets/agileflow-high-resolution-logo-transparent.png'
 import defaultPhoto from "../Assets/profile_pic_default.png"
 import './CommonElements.css'
@@ -86,8 +86,8 @@ const Header = () => {
             <div className="profile-container" onClick={() => setShowAccountDrop(true)}>
                 <a>{headerUsername}</a> {/*Mostra username*/}
                 <span className="photo-container">
-                    <img src={headerPhoto} /> {/*Mostra foto de perfil*/}
-                </span>
+                    <img src={headerPhoto} alt="Profile Pic" /> {/*Mostra foto de perfil*/}
+                </span> 
             </div>
             {showAccountDrop && (
             <div className="accountDrop" onMouseLeave={() => setShowAccountDrop(false)}>
