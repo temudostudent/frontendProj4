@@ -69,7 +69,7 @@ const ScrumBoard = (props) => {
       updateTasks(prevTasks => {
         return prevTasks.map(task => {
           if (task.id === taskId) {
-            return { ...task, erased: true };
+            return { ...task, erased: !task.erased};
           }
           return task;
         });
