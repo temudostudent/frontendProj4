@@ -4,14 +4,18 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
 
 const Menu = ({ items, typeOfUser }) => {
+    // References for DOM elements
     const $root = useRef();
     const $indicator1 = useRef();
     const $indicator2 = useRef();
     const $items = useRef(items.map(createRef));
+    // State variables
     const [active, setActive] = useState(null);
     const [submenuItems, setSubmenuItems] = useState([]);
+    // Navigation hook
     const navigate = useNavigate();
 
+    // Function to handle click on menu items
     const handleMenuItemClick = (index) => {
         if (active === index) {
             setActive(null);
@@ -21,11 +25,13 @@ const Menu = ({ items, typeOfUser }) => {
         }
     };
 
+    // Function to handle hover on menu items
     const handleMenuItemHover = (index) => {
         setActive(index);
         setSubmenuItems(items[index].submenu || []);
     }
 
+    // Animation function to animate the active menu item
     const animate = () => {
         if (active !== null) {
             const menuOffset = $root.current.getBoundingClientRect();
@@ -59,8 +65,10 @@ const Menu = ({ items, typeOfUser }) => {
 
     return (
         <div ref={$root} className="menu">
+            {/* Mapping through menu items */}
             {items.map((item, index) => (
                 <div key={item.name} className="menu-item" onMouseEnter={() => handleMenuItemHover(index)} onClick={() => handleMenuItemClick(index)}>
+                    {/* Conditional rendering based on user type and item type */}
                     {(item.name === "Board" || (item.name === "Users" && typeOfUser !== 100) || (item.name === "Categories" && typeOfUser === 300)) && (
                         <a
                             ref={$items.current[index]}
@@ -76,6 +84,7 @@ const Menu = ({ items, typeOfUser }) => {
                             </span>
                         </a>
                     )}
+                    {/* Submenu rendering */}
                     {(active === index && (item.name === "Board" || (item.name === "Users" && typeOfUser !== 100) || (item.name === "Categories" && typeOfUser === 300))) && (
                         <div className="submenu" style={{cursor: 'pointer'}}>
                             {submenuItems.map((submenuItem, index) => (
@@ -87,6 +96,7 @@ const Menu = ({ items, typeOfUser }) => {
                     )}
                 </div>
             ))}
+            {/* Indicator for active menu item */}
             <div ref={$indicator1} className="indicator" />
             <div ref={$indicator2} className="indicator" />
         </div>

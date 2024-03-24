@@ -4,18 +4,19 @@ import { useLocation } from 'react-router-dom';
 
 function SignUpForm({ onSignUpSuccess }) {
 
+    // Hook to get the current location
     const location = useLocation();
     const { pathname } = location;
+    // State variable for form inputs
     const [inputs, setInputs] = useState({});
 
-    console.log(inputs);
-
-    //Inputs
+    // Function to handle changes in input fields
     const handleChange = (event) => { 
         const { name, value } = event.target;
         setInputs({...inputs, [name]: value});
     }
 
+    // Function to handle form submission
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -41,6 +42,7 @@ function SignUpForm({ onSignUpSuccess }) {
             <form  action="#" onSubmit={handleSubmit}>
                 <h1>Create Account</h1>
                 <br />
+                {/* Input fields */}
                     <input type="text" name="username" value={inputs.username || ''} placeholder="Username" onChange={handleChange} required/>
 			        <input type="text" name="firstName" value={inputs.firstName || ''} placeholder="First Name" onChange={handleChange} required/>
 			        <input type="text" name="lastName" value={inputs.lastName || ''} placeholder="Last Name" onChange={handleChange} required/>

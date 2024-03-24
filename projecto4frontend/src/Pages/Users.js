@@ -7,18 +7,18 @@ import AuthService from '../Components/Service/AuthService'
 import Sidebar from '../Components/CommonElements/Sidebar'
 
 const Users = () => {
+  const { token, userData } = userStore(); // Retrieve token and userData from userStore
+  const { usersListData, updateUsersListData, setSelectedUser } = useUsersListStore(); // Get usersListData and updateUsersListData functions from useUsersListStore
+  const [loading, setLoading] = useState(true); // State to manage loading state
+  const [selected, setSelected] = useState([]); // State to manage selected users
+  const { showSidebar, updateShowSidebar } = useActionsStore(); // Get showSidebar and updateShowSidebar functions from useActionsStore
 
-    const { token, userData } = userStore(); 
-    const { usersListData, updateUsersListData, setSelectedUser } = useUsersListStore();
-    const [loading, setLoading] = useState(true);
-    const [selected , setSelected] = useState([]);
-    const { showSidebar, updateShowSidebar } = useActionsStore();
-
+    // Function to handle users selection change
     const handleUsersSelectionChange = (selectedUsersIds) => {
-        setSelected(selectedUsersIds);
-      };
+      setSelected(selectedUsersIds); // Update selected users
+    };
 
-
+    // Define head cells for the table
     const headCells = [
         {
           id: 'photoURL',
@@ -64,6 +64,7 @@ const Users = () => {
         }
       ];
 
+    // Define filter data for the table
     const filterData = [
         {
             id: 'all',
@@ -98,6 +99,7 @@ const Users = () => {
     ];
 
 
+    // Fetch users data on component mount
     useEffect(() => {
         const fetchData = async () => {
             await fetchUsers({});
@@ -107,46 +109,47 @@ const Users = () => {
         fetchData();
     }, []);
     
-      const fetchUsers = async ({type, visible}) => {
-        try {
+    // Function to fetch users based on filters
+    const fetchUsers = async ({type, visible}) => {
+      try {
 
-            let usersList;
+          let usersList;
 
-            if (type !== undefined) {
-                usersList = await AuthService.getUsersByType(token, type);
-            }else if (visible !== undefined) {
-                usersList = await AuthService.getUsersByVisibility (token, visible);
-            }else{
-                usersList = await AuthService.getAllUsersData(token);
-            }
+          if (type !== undefined) {
+              usersList = await AuthService.getUsersByType(token, type);
+          }else if (visible !== undefined) {
+              usersList = await AuthService.getUsersByVisibility (token, visible);
+          }else{
+              usersList = await AuthService.getAllUsersData(token);
+          }
 
-            if (usersList !== undefined) {
-                
-                //Verificar número de tarefas de cada um
-                const usersFormatted = await Promise.all(
-                    usersList.map(async (user) => {
-                        const tasks = await AuthService.getAllTasksFromUser(token, user.username);
+          if (usersList !== undefined) {
+              // Format users data and update usersListData
+              const usersFormatted = await Promise.all(
+                  usersList.map(async (user) => {
+                      const tasks = await AuthService.getAllTasksFromUser(token, user.username);
 
-                        const activeTasks = tasks.filter(task => task.erased === false);
+                      const activeTasks = tasks.filter(task => task.erased === false);
 
-                        const typeOfUserFormatted = formatTypeOfUser(user);
+                      const typeOfUserFormatted = formatTypeOfUser(user);
 
-                        return { ...user, id:user.username, number_tasks_user: activeTasks.length, typeOfUser: typeOfUserFormatted};
-                    })
-                );
-                
-                await updateUsersListData(usersFormatted);
+                      return { ...user, id:user.username, number_tasks_user: activeTasks.length, typeOfUser: typeOfUserFormatted};
+                  })
+              );
+              
+              await updateUsersListData(usersFormatted);
 
-            } else {
-                console.error('Error: Users data is undefined');
-            }
-            
-            setLoading(false);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-      };
+          } else {
+              console.error('Error: Users data is undefined');
+          }
+          
+          setLoading(false);
+      } catch (error) {
+          console.error('Error fetching data:', error);
+      }
+    };
 
+    // Function to format type of user
       const formatTypeOfUser = (userData) => {
         if (userData.typeOfUser === 100) {
             return 'Developer';
@@ -157,11 +160,13 @@ const Users = () => {
         }
       };
 
+       // Function to handle edit button click
       const handleEditButton = async () => {
         setSelectedUser(await AuthService.getUserData(token, selected[0]));
         updateShowSidebar(false);
       }
 
+      // Function to handle users visibility change
       const handleUsersVisibility = async () => {
         try {
           await Promise.all(
@@ -169,7 +174,6 @@ const Users = () => {
               await AuthService.updateVisibility(token, username);
             })
           );
-      
           await fetchUsers({});
 
             } catch (error) {
@@ -177,6 +181,7 @@ const Users = () => {
             }
       };
 
+      // Function to handle deleting all tasks of selected users
       const handleUsersDeleteAllTasks = async () => {
         try {
           await Promise.all(
@@ -192,6 +197,7 @@ const Users = () => {
             }
       };
 
+       // Function to handle permanently deleting selected users
       const handleUsersPermDelete = async () => {
         try {
             await Promise.all(
@@ -208,6 +214,7 @@ const Users = () => {
       };
 
 
+      // Function to handle filter list
       const handleFilterList = async (id) => {
 
         if (id ==='all'){ await fetchUsers({});
@@ -222,6 +229,7 @@ const Users = () => {
       };
 
 
+      // Function to handle update success
       const handleUpdateSuccess = async (inputs, username) => {
 
         console.log(inputs);
@@ -247,7 +255,7 @@ const Users = () => {
       };
 
 
-
+    // Define inputs for the sidebar form
       const inputs = [
         { type: 'text', name: 'firstName' },
         { type: 'text', name: 'lastName' },
@@ -270,6 +278,7 @@ const Users = () => {
 
 
 
+    // Render the Users component
     return (
         <div className={`container-users ${showSidebar ? 'sidebar-active' : 'sidebar-inactive'}`}>
             <div className="sidebar-container">

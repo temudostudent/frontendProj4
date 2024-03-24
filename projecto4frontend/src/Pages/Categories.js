@@ -7,18 +7,24 @@ import { FaArrowLeft } from "react-icons/fa";
 
 const Categories = () => {
 
-    const { token, userData } = userStore();
-    const { categories, updateCategories } = useCategoryStore();
-    const [selected , setSelected] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [newCategoryName, setNewCategoryName] = useState('');
-    const [isFormVisible, setIsFormVisible] = useState(false);
-    const [isSelected, setIsSelected] = useState(false);
+   // Destructure values from userStore and useCategoryStore
+   const { token, userData } = userStore();
+   const { categories, updateCategories } = useCategoryStore();
+
+   // State variables
+   const [selected, setSelected] = useState([]); // Selected category IDs
+   const [loading, setLoading] = useState(true); // Loading state
+   const [newCategoryName, setNewCategoryName] = useState(''); // New category name input value
+   const [isFormVisible, setIsFormVisible] = useState(false); // Visibility of add/edit category form
+   const [isSelected, setIsSelected] = useState(false); // Flag indicating if a category is selected for editing
+
+
 
     const handleCategorySelectionChange = (selectedCategoryIds) => {
         setSelected(selectedCategoryIds);
       };
 
+      // Table head cells configuration
     const headCells = [
       {
         id: 'name',
@@ -34,12 +40,15 @@ const Categories = () => {
       }
     ];
 
+     // Fetch categories and associated tasks on component mount or when token or categories change
     useEffect(() => {
         
         fetchCategories();
 
     }, [token, categories]);
 
+
+    // Function to fetch categories and update state
     const fetchCategories = async () => {
       try {
           const allCategories = await AuthService.getAllCategories(token);
@@ -65,6 +74,7 @@ const Categories = () => {
     };
 
 
+    // Function to handle submission of new category
     const handleNewCategorySubmit = async (event) => {
         event.preventDefault();
 
@@ -84,6 +94,8 @@ const Categories = () => {
         }
     };
 
+
+    // Function to handle deletion of selected categories
     const handleDeleteSelectedCategories = async () => {
 
       let response;
@@ -105,6 +117,8 @@ const Categories = () => {
           }
     };
 
+
+    // Function to handle submission of edited category
     const handleEditCategorySubmit = async (event) => {
 
       event.preventDefault();
@@ -129,21 +143,25 @@ const Categories = () => {
       }
     };
 
+
+    // Function to handle hiding the add/edit category form
     const handleFormToNotVisible = () => {
       setIsFormVisible(false);
     }
 
+
+    // Function to handle showing the add category form
     const handleChangeAddCategory  = () => {
       setIsFormVisible(true);
       setIsSelected(false);
       setSelected([]);
     };
 
+
+     // Function to handle showing the edit category form
     const handleChangeEditForm = () => {
-      
           setIsFormVisible(true);
           setIsSelected(true);
-      
     };
 
 

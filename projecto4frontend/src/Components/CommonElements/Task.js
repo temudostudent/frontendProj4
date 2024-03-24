@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Draggable } from 'react-beautiful-dnd';
 import { MdEdit, MdDelete, MdOutlineRestore } from "react-icons/md";
@@ -10,11 +10,13 @@ import { useLocation } from 'react-router-dom';
 
 const Task = ({ task , index , onEraseStatusChange, onTaskDoubleClick, onDeleteChange }) => {
 
+  // Accessing necessary state and functions from stores and hooks
   const { setSelectedTask } = useTaskStore();
   const { updateShowSidebar, updateIsEditing } = useActionsStore();
   const userData = userStore((state) => state.userData);
   const location = useLocation()
 
+  // Function to handle rendering task priority based on priority level
   const handleTaskPriority = (priority) => {
     let priorityClass = 'priority-color ';
     if (priority === 100) {
@@ -27,19 +29,23 @@ const Task = ({ task , index , onEraseStatusChange, onTaskDoubleClick, onDeleteC
     return <span className={priorityClass}></span>;
   }
 
+  // Event handler for clicking the erase button
   const handleEraseClick = async () => {
     console.log('erase');
     onEraseStatusChange(task.id);
   }
 
+  // Event handler for clicking the restore button
   const handleRestoreClick = async () => {
     onEraseStatusChange(task.id);
   }
 
+  // Event handler for clicking the permanent delete button
   const handlePermDeleteClick = async () => {
     onDeleteChange(task.id);
   }
 
+  // Event handler for clicking the edit button
   const handleEditClick = () => {
     setSelectedTask(task);
     updateIsEditing(true);
@@ -47,6 +53,7 @@ const Task = ({ task , index , onEraseStatusChange, onTaskDoubleClick, onDeleteC
     console.log(task);
   };
 
+  // Event handler for double clicking a task
   const handleDoubleClick = () => {
     onTaskDoubleClick(task);
     console.log(task);

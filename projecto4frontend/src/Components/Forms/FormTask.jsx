@@ -3,12 +3,16 @@ import './FormStyle.css'
 
 const FormTask = (props) => {
 
+    // Destructuring props
     const { title, inputs, buttonText, onSubmit, initialValues } = props;
+    
+    // State variable for form data
     const [formData, setFormData] = useState(initialValues || {
         category: { name: '', disabled: true }, 
         priority: { value: '', disabled: true }
     });
 
+    // useEffect to update form data when initialValues change
     useEffect(() => {
         setFormData(initialValues || {
             category: { name: '', disabled: true }, 
@@ -16,8 +20,11 @@ const FormTask = (props) => {
         });
       }, [initialValues]);
 
+      // Function to handle changes in form inputs
       const handleChange = (event) => {
         const { name, value } = event.target;
+
+        // Special handling for category input (category is an object)
         if (name === 'category') {
             
             setFormData(prevState => ({
@@ -25,6 +32,7 @@ const FormTask = (props) => {
                 category: { name: value }
             }));
         } else {
+            // For other inputs, update state as usual
             setFormData(prevState => ({
                 ...prevState,
                 [name]: value
@@ -32,16 +40,15 @@ const FormTask = (props) => {
         }
     };
 
+    // Function to handle form submission
     const handleSubmitTask = async (event) => {
         event.preventDefault();
         try {
 
             if (onSubmit) {
-
+                // Formatting data before submitting
                 const categoryName = formData.category && formData.category.name;
-
                 const categoryObject = categoryName ? { name: categoryName } : null;
-
                 const formattedData = {
                     title: formData.title,
                     description: formData.description,
@@ -51,9 +58,8 @@ const FormTask = (props) => {
                     category: categoryObject === null ? formData.category.name : categoryObject
                 };
 
-                console.log(formattedData);
                 await onSubmit(formattedData);
-
+                // Clearing form data after submission
                 setFormData({});
 
             }
@@ -64,11 +70,11 @@ const FormTask = (props) => {
     };
 
 
+    // Function to create input elements based on input configuration
     const createInput = (input) => {
         const { type, name, placeholder, options, label } = input;
-        
-
         if (type === 'select' && name === 'category') {
+            // Special handling for category select input
             return (
                 <select 
                     name={name} 

@@ -9,6 +9,7 @@ const AuthService = {
 USER
 ----------------------*/
 
+// Function to handle user login
     login: async (inputs) => {
 
         try{
@@ -33,6 +34,7 @@ USER
         };
     },
 
+    // Function to handle user logout
     logout: async (token) => {
 
         try {
@@ -54,6 +56,7 @@ USER
         }
     },
 
+    // Function to handle user registration
     register: async (inputs) => {
 
         try{
@@ -104,6 +107,8 @@ USER
             }
         },
 
+
+    // Function to get user data
     getUserData: async (token , username) => {
         try {
             const response = await axios.get(`${API_BASE_URL}/${username}`, {
@@ -127,6 +132,8 @@ USER
         }
     },
 
+
+    // Function to get username
     getUsername: async (token) => {
         try {
             const response = await axios.get(`${API_BASE_URL}/getUsername`, {
@@ -147,6 +154,8 @@ USER
         }
     },
 
+
+    // Function to get photo
     getPhoto: async (token) => {
         try {
             const response = await axios.get(`${API_BASE_URL}/getPhotoUrl`, {
@@ -168,6 +177,7 @@ USER
 
     },
 
+    // Function to update user
     updateUser: async (token, username, updatedData) => {
         try {
             const response = await axios.put(`${API_BASE_URL}/update/${username}`, updatedData, {
@@ -205,6 +215,7 @@ USER
 CATEGORIES
 ----------------------*/
 
+    // Function to get all categories
     getAllCategories: async (token) => {
         try {
             const response = await axios.get(`${API_BASE_URL}/categories`, {
@@ -228,6 +239,7 @@ CATEGORIES
         }
     },
 
+    // Function to edit category
     editCategory: async (token, oldName, newName) => {
         try {
             const response = await axios.put(`${API_BASE_URL}/editCategory/${oldName}`, null, {
@@ -257,6 +269,8 @@ CATEGORIES
         }
     },
 
+
+    // Function to delete category
     deleteCategory: async (token, categoryId) => {
         try {
             const response = await axios.delete(`${API_BASE_URL}/deleteCategory/id/${categoryId}`, {
@@ -286,6 +300,8 @@ CATEGORIES
         }
     },
 
+
+    // Function to create new category
     newCategory: async (token, input) => {
         try {
             const response = await axios.post(`${API_BASE_URL}/newCategory`, input,
@@ -315,6 +331,8 @@ CATEGORIES
         }
     },
 
+
+    // Function to get tasks by category
     getTasksByCategories: async (token, categoryName) => {
         try {
             const response = await axios.get(`${API_BASE_URL}/tasks/${categoryName}`, {
@@ -342,6 +360,8 @@ CATEGORIES
 TASKS
 ----------------------*/
 
+
+// Function to get all tasks
 getAllTasks: async (token) => {
 
     console.log('getAllTasks');
@@ -366,6 +386,8 @@ getAllTasks: async (token) => {
     }
 },
 
+
+// Function to get all tasks from a user
 getAllTasksFromUser: async (token, username) => {
 
     console.log('getAllTasksFromUser');
@@ -394,6 +416,8 @@ getAllTasksFromUser: async (token, username) => {
     }
 },
 
+
+// Function to get all tasks by category
 getAllTasksByCategory: async (token, categoryName) => {
 
     console.log('getAllTasksByCategory', categoryName);
@@ -422,6 +446,8 @@ getAllTasksByCategory: async (token, categoryName) => {
     }
 },
 
+
+// Function to get all tasks by erased status
 getAllTasksByErasedStatus: async (token, erasedStatus) => {
 
 
@@ -451,6 +477,7 @@ getAllTasksByErasedStatus: async (token, erasedStatus) => {
 },
 
 
+// Function to add new task
 newTask: async (token, username, task) => {
     try {
         const response = await axios.post(`${API_BASE_URL}/${username}/addTask`, task, {
@@ -475,6 +502,8 @@ newTask: async (token, username, task) => {
     }
 },
 
+
+// Function to update task state
 updateTaskStatus: async (token, taskId, newStateId) => {
     try {
         const response = await axios.put(`${API_BASE_URL}/tasks/${taskId}/${newStateId}`, null, {
@@ -498,6 +527,8 @@ updateTaskStatus: async (token, taskId, newStateId) => {
     }
 },
 
+
+// Function to change erase status of a task
 changeEraseStatusTask: async (token, taskId) => {
 
     console.log('change erase status task');
@@ -530,6 +561,8 @@ changeEraseStatusTask: async (token, taskId) => {
     }
 },
 
+
+// Function to delete a task
 deleteTask: async (token, taskId) => {
     try {
         const response = await axios.delete(`${API_BASE_URL}/delete/${taskId}`, {
@@ -555,6 +588,8 @@ deleteTask: async (token, taskId) => {
     }
 },
 
+
+// Function to edit a task
 editTask: async (token, taskId, inputs) => {
     try {
         const response = await axios.put(`${API_BASE_URL}/updatetask/${taskId}`, inputs, {
@@ -585,6 +620,8 @@ editTask: async (token, taskId, inputs) => {
 ALL USERS
 ----------------------*/
 
+
+// Function to get all users' data
 getAllUsersData: async (token) => {
     try {
         const response = await axios.get(`${API_BASE_URL}/all`, {
@@ -606,6 +643,8 @@ getAllUsersData: async (token) => {
     }
 },
 
+
+// Function to get users by visibility
 getUsersByVisibility: async (token, visible) => {
     try {
         const response = await axios.get(`${API_BASE_URL}/all/visible/${visible}`, {
@@ -627,6 +666,8 @@ getUsersByVisibility: async (token, visible) => {
     }
 },
 
+
+// Function to get users by type
 getUsersByType: async (token, type) => {
     try {
         const response = await axios.get(`${API_BASE_URL}/all/${type}`, {
@@ -648,6 +689,8 @@ getUsersByType: async (token, type) => {
     }
 },
 
+
+// Function to update user visibility
 updateVisibility: async (token, username) => {
 
     try {
@@ -669,6 +712,8 @@ updateVisibility: async (token, username) => {
     }
 },
 
+
+// Function to erase all tasks from a user
 eraseAllTasksFromUser: async (token, username) => {
 
     try {
@@ -694,7 +739,7 @@ eraseAllTasksFromUser: async (token, username) => {
     }
 },
 
-
+// Function to delete a user
 deleteUser: async (token, username) => {
     try {
         const response = await axios.delete(`${API_BASE_URL}/${username}`, {
@@ -718,9 +763,6 @@ deleteUser: async (token, username) => {
         console.error('Error:', error);
     }
 },
-
-
-
 
 };
 

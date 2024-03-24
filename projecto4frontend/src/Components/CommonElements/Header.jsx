@@ -14,6 +14,7 @@ import { useTaskStore } from '../../Stores/TaskStore'
 import { useUsersListStore } from '../../Stores/UsersDataStore'
 
 const Header = () => {
+    // Accessing state variables and functions from stores
     const token = userStore((state) => state.token);
     const userData = userStore((state) => state.userData);
     const navigate = useNavigate();
@@ -22,6 +23,8 @@ const Header = () => {
     const [headerPhoto, setHeaderPhoto] = useState(defaultPhoto);
     const { updateIsAllTasksPage } = useActionsStore();
    
+
+    // Fetching user header data
 
     useEffect(() => {
         userHeaderData();
@@ -34,6 +37,7 @@ const Header = () => {
         setHeaderPhoto(userData.photoURL);
     }
 
+    // Function to handle user logout
     const handleLogout = async () => {
         try {
             await AuthService.logout(token);
@@ -49,6 +53,7 @@ const Header = () => {
         }
     }
     
+    // Menu items
     const items = [
         {   
             name: "Board", 
@@ -79,16 +84,20 @@ const Header = () => {
     return (
         <header className="site-header">
             <ToastContainer position="top-center" />
+            {/* Logo */}
             <div className="site-identity">
                 <img src={logo} alt="Logo da empresa" />
             </div> 
-                <Menu items={items} typeOfUser={userData.typeOfUser}/>
+            {/* Menu */}
+            <Menu items={items} typeOfUser={userData.typeOfUser}/>
+            {/* User profile */}
             <div className="profile-container" onClick={() => setShowAccountDrop(true)}>
-                <a>{headerUsername}</a> {/*Mostra username*/}
+                <a>{headerUsername}</a> {/* Show username */}
                 <span className="photo-container">
-                    <img src={headerPhoto} alt="Profile Pic" /> {/*Mostra foto de perfil*/}
+                    <img src={headerPhoto} alt="Profile Pic" /> {/* Show profile picture */}
                 </span> 
             </div>
+            {/* Dropdown menu for account */}
             {showAccountDrop && (
             <div className="accountDrop" onMouseLeave={() => setShowAccountDrop(false)}>
                 <a onClick={() => navigate("/profile")}>My Profile</a>

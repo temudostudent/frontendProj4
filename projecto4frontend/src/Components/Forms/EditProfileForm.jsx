@@ -4,19 +4,23 @@ import Modal from 'react-modal'
 import { userStore } from '../../Stores/UserStore'
 import { useLocation } from 'react-router-dom';
 
+// Setting the root element for the modal
 Modal.setAppElement('#root');
 
 const EditProfileForm = ({username, printData, onUpdateSuccess}) => {
+
+    // State variables
     const [inputs, setInputs] = useState({});
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const { token, userData} = userStore();
     const location = useLocation();
   
+    // Function to handle changes in input fields
     const handleChange = (event) => {
       const { name, value } = event.target;
     
+      // Handling special case for typeOfUser
       if (name === 'typeOfUser') {
-        
         setInputs((prevInputs) => ({ ...prevInputs, [name]: value }));
       } else {
         // Para outros campos, atualize o estado como antes
@@ -24,6 +28,7 @@ const EditProfileForm = ({username, printData, onUpdateSuccess}) => {
       }
     };
 
+    // Function to handle form submission
     const handleSubmit = async (event) => {
       event.preventDefault(); 
       onUpdateSuccess(inputs, username);
@@ -32,6 +37,7 @@ const EditProfileForm = ({username, printData, onUpdateSuccess}) => {
     };
 
 
+    // Function to handle modal form submission
     const handleSubmitModal = async (event) => {
       event.preventDefault();
 
@@ -70,33 +76,6 @@ const EditProfileForm = ({username, printData, onUpdateSuccess}) => {
           toast.error('Error updating password. Please try again later.');
       }
       };
-
-
-      const parseTypeIdToString = (typeId) => {
-        let newTypeId = '';
-        if(typeId === 100) {
-          newTypeId = 'Developer';
-        } else if(typeId === 200) {
-          newTypeId = 'Scrum Master';
-        } else if(typeId === 300) {
-          newTypeId = 'Product Owner';
-        }
-        return newTypeId;
-      }
-
-
-      const parseTypeStringToId = (type) => {
-        let newType = '';
-        if(type === 'Developer') {
-          newType = 100;
-        } else if(type === 'Scrum Master') {
-          newType = 200;
-        } else if(type === 'Product Owner') {
-          newType = 300;
-        }
-        return newType;
-      }
-
 
 
     return (

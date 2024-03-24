@@ -10,16 +10,23 @@ import './ScrumBoard.css';
 
 const ScrumBoard = (props) => {
 
+  // Extracting location information from react-router-dom
   const location = useLocation();
   const { pathname } = location;
 
-  const {token , userData, homeTasksChange } = props
+  // Destructuring props
+  const { token , userData, homeTasksChange } = props;
+
+  // Accessing state and functions from custom hooks
   const { tasks, updateTasks, setSelectedTask } = useTaskStore();
   const { updateShowSidebar, updateIsEditing, updateShowModal, showModal } = useActionsStore();
+
+  // State variables
   const [loading, setLoading] = useState(true);
   const [selectedTaskInfo, setSelectedTaskInfo] = useState(null);
   const [currentTaskList, setCurrentTaskList] = useState([]);
 
+  // Function to fetch tasks from the server
   const fetchTasks = async () => {
     try {
       if (pathname === '/alltasks') {
@@ -36,19 +43,25 @@ const ScrumBoard = (props) => {
     }
   };
 
+
+  // useEffect to fetch tasks when token, userData, pathname, or homeTasksChange changes
   useEffect(() => {
     fetchTasks();
   }, [token, userData, pathname, homeTasksChange]);
 
+  // useEffect to update currentTaskList whenever tasks change
   useEffect(() => {
     updateTaskList(tasks);
   }, [tasks]);
 
+
+  // Function to update the currentTaskList state
   const updateTaskList = async (tasks) => {
     setCurrentTaskList(tasks);
   }
   
 
+  // Function to handle changing the erase status of a task
   const handleTaskEraseStatus = async (taskId) => {
     try {
       
@@ -68,6 +81,7 @@ const ScrumBoard = (props) => {
     }
   };
   
+  // Function to handle deleting a task
   const handleTaskDelete = async (taskId) => {
     try {
       
@@ -81,6 +95,7 @@ const ScrumBoard = (props) => {
   };
 
 
+  // Function called when a task is dragged and dropped
   const onDragEnd = async (result) => {
     if (!result.destination) {
       return;
@@ -94,7 +109,6 @@ const ScrumBoard = (props) => {
         return;
       }
   
-      
       await AuthService.updateTaskStatus(token, taskId, newStateId);
   
       await updateTasks(prevTasks => {
@@ -106,28 +120,27 @@ const ScrumBoard = (props) => {
         });
       });
 
-      console.log(tasks);
-  
-      
     } catch (error) {
       console.error('Error updating task status:', error);
       setLoading(false);
     }
   };
 
-  
 
+  // Function to handle the "New Task" button click
   const handleNewTaskButton = () => {
     updateShowSidebar(false);
     updateIsEditing(false);
     setSelectedTask(null);
   }
 
+  // Function to handle double click on a task
   const handleTaskDoubleClick = (task) => {
     setSelectedTaskInfo(task);
     updateShowModal(true);
   };
 
+  // Function to parse priority integer to string
   const parsePriorityToString = (priority) => {
     let newPriority = '';
     if(priority === 100) {
@@ -140,6 +153,7 @@ const ScrumBoard = (props) => {
     return newPriority;
   }
 
+  // Function to parse stateId integer to string
   const parseStateIdToString = (stateId) => {
     let newStateId = '';
     if(stateId === 100) {
@@ -152,36 +166,36 @@ const ScrumBoard = (props) => {
     return newStateId;
   }
 
+  // Function to render tasks based on their status
   const renderTasksByStatus = (status) => {
-  const filteredTasks =  Array.isArray(currentTaskList) ? currentTaskList.filter(task => task.stateId === parseInt(status)) : [];
+    // Filtering tasks based on status
+    const filteredTasks =  Array.isArray(currentTaskList) ? currentTaskList.filter(task => task.stateId === parseInt(status)) : [];
 
-  console.log(filteredTasks);
-
-  return (
-    <Droppable droppableId={status} key={status}>
-      {(provided, snapshot) => (
-        <div
-          {...provided.droppableProps}
-          ref={provided.innerRef}
-          className={`task_list ${status}`}
-        >
-          {filteredTasks.map((task, index) => (
-            <Task 
-              key={task.id} 
-              task={task} 
-              index={index} 
-              onEraseStatusChange={handleTaskEraseStatus}
-              onTaskDoubleClick={handleTaskDoubleClick}
-              onDeleteChange={handleTaskDelete}
-              className={task.erased ? 'erased-task' : ''}
-            />
-          ))}
-          {provided.placeholder}
-        </div>
-      )}
-    </Droppable>
-  );
-};
+    return (
+      <Droppable droppableId={status} key={status}>
+        {(provided, snapshot) => (
+          <div
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+            className={`task_list ${status}`}
+          >
+            {filteredTasks.map((task, index) => (
+              <Task 
+                key={task.id} 
+                task={task} 
+                index={index} 
+                onEraseStatusChange={handleTaskEraseStatus}
+                onTaskDoubleClick={handleTaskDoubleClick}
+                onDeleteChange={handleTaskDelete}
+                className={task.erased ? 'erased-task' : ''}
+              />
+            ))}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
+    );
+  };
 
   return (
     <main>
@@ -215,6 +229,7 @@ const ScrumBoard = (props) => {
         
       )}
 
+      {/* Modal for displaying task details */}
       {showModal && selectedTaskInfo && (
           <ModalInfo 
             title="Task Details"

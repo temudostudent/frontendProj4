@@ -1,8 +1,9 @@
 import React from "react";
 import './CommonElements.css';
 
-const Footer = (props) => {
+const Footer = () => {
 
+    //Footer
     return (
         <footer className="footer">
             <div className="footer-container">

@@ -11,28 +11,29 @@ import Sidebar from '../Components/CommonElements/Sidebar'
 
 const Home = () => {
 
-    const location = useLocation();
+    const location = useLocation(); // Get current location
 
+    // Destructure values from stores
     const token = userStore((state) => state.token);
     const userData = userStore((state) => state.userData);
-    
-    const { categories, updateCategories} = useCategoryStore();
-    const { usersListData, updateUsersListData} = useUsersListStore();
-    const { updateTasks, selectedTask, setSelectedTask} = useTaskStore();
+    const { categories, updateCategories } = useCategoryStore();
+    const { usersListData, updateUsersListData } = useUsersListStore();
+    const { updateTasks, selectedTask, setSelectedTask } = useTaskStore();
     const { showSidebar, updateShowSidebar, isEditing } = useActionsStore();
+
+    // State variables
     const [loading, setLoading] = useState(true);
     const [selectedFilter, setSelectedFilter] = useState('All');
     const [selectedOption, setSelectedOption] = useState('');
     const [updatedSignal, setUpdatedSignal] = useState(true);
 
-
+    // Fetch initial data on component mount
     useEffect(() => {
         fetchInitialData();
     }, []);
 
-    
+    // Function to fetch initial data (categories, users, tasks)
     const fetchInitialData = async () => {
-
         try {
             await Promise.all([fetchCategories(), fetchUsers()]);
             setLoading(false); 
@@ -42,6 +43,7 @@ const Home = () => {
         }
     };
 
+     // Function to fetch tasks based on category, erasedStatus, or user
     const fetchTasks = async (categoryName , erasedStatus, username) => {
 
         console.log('Fetching tasks');
@@ -78,26 +80,23 @@ const Home = () => {
         }
     };
 
-
+    // Function to fetch categories
     const fetchCategories = async () => {
         const allCategories = await AuthService.getAllCategories(token);
         updateCategories(allCategories);
     };
 
+    // Function to fetch users data
     const fetchUsers = async () => {
         const allUsers = await AuthService.getAllUsersData(token);
         updateUsersListData(allUsers);
     };
 
+    // Function to handle task creation
     const handleCreateTask = async (taskInput) => {
-        console.log('newtask');
-
-
-        try {
-            
+       
+        try {  
             const response = await AuthService.newTask(token, userData.username, taskInput);
-          
-            console.log(response);
 
             if (response.status === 201) {
                 
@@ -112,9 +111,9 @@ const Home = () => {
         }
     };
 
-    const handleEditTask = async (taskInput) => {
 
-        console.log('taskInput');
+    // Function to handle task editing
+    const handleEditTask = async (taskInput) => {
 
         try {
             
@@ -136,6 +135,7 @@ const Home = () => {
     };
     
 
+    // Array of input fields for task form
     const inputs = [
         { 
             type: 'select', 
@@ -164,6 +164,7 @@ const Home = () => {
         
     ];
 
+    // Function to handle filter change
     const handleFilterChange = async (event) => {
         const selectedValue = event.target.value;
       
@@ -178,11 +179,10 @@ const Home = () => {
       };
 
 
+      // Function to handle option change based on selected filter
       const handleOptionChange = (event) => {
         const selectedOptionValue = event.target.value;
-    
         setSelectedOption(selectedOptionValue);
-    
         switch (selectedFilter) {
             case 'State':
                 if (selectedOptionValue == 'Active') {
@@ -207,6 +207,7 @@ const Home = () => {
     };
 
 
+    // Function to render select filter dropdown
     const renderSelect = ({ name }) => {
         return (
             <div>

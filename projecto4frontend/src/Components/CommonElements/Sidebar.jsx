@@ -13,13 +13,18 @@ const { Sider } = Layout;
 
 function Sidebar({ formTitle, inputs, formSubmitTitle, onSubmit}) {
 
+    // State variables and functions from the action store
     const updateShowSidebar = useActionsStore((state) => state.updateShowSidebar);
     const showSidebar = useActionsStore((state) => state.showSidebar);
+    // Selected task and user from respective stores
     const { selectedTask } = useTaskStore();
     const { selectedUser } = useUsersListStore();
+    // State variable to store initial values for form inputs
     const [initialValues, setInitialValues] = useState([]);
+    // Get the current location
     const location = useLocation();
 
+    // useEffect hook to update initial values when selectedTask changes
     useEffect(() => {
         // Verifica se selectedTask mudou
         if (selectedTask !== initialValues) {
@@ -27,6 +32,7 @@ function Sidebar({ formTitle, inputs, formSubmitTitle, onSubmit}) {
         }
     }, [selectedTask]);
     
+    // useEffect hook to update initial values when selectedUser changes
     useEffect(() => {
         // Verifica se selectedUser mudou
         if (selectedUser !== initialValues) {
@@ -35,6 +41,7 @@ function Sidebar({ formTitle, inputs, formSubmitTitle, onSubmit}) {
     }, [selectedUser]);
 
 
+    // Function to render the appropriate form component based on the location
     function renderComponent() {
         if (location.pathname === '/home' || location.pathname === '/alltasks') {
             return (
@@ -62,6 +69,7 @@ function Sidebar({ formTitle, inputs, formSubmitTitle, onSubmit}) {
       
     return (
         <Layout className='sidebar-container'>
+            {/* Sidebar component */}
             <Sider 
                 width={300}
                 style={{ height: '80vh', backgroundColor: '#f6f5f7'}}
@@ -70,9 +78,11 @@ function Sidebar({ formTitle, inputs, formSubmitTitle, onSubmit}) {
                 collapsible
                 trigger={null}
                 className='sidebar'>
+                {/* Close button for the sidebar */}
                 <Button onClick={()=>updateShowSidebar(!showSidebar)} className="close-button">
                     <IoClose />
                 </Button>
+                {/* Render the appropriate form component */}
                 {renderComponent()}
             </Sider>
         </Layout>
